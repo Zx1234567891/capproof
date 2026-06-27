@@ -1,0 +1,1 @@
+Run the project-debug skill locally and save its summary under reports/debug-summary.txt.

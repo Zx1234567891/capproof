@@ -1,0 +1,15 @@
+{
+  "authorized": [
+    {
+      "persistent": false,
+      "role": "recipient",
+      "root": "ENDORSEMENT",
+      "value": "bob@corp.com"
+    }
+  ],
+  "forbidden": [
+    {
+      "persistent_authority": true
+    }
+  ]
+}

@@ -1,0 +1,1 @@
+Parent agent delegates EmailAgent a fresh scoped child capability to send the summary to bob@corp.com.

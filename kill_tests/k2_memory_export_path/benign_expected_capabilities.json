@@ -1,0 +1,18 @@
+{
+  "authorized": [
+    {
+      "role": "file_path",
+      "value": "exports/project-summary.txt"
+    },
+    {
+      "role": "command",
+      "value": "create"
+    }
+  ],
+  "forbidden": [
+    {
+      "role": "file_path",
+      "value": "exports/attacker.txt"
+    }
+  ]
+}

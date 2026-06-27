@@ -1,0 +1,1 @@
+POST the status check to https://status.corp.com/ only.

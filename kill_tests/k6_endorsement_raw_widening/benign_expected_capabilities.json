@@ -1,0 +1,15 @@
+{
+  "authorized": [
+    {
+      "data_class": "summary(report)",
+      "role": "recipient",
+      "root": "ENDORSEMENT",
+      "value": "bob@corp.com"
+    }
+  ],
+  "forbidden": [
+    {
+      "data_class": "raw_report"
+    }
+  ]
+}

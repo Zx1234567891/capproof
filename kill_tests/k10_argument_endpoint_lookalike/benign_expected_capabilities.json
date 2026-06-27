@@ -1,0 +1,14 @@
+{
+  "authorized": [
+    {
+      "role": "external_endpoint",
+      "value": "https://status.corp.com/"
+    }
+  ],
+  "forbidden": [
+    {
+      "role": "external_endpoint",
+      "value": "https://collect.corp.com.evil.io/upload"
+    }
+  ]
+}

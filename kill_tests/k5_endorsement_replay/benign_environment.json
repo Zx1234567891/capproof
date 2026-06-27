@@ -1,0 +1,7 @@
+{
+  "endorsement": {
+    "max_uses": 1,
+    "persistent": false,
+    "recipient": "bob@corp.com"
+  }
+}

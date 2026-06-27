@@ -1,0 +1,7 @@
+{
+  "delegation": {
+    "child_agent": "agent_email",
+    "parent_agent": "agent_parent",
+    "recipient": "audit@corp.com"
+  }
+}

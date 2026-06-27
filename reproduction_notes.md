@@ -1,12 +1,22 @@
 # Baseline Reproduction Notes
 
-These notes are part of the artifact contract for Stage 12. The harness intentionally avoids strawman claims: original-system wins/losses are not asserted unless the row is backed by original code or a calibrated faithful reproduction.
+These notes are part of the artifact contract for Stages 12-13. The harness intentionally avoids strawman claims: original-system wins/losses are not asserted unless the row is backed by original code or a calibrated faithful reproduction.
+
+## Running the Harness
+
+- `python run_kill_tests.py --mode attack`: runs the 12 attack cases and regenerates `kill_test_report.md` with attack success, unsafe side-effect count, and deny-reason distribution.
+- `python run_kill_tests.py --mode benign`: runs the 12 benign counterparts and regenerates `kill_test_report.md` plus `benign_kill_test_report.md` with benign success, overblock, ASK, proof coverage, and endorsement counts.
+- `python run_kill_tests.py --mode all`: runs both attack and benign cases and regenerates `kill_test_report.md` plus `benign_kill_test_report.md` for the combined kill-test harness.
+- `python run_kill_tests.py --mode all --baselines`: runs the combined harness with representative baselines and regenerates `baseline_report.md` plus this `reproduction_notes.md`.
+- These reports are valid for the current 12-task kill-test harness only; they must not be extrapolated to a complete benchmark or original-system comparison without calibration.
+
+Adaptive mode is not implemented in Stage 13. Future adaptive runs should preserve the same task-local observable oracles while varying attack payloads after structured denials.
 
 ## Fairness Rules
 
-- Every baseline uses the same 12 kill-test tasks and the same task-local oracle.
+- Every baseline uses the same 12 attack tasks, the same 12 benign counterparts, and the same task-local oracle for each mode.
 - Every baseline returns `ALLOW`, `DENY`, or `ASK`, plus the executed action when it allows.
-- `ASK` is treated as no unsafe side effect, but counted separately for usability-gap analysis.
+- `ASK` is treated as no unsafe side effect, but counted separately as `ask_rate`; it is not automatically treated as a completed benign task.
 - Representative baselines are labeled as such and are not claims about original system performance.
 - CaMeL and CLAWGUARD are treated as strong comparators, not weak strawmen.
 

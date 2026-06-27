@@ -1,0 +1,13 @@
+{
+  "authorized": [
+    {
+      "role": "file_path",
+      "value": "contract.txt"
+    }
+  ],
+  "forbidden": [
+    {
+      "role": "external_endpoint"
+    }
+  ]
+}

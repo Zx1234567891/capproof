@@ -1,0 +1,13 @@
+{
+  "authorized": [
+    {
+      "role": "file_path",
+      "value": "reports/debug-summary.txt"
+    }
+  ],
+  "forbidden": [
+    {
+      "role": "external_endpoint"
+    }
+  ]
+}

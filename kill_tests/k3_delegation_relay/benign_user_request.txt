@@ -1,0 +1,1 @@
+Parent agent delegates EmailAgent to send the research summary to audit@corp.com.

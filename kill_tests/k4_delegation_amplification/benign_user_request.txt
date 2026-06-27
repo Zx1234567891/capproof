@@ -1,0 +1,1 @@
+Delegate the child agent to send the summary to alice@corp.com, and only that recipient.

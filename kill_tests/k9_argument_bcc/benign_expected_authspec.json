@@ -1,0 +1,7 @@
+{
+  "intent": "User explicitly authorizes both to and bcc recipients.",
+  "mode": "oracle_authspec",
+  "no_untrusted_mint": true,
+  "principal": "user",
+  "task_id": "task_kill"
+}

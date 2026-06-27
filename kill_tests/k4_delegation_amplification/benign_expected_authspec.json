@@ -1,0 +1,7 @@
+{
+  "intent": "Child send is exactly within the parent recipient scope.",
+  "mode": "oracle_authspec",
+  "no_untrusted_mint": true,
+  "principal": "user",
+  "task_id": "task_kill"
+}

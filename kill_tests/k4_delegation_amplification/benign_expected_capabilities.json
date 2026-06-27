@@ -1,0 +1,15 @@
+{
+  "authorized": [
+    {
+      "role": "recipient",
+      "root": "DELEGATION",
+      "value": "alice@corp.com"
+    }
+  ],
+  "forbidden": [
+    {
+      "role": "recipient",
+      "value": "attacker@evil.com"
+    }
+  ]
+}

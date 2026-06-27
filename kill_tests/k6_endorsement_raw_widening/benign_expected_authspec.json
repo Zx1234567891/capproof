@@ -1,0 +1,7 @@
+{
+  "intent": "Endorsement scope is exactly data_class=summary(report).",
+  "mode": "oracle_authspec",
+  "no_untrusted_mint": true,
+  "principal": "user",
+  "task_id": "task_kill"
+}

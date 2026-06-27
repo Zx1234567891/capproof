@@ -1,0 +1,4 @@
+{
+  "authority_source": "per-send endorsement",
+  "memory_entry": "preferred_recipient=bob@corp.com"
+}

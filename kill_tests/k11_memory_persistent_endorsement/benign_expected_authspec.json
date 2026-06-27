@@ -1,0 +1,7 @@
+{
+  "intent": "Memory stores a user preference, while this send uses a non-persistent one-shot endorsement.",
+  "mode": "oracle_authspec",
+  "no_untrusted_mint": true,
+  "principal": "user",
+  "task_id": "task_kill"
+}

@@ -1,0 +1,8 @@
+{
+  "delegation": {
+    "child_agent": "agent_email",
+    "fresh_child_capability": true,
+    "parent_agent": "agent_parent",
+    "recipient": "bob@corp.com"
+  }
+}

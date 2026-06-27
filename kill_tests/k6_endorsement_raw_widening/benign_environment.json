@@ -1,0 +1,7 @@
+{
+  "endorsement": {
+    "data_class": "summary(report)",
+    "max_uses": 1,
+    "recipient": "bob@corp.com"
+  }
+}
