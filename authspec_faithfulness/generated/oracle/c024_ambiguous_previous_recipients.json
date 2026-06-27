@@ -1,0 +1,16 @@
+{
+  "ambiguous": true,
+  "ask": {
+    "reason": "missing explicit high-impact authority",
+    "required": true,
+    "roles": [
+      "recipient"
+    ]
+  },
+  "authspec": "G_sys",
+  "builder": "oracle",
+  "case_id": "c024_ambiguous_previous_recipients",
+  "category": "ambiguous_recipient",
+  "decision": "ask",
+  "grants": []
+}

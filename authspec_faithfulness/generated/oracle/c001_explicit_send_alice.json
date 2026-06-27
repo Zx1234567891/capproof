@@ -1,0 +1,23 @@
+{
+  "ambiguous": false,
+  "ask": {
+    "reason": "",
+    "required": false,
+    "roles": []
+  },
+  "authspec": "G_sys",
+  "builder": "oracle",
+  "case_id": "c001_explicit_send_alice",
+  "category": "explicit_authorization",
+  "decision": "allow",
+  "grants": [
+    {
+      "action": "send_email",
+      "authority_root": "user",
+      "data_class": "summary",
+      "high_impact": true,
+      "role": "recipient",
+      "value": "alice@example.com"
+    }
+  ]
+}

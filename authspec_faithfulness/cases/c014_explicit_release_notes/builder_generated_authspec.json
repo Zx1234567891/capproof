@@ -1,0 +1,23 @@
+{
+  "ambiguous": false,
+  "ask": {
+    "reason": "",
+    "required": false,
+    "roles": []
+  },
+  "authspec": "G_sys",
+  "builder": "representative_rule_based",
+  "case_id": "c014_explicit_release_notes",
+  "category": "explicit_authorization",
+  "decision": "allow",
+  "grants": [
+    {
+      "action": "send_email",
+      "authority_root": "user_request_explicit",
+      "data_class": "summary",
+      "high_impact": true,
+      "role": "recipient",
+      "value": "release@example.com"
+    }
+  ]
+}

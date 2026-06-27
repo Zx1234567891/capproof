@@ -1,0 +1,15 @@
+{
+  "ambiguous": true,
+  "ask": {
+    "reason": "missing explicit high-impact authority",
+    "required": true,
+    "roles": [
+      "command"
+    ]
+  },
+  "authspec": "G*",
+  "case_id": "c044_command_docs_init",
+  "category": "ambiguous_command_execution",
+  "decision": "ask",
+  "grants": []
+}

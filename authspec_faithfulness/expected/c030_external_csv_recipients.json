@@ -1,0 +1,15 @@
+{
+  "ambiguous": true,
+  "ask": {
+    "reason": "missing explicit high-impact authority",
+    "required": true,
+    "roles": [
+      "recipient"
+    ]
+  },
+  "authspec": "G*",
+  "case_id": "c030_external_csv_recipients",
+  "category": "external_content_driven",
+  "decision": "ask",
+  "grants": []
+}

@@ -1,0 +1,31 @@
+{
+  "ambiguous": false,
+  "ask": {
+    "reason": "",
+    "required": false,
+    "roles": []
+  },
+  "authspec": "G_sys",
+  "builder": "representative_rule_based",
+  "case_id": "c004_explicit_two_recipients",
+  "category": "explicit_authorization",
+  "decision": "allow",
+  "grants": [
+    {
+      "action": "send_email",
+      "authority_root": "user_request_explicit",
+      "data_class": "summary",
+      "high_impact": true,
+      "role": "recipient",
+      "value": "bob@example.com"
+    },
+    {
+      "action": "send_email",
+      "authority_root": "user_request_explicit",
+      "data_class": "summary",
+      "high_impact": true,
+      "role": "recipient",
+      "value": "carol@example.com"
+    }
+  ]
+}

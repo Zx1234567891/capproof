@@ -1,0 +1,21 @@
+{
+  "allow_count": 10,
+  "ambiguous_case_count": 35,
+  "ask_count": 40,
+  "case_count": 50,
+  "dangerous_over_broadening_count": 0,
+  "endorsement_trigger_accuracy": 1.0,
+  "endorsement_trigger_accuracy_denominator": 35,
+  "endorsement_trigger_accuracy_numerator": 35,
+  "high_impact_grant_precision": 1.0,
+  "high_impact_grant_precision_denominator": 11,
+  "high_impact_grant_precision_numerator": 11,
+  "high_impact_grant_recall": 0.6875,
+  "high_impact_grant_recall_denominator": 16,
+  "high_impact_grant_recall_numerator": 11,
+  "mode": "auto",
+  "over_broadening_count": 0,
+  "over_broadening_rate": 0.0,
+  "under_broadening_count": 5,
+  "under_broadening_rate": 0.1
+}

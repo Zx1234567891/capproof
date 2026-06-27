@@ -1,0 +1,22 @@
+{
+  "ambiguous": false,
+  "ask": {
+    "reason": "",
+    "required": false,
+    "roles": []
+  },
+  "authspec": "G*",
+  "case_id": "c009_explicit_dependabot_config",
+  "category": "explicit_authorization",
+  "decision": "allow",
+  "grants": [
+    {
+      "action": "write_file",
+      "authority_root": "user",
+      "data_class": "config_update",
+      "high_impact": true,
+      "role": "file_path",
+      "value": ".github/dependabot.yml"
+    }
+  ]
+}

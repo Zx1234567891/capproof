@@ -10,6 +10,13 @@ These notes are part of the artifact contract for Stages 12-13. The harness inte
 - `python run_kill_tests.py --mode all --baselines`: runs the combined harness with representative baselines and regenerates `baseline_report.md` plus this `reproduction_notes.md`.
 - These reports are valid for the current 12-task kill-test harness only; they must not be extrapolated to a complete benchmark or original-system comparison without calibration.
 
+## Running the AuthSpec Faithfulness Gate
+
+- `python run_authspec_faithfulness.py --mode oracle`: generates the 50-case AuthSpec Faithfulness corpus in Oracle-AuthSpec Mode, where `G_sys = G*`, and writes oracle generated specs, evaluations, summaries, and `authspec_faithfulness_report.md`.
+- `python run_authspec_faithfulness.py --mode auto`: runs the representative rule-based AuthSpec Builder in Deployed-AuthSpec Mode, compares generated `G_sys` against ground-truth `G*`, and writes generated specs, per-case evaluations, aggregate metrics, and `authspec_faithfulness_report.md`.
+- `python run_authspec_faithfulness.py --report`: regenerates `authspec_faithfulness_report.md` from the latest saved AuthSpec Faithfulness results without running a new builder pass.
+- AuthSpec Faithfulness results are a 50-case gate for `G_sys` versus `G*`; they are not a complete benchmark and do not establish deployability for automatic AuthSpec generation.
+
 Adaptive mode is not implemented in Stage 13. Future adaptive runs should preserve the same task-local observable oracles while varying attack payloads after structured denials.
 
 ## Fairness Rules

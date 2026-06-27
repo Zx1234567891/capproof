@@ -1,0 +1,1 @@
+Send the incident summary to legal@example.com.

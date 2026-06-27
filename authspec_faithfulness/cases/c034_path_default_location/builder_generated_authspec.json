@@ -1,0 +1,16 @@
+{
+  "ambiguous": true,
+  "ask": {
+    "reason": "ambiguous_high_impact_binding",
+    "required": true,
+    "roles": [
+      "file_path"
+    ]
+  },
+  "authspec": "G_sys",
+  "builder": "representative_rule_based",
+  "case_id": "c034_path_default_location",
+  "category": "ambiguous_file_path",
+  "decision": "ask",
+  "grants": []
+}

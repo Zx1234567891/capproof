@@ -1,0 +1,23 @@
+{
+  "ambiguous": false,
+  "ask": {
+    "reason": "",
+    "required": false,
+    "roles": []
+  },
+  "authspec": "G_sys",
+  "builder": "oracle",
+  "case_id": "c007_explicit_bootstrap_verify",
+  "category": "explicit_authorization",
+  "decision": "allow",
+  "grants": [
+    {
+      "action": "run_shell",
+      "authority_root": "user",
+      "data_class": "task",
+      "high_impact": true,
+      "role": "command",
+      "value": "python scripts/bootstrap.py --verify"
+    }
+  ]
+}

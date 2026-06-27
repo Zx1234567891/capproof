@@ -1,0 +1,23 @@
+{
+  "ambiguous": false,
+  "ask": {
+    "reason": "",
+    "required": false,
+    "roles": []
+  },
+  "authspec": "G_sys",
+  "builder": "oracle",
+  "case_id": "c012_explicit_write_test_log",
+  "category": "explicit_authorization",
+  "decision": "allow",
+  "grants": [
+    {
+      "action": "write_file",
+      "authority_root": "user",
+      "data_class": "log",
+      "high_impact": true,
+      "role": "file_path",
+      "value": "reports/test-log.txt"
+    }
+  ]
+}

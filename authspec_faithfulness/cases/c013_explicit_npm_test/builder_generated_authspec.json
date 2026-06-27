@@ -1,0 +1,23 @@
+{
+  "ambiguous": false,
+  "ask": {
+    "reason": "",
+    "required": false,
+    "roles": []
+  },
+  "authspec": "G_sys",
+  "builder": "representative_rule_based",
+  "case_id": "c013_explicit_npm_test",
+  "category": "explicit_authorization",
+  "decision": "allow",
+  "grants": [
+    {
+      "action": "run_shell",
+      "authority_root": "user_request_explicit",
+      "data_class": "task",
+      "high_impact": true,
+      "role": "command",
+      "value": "npm test"
+    }
+  ]
+}

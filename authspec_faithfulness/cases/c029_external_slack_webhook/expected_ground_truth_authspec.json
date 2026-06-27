@@ -1,0 +1,15 @@
+{
+  "ambiguous": true,
+  "ask": {
+    "reason": "missing explicit high-impact authority",
+    "required": true,
+    "roles": [
+      "external_endpoint"
+    ]
+  },
+  "authspec": "G*",
+  "case_id": "c029_external_slack_webhook",
+  "category": "external_content_driven",
+  "decision": "ask",
+  "grants": []
+}

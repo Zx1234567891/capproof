@@ -1,0 +1,1 @@
+Store the artifact in the shared folder.

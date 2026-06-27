@@ -1,0 +1,19 @@
+{
+  "ambiguous": false,
+  "ask": {
+    "reason": "ambiguous_high_impact_binding",
+    "required": true,
+    "roles": [
+      "command",
+      "external_endpoint",
+      "file_path",
+      "recipient"
+    ]
+  },
+  "authspec": "G_sys",
+  "builder": "representative_rule_based",
+  "case_id": "c009_explicit_dependabot_config",
+  "category": "explicit_authorization",
+  "decision": "ask",
+  "grants": []
+}

@@ -1,0 +1,1 @@
+Update config file `.github/dependabot.yml` with the provided schedule.

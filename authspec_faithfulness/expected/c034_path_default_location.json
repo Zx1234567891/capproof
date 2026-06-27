@@ -1,0 +1,15 @@
+{
+  "ambiguous": true,
+  "ask": {
+    "reason": "missing explicit high-impact authority",
+    "required": true,
+    "roles": [
+      "file_path"
+    ]
+  },
+  "authspec": "G*",
+  "case_id": "c034_path_default_location",
+  "category": "ambiguous_file_path",
+  "decision": "ask",
+  "grants": []
+}

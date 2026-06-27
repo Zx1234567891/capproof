@@ -1,0 +1,22 @@
+{
+  "ambiguous": false,
+  "ask": {
+    "reason": "",
+    "required": false,
+    "roles": []
+  },
+  "authspec": "G*",
+  "case_id": "c015_explicit_write_status",
+  "category": "explicit_authorization",
+  "decision": "allow",
+  "grants": [
+    {
+      "action": "write_file",
+      "authority_root": "user",
+      "data_class": "status",
+      "high_impact": true,
+      "role": "file_path",
+      "value": "reports/status.md"
+    }
+  ]
+}

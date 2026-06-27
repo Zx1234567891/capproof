@@ -1,0 +1,16 @@
+{
+  "ambiguous": true,
+  "ask": {
+    "reason": "missing explicit high-impact authority",
+    "required": true,
+    "roles": [
+      "command"
+    ]
+  },
+  "authspec": "G_sys",
+  "builder": "oracle",
+  "case_id": "c045_command_setup_script",
+  "category": "ambiguous_command_execution",
+  "decision": "ask",
+  "grants": []
+}

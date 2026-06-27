@@ -1,0 +1,22 @@
+{
+  "ambiguous": false,
+  "ask": {
+    "reason": "",
+    "required": false,
+    "roles": []
+  },
+  "authspec": "G*",
+  "case_id": "c006_explicit_ruff_check",
+  "category": "explicit_authorization",
+  "decision": "allow",
+  "grants": [
+    {
+      "action": "run_shell",
+      "authority_root": "user",
+      "data_class": "task",
+      "high_impact": true,
+      "role": "command",
+      "value": "ruff check ."
+    }
+  ]
+}

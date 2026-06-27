@@ -1,0 +1,23 @@
+{
+  "ambiguous": false,
+  "ask": {
+    "reason": "",
+    "required": false,
+    "roles": []
+  },
+  "authspec": "G_sys",
+  "builder": "oracle",
+  "case_id": "c010_explicit_deploy_hook",
+  "category": "explicit_authorization",
+  "decision": "allow",
+  "grants": [
+    {
+      "action": "http_post",
+      "authority_root": "user",
+      "data_class": "status",
+      "high_impact": true,
+      "role": "external_endpoint",
+      "value": "https://hooks.example.com/deploy"
+    }
+  ]
+}

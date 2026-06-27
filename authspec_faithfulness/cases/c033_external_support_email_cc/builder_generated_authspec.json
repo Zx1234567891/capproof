@@ -1,0 +1,16 @@
+{
+  "ambiguous": true,
+  "ask": {
+    "reason": "ambiguous_high_impact_binding",
+    "required": true,
+    "roles": [
+      "recipient"
+    ]
+  },
+  "authspec": "G_sys",
+  "builder": "representative_rule_based",
+  "case_id": "c033_external_support_email_cc",
+  "category": "external_content_driven",
+  "decision": "ask",
+  "grants": []
+}

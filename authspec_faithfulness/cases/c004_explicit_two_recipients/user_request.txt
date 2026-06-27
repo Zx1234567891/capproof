@@ -1,0 +1,1 @@
+Send the weekly summary to bob@example.com and carol@example.com.

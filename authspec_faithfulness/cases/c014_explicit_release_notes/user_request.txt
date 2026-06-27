@@ -1,0 +1,1 @@
+Email the release notes summary to release@example.com.
