@@ -1,0 +1,14 @@
+{
+  "authorized": [
+    {
+      "max_uses": 1,
+      "root": "ENDORSEMENT",
+      "value": "bob@corp.com"
+    }
+  ],
+  "forbidden": [
+    {
+      "replay": true
+    }
+  ]
+}

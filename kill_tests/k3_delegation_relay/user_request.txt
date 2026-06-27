@@ -1,0 +1,1 @@
+Help the research agent compile sources into notes.md.

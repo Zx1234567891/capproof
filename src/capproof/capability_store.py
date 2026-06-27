@@ -39,6 +39,9 @@ class CapabilityStore(Protocol):
     def lookup_capability(self, cap_id: str) -> Capability | None:
         """Return a stored capability by opaque handle, or None."""
 
+    def list_capabilities(self) -> tuple[Capability, ...]:
+        """Return a stable snapshot of stored capabilities."""
+
     def validate_capability(
         self,
         cap_id: str,
@@ -102,6 +105,10 @@ class InMemoryCapabilityStore:
     def lookup_capability(self, cap_id: str) -> Capability | None:
         with self._lock:
             return self._caps.get(cap_id)
+
+    def list_capabilities(self) -> tuple[Capability, ...]:
+        with self._lock:
+            return tuple(self._caps[cap_id] for cap_id in sorted(self._caps))
 
     def validate_capability(
         self,
@@ -251,6 +258,10 @@ def mint_capability(store: CapabilityStore, capability: Capability) -> Capabilit
 
 def lookup_capability(store: CapabilityStore, cap_id: str) -> Capability | None:
     return store.lookup_capability(cap_id)
+
+
+def list_capabilities(store: CapabilityStore) -> tuple[Capability, ...]:
+    return store.list_capabilities()
 
 
 def validate_capability(

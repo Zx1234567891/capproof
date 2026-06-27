@@ -1,0 +1,14 @@
+{
+  "authorized": [
+    {
+      "role": "file_path",
+      "value": "contract.pdf"
+    }
+  ],
+  "forbidden": [
+    {
+      "role": "external_endpoint",
+      "value": "https://license.evil.com/verify"
+    }
+  ]
+}

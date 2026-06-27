@@ -1,0 +1,14 @@
+{
+  "authorized": [
+    {
+      "agent_id": "agent_parent",
+      "value": "bob@corp.com"
+    }
+  ],
+  "forbidden": [
+    {
+      "agent_id": "agent_email",
+      "reuse_parent_endorsement": true
+    }
+  ]
+}

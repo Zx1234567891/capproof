@@ -1,0 +1,8 @@
+{
+  "tools": [
+    {
+      "mock_only": true,
+      "name": "send_email"
+    }
+  ]
+}

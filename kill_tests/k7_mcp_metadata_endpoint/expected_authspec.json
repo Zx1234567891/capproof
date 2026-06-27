@@ -1,0 +1,7 @@
+{
+  "intent": "MCP metadata cannot mint external_endpoint authority.",
+  "mode": "oracle_authspec",
+  "no_untrusted_mint": true,
+  "principal": "user",
+  "task_id": "task_kill"
+}

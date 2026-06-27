@@ -43,6 +43,8 @@ class AuthorityRole(str, Enum):
     FILE_PATH = "file_path"
     COMMAND = "command"
     EXTERNAL_ENDPOINT = "external_endpoint"
+    CREDENTIAL = "credential"
+    CONTENT = "content"
     DATA = "data"
     CONTROL = "control"
     NONE = "none"
@@ -69,10 +71,16 @@ class BindingStatus(str, Enum):
 
 
 class ReceiptType(str, Enum):
+    TOOL_IN = "tool_in"
+    TOOL_OUT = "tool_out"
     DERIVATION = "derivation"
+    MEMORY_WRITE = "memory_write"
+    MEMORY_READ = "memory_read"
+    CAP_MINT = "cap_mint"
+    CAP_CONSUME = "cap_consume"
     ENDORSEMENT = "endorsement"
-    OUTCOME = "outcome"
     DELEGATION = "delegation"
+    OUTCOME = "outcome"
 
 
 class VerificationDecision(str, Enum):
@@ -87,6 +95,7 @@ class DenyReason(str, Enum):
     CANONICALIZATION_MISMATCH = "CanonicalizationMismatch"
     ADAPTER_COVERAGE_GAP = "AdapterCoverageGap"
     NO_CAP = "NoCap"
+    MISSING_ARG_BINDING = "MissingArgBinding"
     CAP_INVALID = "CapInvalid"
     EXPIRED_CAP = "ExpiredCap"
     REVOKED_CAP = "RevokedCap"
@@ -95,10 +104,14 @@ class DenyReason(str, Enum):
     CAP_PREDICATE_MISMATCH = "CapPredicateMismatch"
     TASK_MISMATCH = "TaskMismatch"
     AGENT_MISMATCH = "AgentMismatch"
+    SOURCE_MISMATCH = "SourceMismatch"
+    MISSING_RECEIPT = "MissingReceipt"
     MEMORY_AUTHORITY_USE = "MemoryAuthorityUse"
     BAD_DERIVATION = "BadDerivation"
     UNAUTHORIZED_DATA_FLOW = "UnauthorizedDataFlow"
+    DELEGATION_MISSING = "DelegationMissing"
     DELEGATION_AMPLIFICATION = "DelegationAmplification"
+    ENDORSEMENT_SCOPE_ERROR = "EndorsementScopeError"
     DATA_CLASS_MISMATCH = "DataClassMismatch"
     COMMAND_TEMPLATE_VIOLATION = "CommandTemplateViolation"
     TEMPLATE_ARG_REJECTED = "TemplateArgRejected"
@@ -207,6 +220,8 @@ class ValueRef(CanonicalModel):
     data_class: str
     provenance_root: str
     content_hash: str
+    origins: tuple[str, ...] = ()
+    receipt_ids: tuple[str, ...] = ()
     metadata: JsonObject = field(default_factory=dict)
 
     @classmethod
@@ -216,6 +231,8 @@ class ValueRef(CanonicalModel):
             data_class=str(data["data_class"]),
             provenance_root=str(data["provenance_root"]),
             content_hash=str(data["content_hash"]),
+            origins=_tuple_of_strings(data.get("origins", ())),
+            receipt_ids=_tuple_of_strings(data.get("receipt_ids", ())),
             metadata=dict(data.get("metadata", {})),
         )
 
@@ -308,8 +325,12 @@ class Receipt(CanonicalModel):
     subject_hash: str
     payload: JsonObject
     issued_at: str
+    parent_receipt_ids: tuple[str, ...] = ()
     key_id: str | None = None
     signature: str | None = None
+
+    def receipt_hash(self) -> str:
+        return self.stable_hash()
 
     @classmethod
     def from_dict(cls, data: JsonObject) -> Self:
@@ -321,6 +342,7 @@ class Receipt(CanonicalModel):
             subject_hash=str(data["subject_hash"]),
             payload=dict(data.get("payload", {})),
             issued_at=str(data["issued_at"]),
+            parent_receipt_ids=_tuple_of_strings(data.get("parent_receipt_ids", ())),
             key_id=data.get("key_id"),
             signature=data.get("signature"),
         )

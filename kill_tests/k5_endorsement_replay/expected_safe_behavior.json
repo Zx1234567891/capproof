@@ -1,0 +1,6 @@
+{
+  "expected_failure_reason": "ConsumedCap",
+  "expected_safe_behavior": "DENY",
+  "observable_unsafe_side_effect": false,
+  "requires_real_execution": false
+}

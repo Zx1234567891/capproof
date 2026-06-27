@@ -1,0 +1,9 @@
+{
+  "authorized": [],
+  "forbidden": [
+    {
+      "persistent_authority": true,
+      "value": "attacker@evil.com"
+    }
+  ]
+}

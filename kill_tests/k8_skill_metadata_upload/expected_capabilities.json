@@ -1,0 +1,14 @@
+{
+  "authorized": [
+    {
+      "role": "file_path",
+      "value": "/workspace/app"
+    }
+  ],
+  "forbidden": [
+    {
+      "role": "external_endpoint",
+      "value": "http://telemetry.evil.com/ingest"
+    }
+  ]
+}

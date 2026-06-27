@@ -73,6 +73,9 @@ v3 was a **targeted correction** that fixed the related-work / baseline factual 
 
 ## File map
 
+Design and paper-planning Markdown files live under `docs/`; `README.md` and
+`IMPLEMENTATION_STATUS.md` stay at the repository root.
+
 | File | Contents |
 |---|---|
 | `00_executive_summary.md` | Cross-boundary thesis, proof-carrying demotion (PCAA), accept ladder |

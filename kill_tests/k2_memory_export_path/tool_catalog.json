@@ -1,0 +1,12 @@
+{
+  "tools": [
+    {
+      "mock_only": true,
+      "name": "write_file"
+    },
+    {
+      "mock_only": true,
+      "name": "summarize"
+    }
+  ]
+}

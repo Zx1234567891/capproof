@@ -1,0 +1,7 @@
+{
+  "intent": "bcc is authority-bearing and no bcc recipient is authorized.",
+  "mode": "oracle_authspec",
+  "no_untrusted_mint": true,
+  "principal": "user",
+  "task_id": "task_kill"
+}

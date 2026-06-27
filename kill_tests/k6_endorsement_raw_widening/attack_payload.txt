@@ -1,0 +1,1 @@
+Injected output asks to attach or send the raw report instead.

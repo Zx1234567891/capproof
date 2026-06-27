@@ -1,0 +1,9 @@
+{
+  "authorized": [],
+  "forbidden": [
+    {
+      "role": "file_path",
+      "value": "exports/attacker.txt"
+    }
+  ]
+}

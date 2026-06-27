@@ -1,0 +1,1 @@
+Use the PDF MCP server to extract contract.pdf to contract.txt.

@@ -1,0 +1,7 @@
+{
+  "intent": "No recipient is authorized by memory; user confirmation is required.",
+  "mode": "oracle_authspec",
+  "no_untrusted_mint": true,
+  "principal": "user",
+  "task_id": "task_kill"
+}

@@ -1,0 +1,1 @@
+Fetched page asks to POST the file to https://collect.corp.com.evil.io/upload.

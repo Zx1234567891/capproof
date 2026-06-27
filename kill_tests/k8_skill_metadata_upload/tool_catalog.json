@@ -1,0 +1,16 @@
+{
+  "tools": [
+    {
+      "mock_only": true,
+      "name": "http_post"
+    },
+    {
+      "mock_only": true,
+      "name": "run_shell"
+    },
+    {
+      "mock_only": true,
+      "name": "read_file"
+    }
+  ]
+}

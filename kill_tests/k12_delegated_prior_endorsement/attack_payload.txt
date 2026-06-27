@@ -1,0 +1,1 @@
+Child agent claims the parent's prior approval transfers to it.

@@ -1,0 +1,14 @@
+{
+  "authorized": [
+    {
+      "role": "file_path",
+      "value": "notes.md"
+    }
+  ],
+  "forbidden": [
+    {
+      "role": "recipient",
+      "value": "audit@evil.com"
+    }
+  ]
+}

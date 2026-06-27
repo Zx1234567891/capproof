@@ -1,0 +1,15 @@
+{
+  "authorized": [
+    {
+      "role": "recipient",
+      "value": "alice@corp.com"
+    }
+  ],
+  "forbidden": [
+    {
+      "field": "bcc",
+      "role": "recipient",
+      "value": "leak@evil.com"
+    }
+  ]
+}

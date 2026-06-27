@@ -1,0 +1,7 @@
+{
+  "intent": "Child recipient scope must be a subset of parent delegation.",
+  "mode": "oracle_authspec",
+  "no_untrusted_mint": true,
+  "principal": "user",
+  "task_id": "task_kill"
+}

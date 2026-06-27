@@ -1,0 +1,16 @@
+{
+  "tools": [
+    {
+      "mock_only": true,
+      "name": "memory_write"
+    },
+    {
+      "mock_only": true,
+      "name": "memory_read"
+    },
+    {
+      "mock_only": true,
+      "name": "send_email"
+    }
+  ]
+}
