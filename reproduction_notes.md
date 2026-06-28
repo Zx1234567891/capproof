@@ -55,6 +55,12 @@ These notes are part of the artifact contract for Stages 12-13. The harness inte
 - `python run_hermes_capture_validation.py`: runs the Stage 22 Hermes runtime capture schema replay validation over synthetic captured events and regenerates `hermes_capture_validation_report.md` plus `hermes_capture_examples/summary.json`.
 - `pytest tests/test_hermes_capture_validation.py -q`: runs the Stage 22 capture validation unit tests.
 - Stage 22 capture validation does not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to gateways/MCP servers, call network services, send email, or execute shell actions. It validates `pre_execution_gate` / `observer_only` / `unsupported` capture semantics over synthetic JSON only.
+- `python run_hermes_capture_prototype.py --input hermes_capture_examples`: runs the Stage 23 capture prototype over Stage 22 wrapped synthetic examples.
+- `python run_hermes_capture_prototype.py --input hermes_capture_prototype/input_examples`: runs the Stage 23 capture prototype over raw Hermes-like JSON captured-event examples.
+- `python run_hermes_capture_prototype.py --jsonl hermes_capture_prototype/input_examples/events.jsonl`: runs the prototype over JSONL captured events.
+- `python run_hermes_capture_prototype.py --report`: prints the latest prototype report, summary, and trace paths.
+- `pytest tests/test_hermes_capture_prototype.py -q`: runs the Stage 23 capture prototype tests.
+- Stage 23 capture prototype commands process only JSON / JSONL captured-event examples. They do not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to gateways/MCP servers, call network services, send email, or execute shell actions.
 
 Adaptive mode is not implemented in Stage 13. Future adaptive runs should preserve the same task-local observable oracles while varying attack payloads after structured denials.
 

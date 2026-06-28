@@ -1,0 +1,13 @@
+{
+  "event_id": "proto_gateway_authorized",
+  "source": "hermes",
+  "hook_point": "gateway_pre_send",
+  "capture_mode": "pre_execution_gate",
+  "session_id": "s1",
+  "task_id": "task_1",
+  "agent_id": "agent_main",
+  "tool_name": "send_message",
+  "effective_args": {"platform": "telegram", "recipient": "alice_chat", "body_ref": "val_summary"},
+  "metadata": {"source_component": "gateway"},
+  "expected_verdict": "ALLOW"
+}

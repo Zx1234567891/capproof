@@ -1,0 +1,14 @@
+{
+  "event_id": "proto_terminal_missing_fields",
+  "source": "hermes",
+  "hook_point": "terminal_backend_pre_exec",
+  "capture_mode": "pre_execution_gate",
+  "session_id": "s1",
+  "task_id": "task_1",
+  "agent_id": "agent_main",
+  "tool_name": "terminal",
+  "effective_args": {"command": "pytest tests/"},
+  "metadata": {"source_component": "terminal_backend"},
+  "expected_verdict": "DENY",
+  "expected_reason": "AdapterCoverageGap"
+}

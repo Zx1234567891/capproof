@@ -792,3 +792,39 @@ Known risks:
 - This is capture schema and replay validation only, not a real Hermes wrapper.
 - Real Hermes hook availability and exact runtime payloads still need runtime event capture.
 - Observer-only hooks can support audit claims only, not enforcement claims.
+
+## Stage 23 - Hermes Runtime Event Capture Prototype
+
+Status: implemented, self-check pending.
+
+Scope:
+- Receive Hermes-like runtime events from JSON directories, JSON files, or JSONL files.
+- Normalize raw capture examples into `HermesRuntimeEvent` schema, validate required fields, and record JSONL traces.
+- Dry-run valid `pre_execution_gate` captures through the existing Hermes adapter and CapProof guard.
+- Block `observer_only`, `unsupported`, and missing-field events from enforcement ALLOW.
+- Do not run Hermes, install dependencies, execute third-party commands, execute real tools, send messages, make network requests, or execute shell actions.
+- Do not modify Reference Monitor, Capability Store, or Proof Model safety semantics.
+
+Implemented:
+- Added `run_hermes_capture_prototype.py`.
+- Added `hermes_capture_prototype/input_examples/` raw JSON and JSONL capture examples.
+- Added generated trace/report outputs under `hermes_capture_prototype/traces/` and `hermes_capture_prototype/reports/`.
+- Added `tests/test_hermes_capture_prototype.py`.
+- Updated reproduction notes.
+
+Prototype result over `hermes_capture_prototype/input_examples`:
+- Total events processed: 15.
+- Valid pre_execution_gate events: 10.
+- Observer-only events: 1.
+- Unsupported / missing-field events: 4.
+- Allowed: 6.
+- Denied: 9.
+- ASK: 0.
+- AdapterCoverageGap count: 5.
+- Observer-only blocked count: 1.
+- Executor called on deny: 0.
+- Executor called on ask: 0.
+
+Known risks:
+- This is still an offline capture prototype over JSON / JSONL examples, not real Hermes instrumentation.
+- Real hook availability, exact runtime payload shapes, and pre-side-effect placement still need verification before any enforcement wrapper claim.
