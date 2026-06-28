@@ -22,6 +22,12 @@ These notes are part of the artifact contract for Stages 12-13. The harness inte
 - `python run_adapter_bypass_gate.py`: runs the adapter/canonicalization bypass gate with mock actions only, regenerates `adapter_bypass_gate/` artifacts, and writes `adapter_bypass_gate_report.md`.
 - This gate does not send email, perform network I/O, execute shell commands, or use LLMs. It checks adapter field coverage and canonicalization behavior before any real executor.
 
+## Running the Agent Adapter Tests
+
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/test_agent_adapter.py -q`: runs the Stage 16 mock agent adapter tests for LangGraph-like, OpenAI tool-calling-like, and coding-agent-like event formats.
+- These tests use `CapProofMiddleware` and `MockExecutor` only. They do not connect to real OpenCode, Claude Code, Codex, LangGraph, OpenAI APIs, MCP servers, email, network services, or shell execution.
+- The adapter tests validate that raw events are converted into CapProof canonical actions, proof synthesis is re-verified by the Reference Monitor, and `DENY`/`ASK` decisions do not call the mock executor.
+
 Adaptive mode is not implemented in Stage 13. Future adaptive runs should preserve the same task-local observable oracles while varying attack payloads after structured denials.
 
 ## Fairness Rules
