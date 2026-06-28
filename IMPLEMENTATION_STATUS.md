@@ -601,3 +601,37 @@ Known risks:
 - This is a deterministic gate for MVP adapter/canonicalizer behavior, not a replacement for real executor sandboxing.
 - Path safety still depends on using canonical paths at execution time to avoid TOCTTOU issues.
 - URL redirect handling is simulated with a static mock redirect map.
+
+## Stage 18 - Agent Adapter Coverage Audit
+
+Status: implemented, self-check pending.
+
+Scope:
+- Add a static, read-only adapter coverage audit for OpenCode-like, OpenClaw-like, Hermes-agent-like, and CapProof harness surfaces.
+- Do not connect to real OpenCode, OpenClaw, or Hermes.
+- Do not clone missing repositories, install dependencies, run third-party build/test commands, execute agents, or execute tools.
+- Generate missing-repo placeholder reports when local source checkouts are unavailable.
+
+Implemented:
+- Added `run_agent_coverage_audit.py`.
+- Added `agent_coverage_audit/` generated reports:
+  - `audit_summary.md`
+  - `coverage_matrix.json`
+  - `coverage_matrix.md`
+  - `opencode_audit.md`
+  - `openclaw_audit.md`
+  - `hermes_audit.md`
+  - `harness_audit.md`
+- Added `tests/test_agent_coverage_audit.py`.
+- Updated `reproduction_notes.md` and the `run_kill_tests.py` reproduction-note template.
+
+Current repo availability:
+- OpenCode: repo missing; audit requires local checkout.
+- OpenClaw: repo missing; audit requires local checkout.
+- Hermes Agent: repo missing; audit requires local checkout.
+- Harness: available and statically scanned.
+
+Known risks:
+- Third-party source audits are placeholders until local source directories are provided.
+- Static keyword scanning is a starting point and not a proof of adapter completeness.
+- Real integration still requires adapter coverage tests against actual event payloads and hook points.

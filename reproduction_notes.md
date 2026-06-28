@@ -34,6 +34,13 @@ These notes are part of the artifact contract for Stages 12-13. The harness inte
 - These tests use mock event profiles only. They do not connect to real OpenCode, OpenClaw, Hermes, gateways, skills, MCP servers, email, network services, or shell execution.
 - The profile adapter tests validate that workflow, skill, watcher, MCP, gateway, memory, delegation, and scheduled-action metadata cannot mint capabilities and that high-impact actions still enter Reference Monitor verification.
 
+## Running the Agent Coverage Audit
+
+- `python run_agent_coverage_audit.py`: runs the Stage 18 static, read-only adapter coverage audit and writes `agent_coverage_audit/` reports. Missing third-party repos are reported as `repo_missing`.
+- `python run_agent_coverage_audit.py --opencode-repo external/opencode`: audits a local OpenCode checkout if present; it does not clone, install, build, or run OpenCode.
+- `python run_agent_coverage_audit.py --openclaw-repo external/openclaw`: audits a local OpenClaw checkout if present; it does not clone, install, build, or run OpenClaw.
+- `python run_agent_coverage_audit.py --hermes-repo external/hermes-agent`: audits a local Hermes Agent checkout if present; it does not clone, install, build, or run Hermes.
+
 Adaptive mode is not implemented in Stage 13. Future adaptive runs should preserve the same task-local observable oracles while varying attack payloads after structured denials.
 
 ## Fairness Rules
