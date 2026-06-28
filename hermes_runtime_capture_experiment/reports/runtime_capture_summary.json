@@ -1,0 +1,140 @@
+{
+  "summary": {
+    "capture_run": {
+      "command_hash": "",
+      "events_captured": 0,
+      "no_real_tool_assertion": false,
+      "reason": "capture run not requested",
+      "returncode": null,
+      "run_attempted": false,
+      "state": "not_run",
+      "timeout_seconds": 20,
+      "trace_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/hermes_runtime_capture_experiment/traces/events.jsonl"
+    },
+    "preflight": {
+      "capture_run_allowed": false,
+      "existing_trace": null,
+      "files_scanned": 2000,
+      "hook_candidates": {
+        "delegation": {
+          "hits": 285,
+          "sample_files": [
+            "AGENTS.md",
+            "CONTRIBUTING.es.md",
+            "CONTRIBUTING.md",
+            "README.es.md",
+            "README.md"
+          ]
+        },
+        "gateway": {
+          "hits": 1151,
+          "sample_files": [
+            "AGENTS.md",
+            "CONTRIBUTING.es.md",
+            "CONTRIBUTING.md",
+            "README.es.md",
+            "README.md"
+          ]
+        },
+        "mcp": {
+          "hits": 854,
+          "sample_files": [
+            "AGENTS.md",
+            "CONTRIBUTING.es.md",
+            "CONTRIBUTING.md",
+            "README.es.md",
+            "README.md"
+          ]
+        },
+        "memory": {
+          "hits": 552,
+          "sample_files": [
+            "AGENTS.md",
+            "CONTRIBUTING.es.md",
+            "CONTRIBUTING.md",
+            "README.es.md",
+            "README.md"
+          ]
+        },
+        "middleware_rewrite": {
+          "hits": 952,
+          "sample_files": [
+            ".hadolint.yaml",
+            "AGENTS.md",
+            "CONTRIBUTING.es.md",
+            "CONTRIBUTING.md",
+            "README.es.md"
+          ]
+        },
+        "scheduler": {
+          "hits": 445,
+          "sample_files": [
+            "AGENTS.md",
+            "CONTRIBUTING.es.md",
+            "CONTRIBUTING.md",
+            "README.es.md",
+            "README.md"
+          ]
+        },
+        "terminal": {
+          "hits": 1177,
+          "sample_files": [
+            ".hadolint.yaml",
+            "AGENTS.md",
+            "CONTRIBUTING.es.md",
+            "CONTRIBUTING.md",
+            "README.es.md"
+          ]
+        },
+        "tool_dispatcher": {
+          "hits": 449,
+          "sample_files": [
+            "AGENTS.md",
+            "CONTRIBUTING.es.md",
+            "CONTRIBUTING.md",
+            "SECURITY.md",
+            "batch_runner.py"
+          ]
+        }
+      },
+      "no_command_executed": true,
+      "reason": "default no-run preflight: explicit capture-run authorization not provided",
+      "repo_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/external/hermes-agent",
+      "repo_status": "available",
+      "safe_capture_feasibility": {
+        "capture_command_present": false,
+        "capture_without_tool_execution_confirmed": false,
+        "clear_dry_run_or_mock_mode": false,
+        "explicit_capture_run_env": false,
+        "field_completeness_confirmed": false,
+        "pre_execution_capture_confirmed": false
+      }
+    },
+    "safety": {
+      "dependencies_installed": false,
+      "hermes_source_modified": false,
+      "network_used": false,
+      "real_hermes_run": false,
+      "real_tools_executed": false,
+      "reference_monitor_modified": false,
+      "third_party_commands_executed": false
+    },
+    "trace_validation": {
+      "adapter_coverage_gap_count": 0,
+      "allowed": 0,
+      "ask": 0,
+      "denied": 0,
+      "executor_called_on_ask": 0,
+      "executor_called_on_deny": 0,
+      "hook_completeness": {},
+      "missing_field_events": 0,
+      "observer_only_blocked_count": 0,
+      "observer_only_events": 0,
+      "pre_execution_gate_events": 0,
+      "schema_valid_events": 0,
+      "total_events": 0,
+      "trace_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/hermes_runtime_capture_experiment/traces/events.jsonl",
+      "unsupported_events": 0
+    }
+  }
+}

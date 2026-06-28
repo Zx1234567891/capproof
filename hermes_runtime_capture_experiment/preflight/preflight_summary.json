@@ -1,0 +1,99 @@
+{
+  "capture_run_allowed": false,
+  "existing_trace": null,
+  "files_scanned": 2000,
+  "hook_candidates": {
+    "delegation": {
+      "hits": 285,
+      "sample_files": [
+        "AGENTS.md",
+        "CONTRIBUTING.es.md",
+        "CONTRIBUTING.md",
+        "README.es.md",
+        "README.md"
+      ]
+    },
+    "gateway": {
+      "hits": 1151,
+      "sample_files": [
+        "AGENTS.md",
+        "CONTRIBUTING.es.md",
+        "CONTRIBUTING.md",
+        "README.es.md",
+        "README.md"
+      ]
+    },
+    "mcp": {
+      "hits": 854,
+      "sample_files": [
+        "AGENTS.md",
+        "CONTRIBUTING.es.md",
+        "CONTRIBUTING.md",
+        "README.es.md",
+        "README.md"
+      ]
+    },
+    "memory": {
+      "hits": 552,
+      "sample_files": [
+        "AGENTS.md",
+        "CONTRIBUTING.es.md",
+        "CONTRIBUTING.md",
+        "README.es.md",
+        "README.md"
+      ]
+    },
+    "middleware_rewrite": {
+      "hits": 952,
+      "sample_files": [
+        ".hadolint.yaml",
+        "AGENTS.md",
+        "CONTRIBUTING.es.md",
+        "CONTRIBUTING.md",
+        "README.es.md"
+      ]
+    },
+    "scheduler": {
+      "hits": 445,
+      "sample_files": [
+        "AGENTS.md",
+        "CONTRIBUTING.es.md",
+        "CONTRIBUTING.md",
+        "README.es.md",
+        "README.md"
+      ]
+    },
+    "terminal": {
+      "hits": 1177,
+      "sample_files": [
+        ".hadolint.yaml",
+        "AGENTS.md",
+        "CONTRIBUTING.es.md",
+        "CONTRIBUTING.md",
+        "README.es.md"
+      ]
+    },
+    "tool_dispatcher": {
+      "hits": 449,
+      "sample_files": [
+        "AGENTS.md",
+        "CONTRIBUTING.es.md",
+        "CONTRIBUTING.md",
+        "SECURITY.md",
+        "batch_runner.py"
+      ]
+    }
+  },
+  "no_command_executed": true,
+  "reason": "default no-run preflight: explicit capture-run authorization not provided",
+  "repo_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/external/hermes-agent",
+  "repo_status": "available",
+  "safe_capture_feasibility": {
+    "capture_command_present": false,
+    "capture_without_tool_execution_confirmed": false,
+    "clear_dry_run_or_mock_mode": false,
+    "explicit_capture_run_env": false,
+    "field_completeness_confirmed": false,
+    "pre_execution_capture_confirmed": false
+  }
+}

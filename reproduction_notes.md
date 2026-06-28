@@ -67,6 +67,11 @@ These notes are part of the artifact contract for Stages 12-13. The harness inte
 - `python run_hermes_capture_instrumentation.py --report`: prints the latest Stage 24 report, summary, and trace paths.
 - `pytest tests/test_hermes_capture_instrumentation.py -q`: runs the Stage 24 capture-only wrapper and instrumentation runner tests.
 - Stage 24 instrumentation commands only process fixture / trace captured events. They do not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to gateways/MCP servers, call network services, send email/messages, or execute shell actions.
+- `python run_hermes_runtime_capture_experiment.py --preflight`: runs the Stage 25 no-run Hermes runtime capture preflight. It scans local source files only and does not execute Hermes.
+- `python run_hermes_runtime_capture_experiment.py --validate-trace hermes_runtime_capture_experiment/traces/events.jsonl`: validates an existing captured-event JSONL trace offline through the capture schema and mock guard replay.
+- `python run_hermes_runtime_capture_experiment.py --report`: prints or regenerates the Stage 25 runtime capture report paths.
+- `pytest tests/test_hermes_runtime_capture_experiment.py -q`: runs the Stage 25 preflight, capture-run gate, and trace validation tests.
+- `python run_hermes_runtime_capture_experiment.py --capture-run` is denied unless `ALLOW_HERMES_CAPTURE_RUN=1` and `HERMES_CAPTURE_COMMAND` are set and the command passes capture-only safety checks. The default artifact does not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to network services, send email/messages, or execute shell actions. Any future capture-run must remain capture-only / no-real-tools / no-network / no-shell-risk mode.
 
 Adaptive mode is not implemented in Stage 13. Future adaptive runs should preserve the same task-local observable oracles while varying attack payloads after structured denials.
 

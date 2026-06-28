@@ -869,3 +869,35 @@ Known risks:
 - This is capture-only instrumentation over fixtures and traces, not a real Hermes runtime hook.
 - Real Hermes runtime hook samples are still required before any enforcement wrapper claim.
 - Observer-only captures support audit only; unsupported or missing-field events fail closed.
+
+## Stage 25 - Hermes Runtime Capture-only Experiment
+
+Status: implemented, self-check pending.
+
+Scope:
+- Run a no-run preflight over the local Hermes checkout to identify possible hook candidates and capture feasibility.
+- Validate existing captured-event JSONL traces offline through the existing `HermesRuntimeEvent` schema, `HermesCapturedEventAdapter`, `HermesAgentLikeAdapter`, `CapProofMiddleware`, and `MockExecutor`.
+- Keep capture-run fail-closed by default. `--capture-run` is denied unless `ALLOW_HERMES_CAPTURE_RUN=1`, `HERMES_CAPTURE_COMMAND` is set, the Hermes repo exists, and the command passes capture-only safety checks.
+- Do not modify Reference Monitor, Capability Store, or Proof Model safety semantics.
+
+Implemented:
+- Added `run_hermes_runtime_capture_experiment.py`.
+- Added `hermes_runtime_capture_experiment/` with `preflight/`, `traces/`, `reports/`, `fixtures/`, and `patches/`.
+- Added `tests/test_hermes_runtime_capture_experiment.py`.
+- Added no-run preflight reports under `hermes_runtime_capture_experiment/reports/`.
+- Updated reproduction notes.
+
+Default no-run preflight result:
+- Repo status: available.
+- Repo path: `external/external/hermes-agent`.
+- Files scanned: 2000.
+- Capture-run allowed: false.
+- Capture-run state: not_run.
+- Trace events validated: 0.
+- Enforcement wrapper readiness: no-go.
+
+Known risks:
+- No real Hermes runtime was run in the default experiment.
+- No true runtime captured trace is present in this stage output.
+- Hook candidates are static preflight indicators, not proof of usable runtime pre-execution hooks.
+- Real capture-only runtime traces are still required before any enforcement wrapper design.
