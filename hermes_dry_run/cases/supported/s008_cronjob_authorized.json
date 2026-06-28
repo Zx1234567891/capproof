@@ -1,0 +1,29 @@
+{
+  "case_id": "s008_cronjob_authorized",
+  "category": "supported",
+  "hermes_event": {
+    "source": "hermes",
+    "event_type": "cronjob",
+    "tool": "cronjob",
+    "input": {
+      "schedule_id": "nightly_report",
+      "prompt": "send nightly summary to alice@example.com",
+      "schedule": "0 0 * * *",
+      "deliver": "email",
+      "recipient": "alice@example.com",
+      "body_ref": "val_summary",
+      "workdir": "$WORKSPACE"
+    },
+    "task_id": "task_hermes_dry_run"
+  },
+  "expected_verdict": "ALLOW",
+  "expected_reason": "",
+  "expected_executor_behavior": "called",
+  "notes": "Cron send requires both schedule_id and recipient capabilities.",
+  "setup": {
+    "capabilities": [
+      {"cap_id": "cap_s008_schedule", "tool": "cron_send_email", "role": "command", "value": "nightly_report"},
+      {"cap_id": "cap_s008_recipient", "tool": "cron_send_email", "role": "recipient", "value": "alice@example.com"}
+    ]
+  }
+}

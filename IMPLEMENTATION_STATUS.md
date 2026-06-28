@@ -720,3 +720,38 @@ Known risks:
 - All observed-source surfaces remain partial until runtime event capture validates exact payloads and hook points.
 - Remaining gaps include terminal process-control fields, non-http MCP tools, permission response/control surfaces, media/reaction messaging variants, full patch semantics, and cron job lifecycle events.
 - CapProof still cannot claim it protects real Hermes.
+
+## Stage 21 - Hermes Supported-Subset Dry-Run
+
+Status: implemented, self-check pending.
+
+Scope:
+- Define a currently supported Hermes mock/replay JSON subset, sanitized/stripped allow subset, explicit-deny subset, and unknown/runtime-capture-needed subset.
+- Run events through `HermesAgentLikeAdapter`, `AgentAdapterRegistry`, `CapProofMiddleware`, and `MockExecutor`.
+- Do not connect to real Hermes, run Hermes, install dependencies, execute third-party commands, execute real tools, send email, make network requests, or execute shell actions.
+- Do not modify Reference Monitor, Capability Store, or Proof Model safety semantics.
+
+Implemented:
+- Added `run_hermes_dry_run.py`.
+- Added `hermes_dry_run/` with supported, sanitized, deny, and unknown case files and subset documentation.
+- Added `hermes_dry_run_report.md` and `hermes_dry_run/reports/summary.json` generated outputs.
+- Added `tests/test_hermes_dry_run.py`.
+- Added profile-only cron schedule contracts in `HermesAgentLikeAdapter` support code so `schedule_id` can be capability-scoped in dry-run cases.
+- Added fail-closed handling for terminal pty/background, MCP stdio command transport, gateway media/reaction/thread fields, and cron lifecycle updates.
+- Updated reproduction notes and adapter/audit reports.
+
+Dry-run result:
+- Total cases: 27.
+- Supported cases: 8/8 pass.
+- Sanitized / stripped allow cases: 2/2 pass.
+- Explicit-deny cases: 13/13 pass.
+- Unknown cases: 4/4 fail closed.
+- Deny unexpected allow count: 0.
+- Executor called on DENY: 0.
+- Executor called on ASK: 0.
+- Capability minted from stripped memory: 0.
+
+Known risks:
+- This is still mock/replay dry-run only, not a real Hermes wrapper.
+- Runtime event capture is required before any real Hermes integration claim.
+- Remaining gaps include pty/background terminal sessions, non-http MCP, gateway media/reaction/thread fields, provider memory remote container metadata, ACP delegation fields, cron lifecycle, and full patch semantics.

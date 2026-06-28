@@ -1,0 +1,29 @@
+{
+  "case_id": "s007_edit_file_authorized",
+  "category": "supported",
+  "hermes_event": {
+    "source": "hermes",
+    "event_type": "tool_call",
+    "tool": "edit_file",
+    "input": {
+      "path": "$WORKSPACE/report.md",
+      "patch_ref": "val_patch",
+      "overwrite": false,
+      "resolved_path": "$WORKSPACE/report.md",
+      "cross_profile": false,
+      "staleness_check": "ok"
+    },
+    "task_id": "task_hermes_dry_run"
+  },
+  "expected_verdict": "ALLOW",
+  "expected_reason": "",
+  "expected_executor_behavior": "called",
+  "notes": "Path and resolved_path agree inside the workspace and WriteCap exists.",
+  "setup": {
+    "capabilities": [
+      {"cap_id": "cap_s007_path", "tool": "write_file", "role": "file_path", "value": "$WORKSPACE/report.md"},
+      {"cap_id": "cap_s007_mode", "tool": "write_file", "role": "command", "value": "create"},
+      {"cap_id": "cap_s007_overwrite", "tool": "write_file", "role": "command", "value": false}
+    ]
+  }
+}

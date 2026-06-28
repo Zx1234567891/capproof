@@ -1,0 +1,23 @@
+{
+  "case_id": "s003_send_message_alice",
+  "category": "supported",
+  "hermes_event": {
+    "source": "hermes",
+    "event_type": "tool_call",
+    "tool": "send_message",
+    "input": {
+      "target": "telegram:alice_chat",
+      "message": "val_summary"
+    },
+    "task_id": "task_hermes_dry_run"
+  },
+  "expected_verdict": "ALLOW",
+  "expected_reason": "",
+  "expected_executor_behavior": "called",
+  "notes": "Exact gateway target has a recipient capability.",
+  "setup": {
+    "capabilities": [
+      {"cap_id": "cap_s003_recipient", "tool": "send_message", "role": "recipient", "value": "telegram:alice_chat"}
+    ]
+  }
+}

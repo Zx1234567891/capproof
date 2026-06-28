@@ -41,6 +41,8 @@ Coverage gaps in this report are a pre-integration risk inventory, not final vul
 - HermesAgentLikeAdapter observed-source full coverage: 0; partial coverage: 11; uncovered: 0.
 - Stage 20 adds mock observed-shape coverage for terminal, send_message, dynamic MCP http_post, memory/provider-memory, delegate_task, cronjob, edit_file, and dispatcher effective args.
 - Remaining partial coverage still blocks a real Hermes integration claim until runtime event capture validates the adapter profile.
+- Stage 21 adds a supported-subset dry-run over mock/replay JSON events only. It does not run Hermes, install dependencies, execute third-party commands, call real tools, use network, send email, or execute shell.
+- The dry-run separates supported, explicit-deny, and unknown/runtime-capture-needed shapes; unknown shapes must fail closed with structured reasons.
 
 ## Top Adapter Coverage Gaps
 

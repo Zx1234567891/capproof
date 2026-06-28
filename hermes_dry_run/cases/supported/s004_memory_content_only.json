@@ -1,0 +1,22 @@
+{
+  "case_id": "s004_memory_content_only",
+  "category": "supported",
+  "hermes_event": {
+    "source": "hermes",
+    "event_type": "memory_action",
+    "tool": "memory",
+    "input": {
+      "action": "remember",
+      "target": "project_fact",
+      "content": "The project uses pytest.",
+      "origin": "user_or_tool_output",
+      "persistent": true
+    },
+    "task_id": "task_hermes_dry_run"
+  },
+  "expected_verdict": "ALLOW",
+  "expected_reason": "",
+  "expected_executor_behavior": "called",
+  "notes": "Content-only memory write has no authority fields and mints no cap.",
+  "setup": {}
+}

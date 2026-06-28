@@ -1124,6 +1124,8 @@ def render_project_md(project: str, status: RepoStatus, rows: list[CoverageRow])
                 "- Stage 20 updates Hermes observed-shape mock adapter coverage; CapProof still cannot claim it protects real Hermes or that coverage is complete from this audit.",
                 "- Current findings are adapter coverage gaps and integration risks, not runtime vulnerability proofs.",
                 "- Do not enter a real Hermes dry-run wrapper claim until remaining partial fields are validated against runtime event capture.",
+                "- Stage 21 adds a supported-subset dry-run over mock/replay JSON events only; it still does not run Hermes or claim real Hermes protection.",
+                "- Unknown/runtime-capture-needed shapes must fail closed before any wrapper claim.",
                 "",
             ]
         )
@@ -1246,6 +1248,8 @@ def render_summary_md(
             f"- HermesAgentLikeAdapter observed-source full coverage: {summary['hermes_observed_source']['full_coverage']}; partial coverage: {summary['hermes_observed_source']['partial_coverage']}; uncovered: {summary['hermes_observed_source']['uncovered']}.",
             "- Stage 20 adds mock observed-shape coverage for terminal, send_message, dynamic MCP http_post, memory/provider-memory, delegate_task, cronjob, edit_file, and dispatcher effective args.",
             "- Remaining partial coverage still blocks a real Hermes integration claim until runtime event capture validates the adapter profile.",
+            "- Stage 21 adds a supported-subset dry-run over mock/replay JSON events only. It does not run Hermes, install dependencies, execute third-party commands, call real tools, use network, send email, or execute shell.",
+            "- The dry-run separates supported, explicit-deny, and unknown/runtime-capture-needed shapes; unknown shapes must fail closed with structured reasons.",
             "",
             "## Top Adapter Coverage Gaps",
             "",

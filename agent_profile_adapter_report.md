@@ -81,6 +81,32 @@ surfaces, media/reaction messaging variants, full patch semantics, and cron job
 lifecycle events. CapProof must not claim it protects real Hermes until those
 fields are audited against real runtime payloads.
 
+## Stage 21 Hermes Supported-Subset Dry-Run
+
+Stage 21 defines a supported subset for mock/replay Hermes JSON events, plus
+separate sanitized/stripped allow, explicit-deny, and unknown/runtime-capture-
+needed subsets. The dry-run runner is `run_hermes_dry_run.py`; it feeds events through
+`HermesAgentLikeAdapter`, `AgentAdapterRegistry`, `CapProofMiddleware`, and
+`MockExecutor`.
+
+Supported dry-run shapes include allowlisted terminal pytest templates, exact
+authorized `send_message` targets, content-only memory writes, delegated email
+with a valid Delegation Certificate, dynamic MCP `http_post` to authorized
+endpoints, authorized `edit_file`, and schedule-bound cron email. Sanitized
+memory cases may `ALLOW` a content-only mock memory write after
+`authority_claims` are stripped and no capability is minted. Explicit-deny
+shapes include raw shell, unauthorized recipients/endpoints, MCP metadata
+authority claims, delegation without certificate, delegation amplification,
+stale cron capability replay, dangerous `edit_file`, and dispatcher
+`effective_args` rewrites to unauthorized targets. Unknown shapes such as pty
+terminal sessions, stdio MCP transport, gateway media attachments, and cronjob
+lifecycle updates fail closed with `AdapterCoverageGap`.
+
+This remains mock-profile / static-audit based. It does not run Hermes, install
+dependencies, execute third-party commands, call real tools, use real network,
+send email, or execute shell. Runtime event capture is still required before any
+real Hermes wrapper or integration claim.
+
 ## HarnessAdapter
 
 | Event | Tool surface | Behavior |

@@ -1,0 +1,28 @@
+{
+  "case_id": "s002_terminal_python_pytest",
+  "category": "supported",
+  "hermes_event": {
+    "source": "hermes",
+    "event_type": "terminal",
+    "tool": "terminal",
+    "input": {
+      "command": "python -m pytest tests/",
+      "workdir": "$WORKSPACE",
+      "env": {},
+      "stdin": null
+    },
+    "session_id": "s2",
+    "task_id": "task_hermes_dry_run"
+  },
+  "expected_verdict": "ALLOW",
+  "expected_reason": "",
+  "expected_executor_behavior": "called",
+  "notes": "python -m pytest maps to the allowlisted run_shell template.",
+  "setup": {
+    "capabilities": [
+      {"cap_id": "cap_s002_template", "tool": "run_shell", "role": "command", "value": "pytest"},
+      {"cap_id": "cap_s002_args", "tool": "run_shell", "role": "command", "value": {"target": "tests/"}},
+      {"cap_id": "cap_s002_cwd", "tool": "run_shell", "role": "file_path", "value": "$WORKSPACE"}
+    ]
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "case_id": "s005_delegate_with_cert",
+  "category": "supported",
+  "hermes_event": {
+    "source": "hermes",
+    "event_type": "delegate_task",
+    "tool": "delegate_task",
+    "input": {
+      "parent_agent": "research_agent",
+      "child_agent": "email_agent",
+      "goal": "send summary to alice@example.com",
+      "context_ref": "val_summary",
+      "toolsets": ["email"],
+      "role": "assistant",
+      "delegation_cert_ref": "del_cert_001"
+    },
+    "task_id": "task_hermes_dry_run"
+  },
+  "expected_verdict": "ALLOW",
+  "expected_reason": "",
+  "expected_executor_behavior": "called",
+  "notes": "Delegated send is covered by a valid attenuation receipt.",
+  "setup": {
+    "delegations": [
+      {
+        "cap_id": "cap_s005_delegate_alice",
+        "receipt_id": "del_cert_001",
+        "parent_agent": "research_agent",
+        "child_agent": "email_agent",
+        "recipient": "alice@example.com",
+        "allowed_recipient": "alice@example.com",
+        "attenuation_valid": true
+      }
+    ]
+  }
+}

@@ -33,6 +33,8 @@
 - Stage 20 updates Hermes observed-shape mock adapter coverage; CapProof still cannot claim it protects real Hermes or that coverage is complete from this audit.
 - Current findings are adapter coverage gaps and integration risks, not runtime vulnerability proofs.
 - Do not enter a real Hermes dry-run wrapper claim until remaining partial fields are validated against runtime event capture.
+- Stage 21 adds a supported-subset dry-run over mock/replay JSON events only; it still does not run Hermes or claim real Hermes protection.
+- Unknown/runtime-capture-needed shapes must fail closed before any wrapper claim.
 
 ### tool invocation
 

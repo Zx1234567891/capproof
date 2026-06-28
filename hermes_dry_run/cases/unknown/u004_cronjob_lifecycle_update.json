@@ -1,0 +1,24 @@
+{
+  "case_id": "u004_cronjob_lifecycle_update",
+  "category": "unknown",
+  "hermes_event": {
+    "source": "hermes",
+    "event_type": "cronjob",
+    "tool": "cronjob",
+    "input": {
+      "action": "update",
+      "schedule_id": "nightly_report",
+      "prompt": "send nightly summary to alice@example.com",
+      "schedule": "0 0 * * *",
+      "deliver": "email",
+      "recipient": "alice@example.com",
+      "context_from": "previous_job"
+    },
+    "task_id": "task_hermes_dry_run"
+  },
+  "expected_verdict": "DENY",
+  "expected_reason": "AdapterCoverageGap",
+  "expected_executor_behavior": "not_called",
+  "notes": "Cronjob lifecycle update/context_from requires runtime capture.",
+  "setup": {}
+}

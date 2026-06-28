@@ -710,6 +710,8 @@ def profile_tool_contracts() -> tuple[ToolContract, ...]:
         http_post_contract(),
         send_message_contract(),
         memory_write_contract(),
+        cron_send_email_contract(),
+        cron_send_message_contract(),
     )
 
 
@@ -808,6 +810,60 @@ def memory_write_contract() -> ToolContract:
         ),
         high_impact_fields=(),
         metadata={"mock_profile_only": True, "authority_stripped": True},
+    )
+
+
+def cron_send_email_contract() -> ToolContract:
+    return ToolContract(
+        tool="cron_send_email",
+        args_schema={
+            "type": "object",
+            "required": ["schedule_id", "to", "subject", "body"],
+            "properties": {
+                "schedule_id": {"type": "string", "role": AuthorityRole.COMMAND.value},
+                "to": {"type": "string", "role": AuthorityRole.RECIPIENT.value},
+                "subject": {"type": "string", "role": AuthorityRole.CONTENT.value},
+                "body": {"type": "string", "role": AuthorityRole.CONTENT.value},
+            },
+            "additionalProperties": False,
+        },
+        authority=(
+            AuthorityField(name="schedule_id", role=AuthorityRole.COMMAND),
+            AuthorityField(name="to", role=AuthorityRole.RECIPIENT),
+            AuthorityField(name="subject", role=AuthorityRole.CONTENT, high_impact=False),
+            AuthorityField(name="body", role=AuthorityRole.CONTENT, high_impact=False),
+        ),
+        side_effects=("scheduled_email(schedule_id,to)",),
+        coverage_fields=("schedule_id", "to", "subject", "body"),
+        high_impact_fields=("schedule_id", "to"),
+        metadata={"mock_profile_only": True, "scheduled_action": True},
+    )
+
+
+def cron_send_message_contract() -> ToolContract:
+    return ToolContract(
+        tool="cron_send_message",
+        args_schema={
+            "type": "object",
+            "required": ["schedule_id", "recipient", "body"],
+            "properties": {
+                "schedule_id": {"type": "string", "role": AuthorityRole.COMMAND.value},
+                "recipient": {"type": "string", "role": AuthorityRole.RECIPIENT.value},
+                "body": {"type": "string", "role": AuthorityRole.CONTENT.value},
+                "platform": {"type": "string"},
+                "channel": {"type": "string"},
+            },
+            "additionalProperties": False,
+        },
+        authority=(
+            AuthorityField(name="schedule_id", role=AuthorityRole.COMMAND),
+            AuthorityField(name="recipient", role=AuthorityRole.RECIPIENT),
+            AuthorityField(name="body", role=AuthorityRole.CONTENT, high_impact=False),
+        ),
+        side_effects=("scheduled_message(schedule_id,recipient)",),
+        coverage_fields=("schedule_id", "recipient", "body", "platform", "channel"),
+        high_impact_fields=("schedule_id", "recipient"),
+        metadata={"mock_profile_only": True, "scheduled_action": True},
     )
 
 
@@ -918,8 +974,22 @@ def _normalize_http_post_args(args: JsonObject) -> JsonObject:
         merged.update({key: value for key, value in normalized.items() if key not in {"server", "tool_name", "transport"}})
         normalized = merged
     transport = args.get("transport")
-    if isinstance(transport, dict) and "endpoint" in transport:
-        normalized.setdefault("transport_endpoint", transport["endpoint"])
+    if isinstance(transport, dict):
+        transport_type = str(transport.get("type", "")).lower()
+        if transport_type and transport_type not in {"http", "https"}:
+            raise AdapterError(
+                "Hermes MCP non-http transport requires runtime coverage",
+                deny_reason=DenyReason.ADAPTER_COVERAGE_GAP,
+                failure_reason=ProofFailureReason.ADAPTER_COVERAGE_GAP,
+            )
+        if "command" in transport:
+            raise AdapterError(
+                "Hermes MCP command transport requires runtime coverage",
+                deny_reason=DenyReason.ADAPTER_COVERAGE_GAP,
+                failure_reason=ProofFailureReason.ADAPTER_COVERAGE_GAP,
+            )
+        if "endpoint" in transport:
+            normalized.setdefault("transport_endpoint", transport["endpoint"])
     if "body" not in normalized and "body_ref" in normalized:
         normalized["body"] = normalized.pop("body_ref")
     allowed = {"url", "transport_endpoint", "headers", "method", "follow_redirects", "body"}
@@ -933,6 +1003,28 @@ def _normalize_send_message_args(args: JsonObject) -> JsonObject:
         merged = dict(arguments)
         merged.update({key: value for key, value in normalized.items() if key not in {"server", "tool_name", "transport"}})
         normalized = merged
+    unknown_fields = {
+        "media",
+        "attachment",
+        "attachments",
+        "local_path",
+        "emoji",
+        "message_id",
+        "thread_id",
+    } & set(normalized)
+    if unknown_fields:
+        raise AdapterError(
+            "Hermes gateway media/reaction/thread fields require runtime coverage",
+            deny_reason=DenyReason.ADAPTER_COVERAGE_GAP,
+            failure_reason=ProofFailureReason.ADAPTER_COVERAGE_GAP,
+        )
+    action = str(normalized.get("action", "send"))
+    if action and action != "send":
+        raise AdapterError(
+            "Hermes gateway non-send action requires runtime coverage",
+            deny_reason=DenyReason.ADAPTER_COVERAGE_GAP,
+            failure_reason=ProofFailureReason.ADAPTER_COVERAGE_GAP,
+        )
     target = normalized.get("target") or normalized.get("recipient") or normalized.get("chat_id") or normalized.get("channel")
     platform = normalized.get("platform")
     if isinstance(target, str) and ":" in target:
@@ -978,6 +1070,18 @@ def _normalize_run_shell_args(args: JsonObject) -> JsonObject:
 
 def _normalize_hermes_terminal_args(args: JsonObject) -> JsonObject:
     normalized = dict(args)
+    if normalized.get("background") is True or normalized.get("pty") is True:
+        raise AdapterError(
+            "Hermes terminal background/pty sessions require runtime coverage",
+            deny_reason=DenyReason.ADAPTER_COVERAGE_GAP,
+            failure_reason=ProofFailureReason.ADAPTER_COVERAGE_GAP,
+        )
+    if {"timeout", "notify_on_complete", "watch_patterns"} & set(normalized):
+        raise AdapterError(
+            "Hermes terminal process-control fields require runtime coverage",
+            deny_reason=DenyReason.ADAPTER_COVERAGE_GAP,
+            failure_reason=ProofFailureReason.ADAPTER_COVERAGE_GAP,
+        )
     if "cwd" not in normalized and "workdir" in normalized:
         normalized["cwd"] = normalized["workdir"]
     if "command_template" not in normalized and "command" in normalized:
@@ -1057,6 +1161,13 @@ def _normalize_delegate_task(raw_event: JsonObject, metadata: JsonObject) -> tup
 
 def _normalize_scheduled_action(raw_event: JsonObject, metadata: JsonObject) -> tuple[str, JsonObject]:
     payload = _input(raw_event)
+    action = str(payload.get("action", "create") or "create")
+    if action not in {"create", "send"}:
+        raise AdapterError(
+            "Hermes cronjob lifecycle action requires runtime coverage",
+            deny_reason=DenyReason.ADAPTER_COVERAGE_GAP,
+            failure_reason=ProofFailureReason.ADAPTER_COVERAGE_GAP,
+        )
     schedule_id = str(raw_event.get("schedule_id") or payload.get("schedule_id") or "")
     metadata["schedule_id"] = schedule_id
     metadata["scheduled_action_scope_required"] = True
@@ -1069,17 +1180,26 @@ def _normalize_scheduled_action(raw_event: JsonObject, metadata: JsonObject) -> 
                 "stdin": payload.get("stdin"),
             }
         )
-    target = payload.get("target") or payload.get("recipient")
+    deliver = str(payload.get("deliver", "")).lower()
+    recipient = payload.get("recipient") or payload.get("to")
+    target = payload.get("target")
+    if recipient and (deliver == "email" or "@" in str(recipient)):
+        body_ref = payload.get("body_ref") or payload.get("message") or "val_report"
+        args = _normalize_tool_args(
+            "send_email",
+            {
+                "to": str(recipient),
+                "body_ref": body_ref,
+                "subject": payload.get("subject_ref") or payload.get("subject") or body_ref,
+            },
+        )
+        return "cron_send_email", {"schedule_id": schedule_id, **args}
     if target:
-        return "send_message", _normalize_tool_args(
+        args = _normalize_tool_args(
             "send_message",
             {"target": str(target), "message": payload.get("message") or payload.get("body_ref") or "val_report"},
         )
-    if payload.get("to"):
-        return "send_email", _normalize_tool_args(
-            "send_email",
-            {"to": str(payload["to"]), "body_ref": payload.get("body_ref") or "val_report"},
-        )
+        return "cron_send_message", {"schedule_id": schedule_id, **args}
     raise AdapterError(
         "Hermes cronjob prompt cannot mint authority-bearing recipient or endpoint",
         deny_reason=DenyReason.NO_CAP,
@@ -1142,6 +1262,8 @@ def _extract_email(value: str) -> str | None:
 def _extract_memory_authority_claims(content: str) -> JsonObject:
     lowered = content.lower()
     if "recipient" in lowered and "@" in lowered:
+        return {"recipient": content}
+    if "@" in lowered and ("always send" in lowered or "future report" in lowered or "send future" in lowered):
         return {"recipient": content}
     if "authorize" in lowered or "remember" in lowered:
         return {"claim": content}

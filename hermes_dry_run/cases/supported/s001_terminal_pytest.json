@@ -1,0 +1,28 @@
+{
+  "case_id": "s001_terminal_pytest",
+  "category": "supported",
+  "hermes_event": {
+    "source": "hermes",
+    "event_type": "terminal",
+    "tool": "terminal",
+    "input": {
+      "command": "pytest tests/",
+      "workdir": "$WORKSPACE",
+      "env": {},
+      "stdin": null
+    },
+    "session_id": "s1",
+    "task_id": "task_hermes_dry_run"
+  },
+  "expected_verdict": "ALLOW",
+  "expected_reason": "",
+  "expected_executor_behavior": "called",
+  "notes": "Raw pytest maps to the allowlisted run_shell template.",
+  "setup": {
+    "capabilities": [
+      {"cap_id": "cap_s001_template", "tool": "run_shell", "role": "command", "value": "pytest"},
+      {"cap_id": "cap_s001_args", "tool": "run_shell", "role": "command", "value": {"target": "tests/"}},
+      {"cap_id": "cap_s001_cwd", "tool": "run_shell", "role": "file_path", "value": "$WORKSPACE"}
+    ]
+  }
+}

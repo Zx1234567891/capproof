@@ -1,0 +1,33 @@
+{
+  "case_id": "s006_dynamic_mcp_authorized",
+  "category": "supported",
+  "hermes_event": {
+    "source": "hermes",
+    "event_type": "mcp_tool_call",
+    "tool": "mcp_company_server_http_post",
+    "input": {
+      "server": "company_server",
+      "tool_name": "http_post",
+      "arguments": {
+        "url": "https://api.company.com/submit",
+        "headers": {},
+        "body_ref": "val_summary"
+      },
+      "transport": {
+        "type": "http",
+        "endpoint": "https://api.company.com/mcp"
+      }
+    },
+    "task_id": "task_hermes_dry_run"
+  },
+  "expected_verdict": "ALLOW",
+  "expected_reason": "",
+  "expected_executor_behavior": "called",
+  "notes": "Both action URL and MCP transport endpoint have endpoint capabilities.",
+  "setup": {
+    "capabilities": [
+      {"cap_id": "cap_s006_url", "tool": "http_post", "role": "external_endpoint", "value": "https://api.company.com/submit"},
+      {"cap_id": "cap_s006_transport", "tool": "http_post", "role": "external_endpoint", "value": "https://api.company.com/mcp"}
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "case_id": "u003_gateway_media_attachment",
+  "category": "unknown",
+  "hermes_event": {
+    "source": "hermes",
+    "event_type": "tool_call",
+    "tool": "send_message",
+    "input": {
+      "target": "telegram:alice_chat",
+      "message": "val_summary",
+      "media": {
+        "local_path": "$WORKSPACE/report.pdf"
+      }
+    },
+    "task_id": "task_hermes_dry_run"
+  },
+  "expected_verdict": "DENY",
+  "expected_reason": "AdapterCoverageGap",
+  "expected_executor_behavior": "not_called",
+  "notes": "Gateway media/attachment fields need explicit adapter coverage.",
+  "setup": {}
+}
