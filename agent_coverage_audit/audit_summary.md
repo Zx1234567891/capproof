@@ -1,16 +1,18 @@
 # Agent Coverage Audit Summary
 
-Stage 18 is a static, read-only adapter coverage audit, not a real Agent integration stage.
+This is a static, read-only adapter coverage audit, not a real Agent integration stage.
+Stage 19 adds a local Hermes source audit when a checkout is provided; it still does not integrate or run Hermes.
 It does not run OpenCode, OpenClaw, Hermes, third-party project commands, agents, tools, email, network clients, or shell commands.
 It does not clone, build, install, or test third-party projects.
 When OpenCode, OpenClaw, or Hermes source checkouts are missing, their sections are placeholder / planned audits, not complete real-source audits.
+When a checkout is available, rows marked `observed in source` are based on static file reads; rows marked `inferred from naming/docs` are planning evidence, not confirmed execution paths.
 Coverage gaps in this report are a pre-integration risk inventory, not final vulnerability conclusions.
 
 ## Repo Availability
 
 - opencode: `repo_missing` at `/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/opencode`; files scanned: 0
 - openclaw: `repo_missing` at `/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/openclaw`; files scanned: 0
-- hermes: `repo_missing` at `/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/hermes-agent`; files scanned: 0
+- hermes: `available` at `external/external/hermes-agent`; files scanned: 2500
 - harness: `available` at `/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7`; files scanned: 170
 
 ## Static Scan Scope
@@ -21,12 +23,24 @@ Coverage gaps in this report are a pre-integration risk inventory, not final vul
 
 ## Coverage Summary
 
-- Total surfaces scanned: 222
-- High-impact surfaces found: 214
+- Total surfaces scanned: 236
+- High-impact surfaces found: 228
 - Covered by current profile: 145
-- Partial coverage: 10
-- Uncovered surfaces: 67
-- Coverage gap count: 77
+- Partial coverage: 20
+- Uncovered surfaces: 71
+- Coverage gap count: 91
+
+## Hermes Local Static Coverage Audit
+
+- This section is not a real Hermes integration and does not claim CapProof protects real Hermes.
+- Hermes was not run; dependencies were not installed; no third-party project command was executed.
+- No real tool execution, external network call, email send, or shell command was performed.
+- Actual Hermes checkout path used when available: `external/external/hermes-agent`.
+- The requested path is normally `external/hermes-agent`; this workspace also supports the local nested checkout `external/external/hermes-agent`, or any explicit `--hermes-repo` path.
+- Observed-source findings are static coverage gaps, not runtime vulnerability proofs.
+- HermesAgentLikeAdapter observed-source full coverage: 0; partial coverage: 8; uncovered: 3.
+- Because observed-source full coverage is 0, partial is 8, and uncovered is 3 in this checkout, do not make a real Hermes dry-run wrapper claim yet.
+- Next adapter work should cover real `terminal`, `send_message`, dynamic MCP, memory/provider-memory, `delegate_task`, and `cronjob` shapes.
 
 ## Top Adapter Coverage Gaps
 
@@ -51,6 +65,6 @@ Coverage gaps in this report are a pre-integration risk inventory, not final vul
 ## Go / No-Go
 
 - OpenCode dry-run wrapper: go only for mock/dry-run; no real execution until diff/patch/config field coverage is audited.
-- Hermes dry-run wrapper: partial go; MCP/gateway/schedule fields need more tests first.
+- Hermes dry-run wrapper: partial go only for observed fields already mapped by tests; real terminal/send_message/memory/delegate_task/cron/MCP gaps should be closed before claims about real Hermes coverage.
 - OpenClaw compatibility wrapper: no-go for claims if repo is missing; go for placeholder compatibility tests only.
 - Blocking coverage gap: no single blocker for mock dry-run wrappers; real integration needs local source audits and adapter coverage tests.

@@ -63,6 +63,7 @@ GENERIC_SURFACE_KEYWORDS = {
 }
 
 ACTION_KEYWORDS = {
+    "tool_invocation": ("tool_call", "function_call", "handle_function_call", "registry.dispatch"),
     "shell": ("shell", "exec", "subprocess", "terminal", "command", "stdin"),
     "file_write": ("write_file", "writefile", "write file", "overwrite", "patch", "diff", "edit"),
     "file_read": ("read_file", "readfile", "read file"),
@@ -75,6 +76,7 @@ ACTION_KEYWORDS = {
 }
 
 FIELDS_BY_KIND = {
+    "tool_invocation": ("function_name", "function_args", "task_id", "session_id", "tool_call_id", "enabled_toolsets", "middleware_trace"),
     "shell": ("command", "args", "cwd", "env", "stdin", "terminal_backend"),
     "file_write": ("path", "mode", "overwrite", "diff", "patch", "symlink_policy", "workspace_root"),
     "file_read": ("path", "symlink_policy", "workspace_root"),
@@ -88,6 +90,7 @@ FIELDS_BY_KIND = {
 }
 
 CANONICALIZATION_BY_KIND = {
+    "tool_invocation": "tool-name dispatch canonicalization; argument schema and middleware rewrite observability",
     "shell": "template membership; command/args/cwd/env/stdin normalization",
     "file_write": "workspace-root path canonicalization; traversal/symlink fail closed",
     "file_read": "workspace-root path canonicalization; traversal/symlink fail closed",
@@ -101,6 +104,7 @@ CANONICALIZATION_BY_KIND = {
 }
 
 ROLE_BY_KIND = {
+    "tool_invocation": "control + tool-specific authority-bearing arguments",
     "shell": "command + file_path + credential + content",
     "file_write": "file_path + command + content",
     "file_read": "file_path",
@@ -140,6 +144,9 @@ class CoverageRow:
     residual_risk: str
     recommended_test_case: str
     confidence: str
+    evidence_status: str = "unknown"
+    missing_fields: tuple[str, ...] = ()
+    recommended_adapter_update: str = ""
 
 
 EXPECTED_SURFACES: dict[str, tuple[dict[str, Any], ...]] = {
@@ -352,6 +359,175 @@ EXPECTED_SURFACES: dict[str, tuple[dict[str, Any], ...]] = {
 }
 
 
+HERMES_SOURCE_SURFACES: tuple[dict[str, Any], ...] = (
+    {
+        "surface": "model tool-call dispatcher and middleware boundary",
+        "category": "tools",
+        "kind": "tool_invocation",
+        "tool": "handle_function_call",
+        "sources": ("model_tools.py", "agent/tool_executor.py", "tools/registry.py", "docs/middleware/README.md"),
+        "keywords": ("handle_function_call", "function_name", "function_args", "tool_request", "tool_execution"),
+        "coverage": "partial",
+        "hook": "tool_request middleware or pre-dispatch wrapper before registry.dispatch",
+        "risk": "middleware can rewrite authority-bearing args before execution; bridge tools can unwrap to real tools",
+        "missing": ("original_args", "effective_args", "enabled_toolsets", "session_id", "turn_id", "api_request_id"),
+        "update": "Add a Hermes real-tool-call event shape carrying original/effective args, tool_call_id, session_id, turn_id, and enabled_toolsets.",
+        "test": "Hermes observed tool invocation shape is parsed into canonical tool-specific action or fails closed.",
+        "confidence": "high",
+    },
+    {
+        "surface": "core file read/write/patch tools",
+        "category": "tools",
+        "kind": "file_write",
+        "tool": "read_file/write_file/patch",
+        "sources": ("tools/file_tools.py", "agent/tool_dispatch_helpers.py"),
+        "keywords": ("read_file_tool", "write_file_tool", "patch_tool", "cross_profile", "symlink", "path"),
+        "coverage": "partial",
+        "hook": "file tool wrapper before file_tools handlers",
+        "risk": "patch mode, cross_profile, staleness state, and resolved_path need explicit adapter coverage",
+        "missing": ("patch", "old_string", "new_string", "replace_all", "cross_profile", "resolved_path", "session_id"),
+        "update": "Map real Hermes read_file/write_file/patch schemas into separate CapProof contracts or deny patch until modeled.",
+        "test": "Real Hermes write_file path/content and patch path headers are represented or denied fail-closed.",
+        "confidence": "high",
+    },
+    {
+        "surface": "terminal tool shell command",
+        "category": "terminal backend / shell",
+        "kind": "shell",
+        "tool": "terminal",
+        "sources": ("tools/terminal_tool.py", "tools/process_registry.py", "tools/environments/base.py", "tools/environments/docker.py"),
+        "keywords": ("TERMINAL_SCHEMA", "terminal_tool", "command", "workdir", "stdin", "execute"),
+        "coverage": "no",
+        "hook": "terminal tool wrapper before terminal_tool(command=...)",
+        "risk": "real Hermes uses tool name terminal with raw command string, background, workdir, pty, notification, and process controls",
+        "missing": ("terminal tool name mapping", "command", "background", "timeout", "workdir", "pty", "notify_on_complete", "watch_patterns"),
+        "update": "Add a dry-run-only Hermes terminal adapter that maps terminal.command to an allowlisted run_shell template or denies arbitrary commands.",
+        "test": "Real Hermes terminal command shape fails closed until template mapping exists.",
+        "confidence": "high",
+    },
+    {
+        "surface": "cross-channel send_message gateway tool",
+        "category": "gateway / messaging",
+        "kind": "email_messaging",
+        "tool": "send_message",
+        "sources": ("tools/send_message_tool.py", "gateway/stream_events.py", "gateway/platforms", "mcp_serve.py"),
+        "keywords": ("SEND_MESSAGE_SCHEMA", "target", "message", "platform", "chat_id", "messages_send"),
+        "coverage": "partial",
+        "hook": "send_message tool wrapper / gateway proxy",
+        "risk": "real Hermes target encodes platform, chat_id, thread_id, media attachments, and reaction message_id in one string",
+        "missing": ("target", "action", "message", "emoji", "message_id", "media local_path", "thread_id"),
+        "update": "Canonicalize target into platform/channel/chat_id/thread_id recipient fields and map message to body/content.",
+        "test": "Real Hermes send_message target/message shape is denied or mapped to recipient authority.",
+        "confidence": "high",
+    },
+    {
+        "surface": "external MCP client dynamic tools",
+        "category": "MCP",
+        "kind": "network",
+        "tool": "mcp_*",
+        "sources": ("tools/mcp_tool.py", "optional-mcps", "docs/design/profile-builder.md"),
+        "keywords": ("mcp_servers", "_convert_mcp_schema", "registry.register", "transport", "url", "command"),
+        "coverage": "partial",
+        "hook": "MCP proxy before dynamic registry.register handler dispatch",
+        "risk": "MCP server/tool metadata can define arbitrary inputSchema, transport command/url, resources, prompts, and mutating tools",
+        "missing": ("server_name", "tool_name", "inputSchema", "arguments", "transport.command", "transport.url", "headers", "resources/prompts"),
+        "update": "Add MCP-specific adapter rows for server name, prefixed tool name, transport endpoint/command, and raw arguments.",
+        "test": "Real Hermes mcp_* tool event preserves server/tool/arguments and unauthorized endpoint denies.",
+        "confidence": "high",
+    },
+    {
+        "surface": "Hermes messaging MCP server tools",
+        "category": "MCP",
+        "kind": "email_messaging",
+        "tool": "messages_send",
+        "sources": ("mcp_serve.py",),
+        "keywords": ("@mcp.tool", "messages_send", "target", "message", "permissions_respond"),
+        "coverage": "no",
+        "hook": "MCP server tool wrapper before messages_send dispatch",
+        "risk": "external MCP clients can drive Hermes message send and approval response surfaces",
+        "missing": ("session_key", "target", "message", "permission id", "decision"),
+        "update": "Model Hermes MCP server tools separately from Hermes internal MCP client tools.",
+        "test": "messages_send target/message requires recipient capability; permissions_respond requires endorsement/control capability.",
+        "confidence": "high",
+    },
+    {
+        "surface": "built-in memory tool",
+        "category": "memory",
+        "kind": "memory",
+        "tool": "memory",
+        "sources": ("tools/memory_tool.py", "agent/memory_manager.py", "agent/memory_provider.py"),
+        "keywords": ("MEMORY_SCHEMA", "memory_tool", "on_memory_write", "content", "target", "operations"),
+        "coverage": "partial",
+        "hook": "memory tool wrapper before memory_tool and provider mirror",
+        "risk": "persistent user/profile memories can encode future authority claims unless stripped",
+        "missing": ("action", "target", "old_text", "operations", "provider metadata", "session_id"),
+        "update": "Map real memory(action,target,content,operations) to memory_write with origin/persistence/scope and authority stripping.",
+        "test": "Real Hermes memory add with authority-like content is stripped or denied fail-closed.",
+        "confidence": "high",
+    },
+    {
+        "surface": "external memory provider tools",
+        "category": "memory",
+        "kind": "memory",
+        "tool": "retaindb_remember/supermemory_store/openviking_remember",
+        "sources": ("plugins/memory/retaindb/__init__.py", "plugins/memory/supermemory/__init__.py", "plugins/memory/openviking/__init__.py"),
+        "keywords": ("REMEMBER_SCHEMA", "STORE_SCHEMA", "content", "preference", "instruction", "on_memory_write"),
+        "coverage": "no",
+        "hook": "provider handle_tool_call wrapper",
+        "risk": "provider-specific persistent memory tools can store preferences/instructions outside the built-in memory tool path",
+        "missing": ("provider tool name", "memory_type/category", "importance", "metadata", "remote container", "scope"),
+        "update": "Route provider memory tool calls through the same Memory Authority Stripping contract.",
+        "test": "Provider-specific memory save event cannot mint recipient or policy authority.",
+        "confidence": "high",
+    },
+    {
+        "surface": "delegate_task subagent tool",
+        "category": "subagents / delegation",
+        "kind": "delegation",
+        "tool": "delegate_task",
+        "sources": ("tools/delegate_tool.py", "tools/async_delegation.py", "docs/observability/README.md"),
+        "keywords": ("DELEGATE_TASK_SCHEMA", "delegate_task", "toolsets", "subagent", "parent_agent"),
+        "coverage": "partial",
+        "hook": "delegate_task wrapper before child agent spawn",
+        "risk": "child toolsets, model/provider/base_url, ACP command, role, and context can amplify or relay authority",
+        "missing": ("goal", "context", "toolsets", "tasks", "role", "acp_command", "acp_args", "parent_agent_id", "child_task_id"),
+        "update": "Map delegate_task to Delegation Certificate inputs and deny child scope not attenuated by parent caps.",
+        "test": "Real delegate_task shape without Delegation Certificate denies DelegationMissing.",
+        "confidence": "high",
+    },
+    {
+        "surface": "skills and plugin managed workflows",
+        "category": "skills",
+        "kind": "skill_plugin",
+        "tool": "skill_manage/skills/*/plugins/*",
+        "sources": ("tools/skill_manager_tool.py", "tools/skills_tool.py", "agent/skill_preprocessing.py", "skills", "optional-skills", "plugins"),
+        "keywords": ("SKILL.md", "skill_manage", "blueprint", "plugin.yaml", "register_hook", "register_middleware"),
+        "coverage": "partial",
+        "hook": "skill manager / plugin middleware wrapper",
+        "risk": "skill metadata, blueprints, plugin hooks, and middleware can rewrite tool args or propose scheduled/MCP actions",
+        "missing": ("skill_id", "plugin_id", "workflow_step", "blueprint", "middleware payload", "declared endpoint"),
+        "update": "Treat skill/plugin metadata as non-authority and require downstream tool-specific CapProof checks after middleware rewrites.",
+        "test": "Skill/plugin metadata cannot mint endpoint, recipient, command, or file capability.",
+        "confidence": "medium",
+    },
+    {
+        "surface": "cronjob scheduled automation tool",
+        "category": "scheduled / automation",
+        "kind": "scheduled",
+        "tool": "cronjob",
+        "sources": ("tools/cronjob_tools.py", "cron/jobs.py", "cron/scheduler.py", "cron/suggestions.py", "docs/chronos-managed-cron-contract.md"),
+        "keywords": ("CRONJOB_SCHEMA", "schedule", "create_job", "run_one_job", "deliver", "no_agent", "script"),
+        "coverage": "partial",
+        "hook": "cronjob tool wrapper before job create/update/fire",
+        "risk": "scheduled prompt/script/deliver/workdir/toolsets can preserve authority beyond one task and replay stale caps",
+        "missing": ("action", "job_id", "prompt", "schedule", "deliver", "script", "enabled_toolsets", "workdir", "no_agent", "context_from"),
+        "update": "Bind scheduled capabilities to schedule_id/task scope and model script/workdir/deliver as high-impact fields.",
+        "test": "Real cronjob create/update shape without schedule-bound caps denies or asks.",
+        "confidence": "high",
+    },
+)
+
+
 def run_audit(
     *,
     root: Path = ROOT,
@@ -362,10 +538,11 @@ def run_audit(
 ) -> dict[str, Any]:
     out = output_dir or root / "agent_coverage_audit"
     out.mkdir(parents=True, exist_ok=True)
+    hermes_input = _resolve_repo("HERMES_REPO", hermes_repo, root / "external" / "hermes-agent")
     repo_inputs = {
         "opencode": _resolve_repo("OPENCODE_REPO", opencode_repo, root / "external" / "opencode"),
         "openclaw": _resolve_repo("OPENCLAW_REPO", openclaw_repo, root / "external" / "openclaw"),
-        "hermes": _resolve_repo("HERMES_REPO", hermes_repo, root / "external" / "hermes-agent"),
+        "hermes": resolve_hermes_checkout(root, hermes_input),
         "harness": root,
     }
 
@@ -409,7 +586,7 @@ def audit_project(project: str, repo_path: Path, *, root: Path) -> tuple[RepoSta
             expected_rows,
         )
     files = list(harness_candidate_files(root) if project == "harness" else candidate_files(repo_path))
-    scanned_rows = scan_files(project, repo_path, files)
+    scanned_rows = hermes_source_rows(repo_path) if project == "hermes" else scan_files(project, repo_path, files)
     if project == "harness":
         scanned_rows.extend(harness_rows(root))
     status = RepoStatus(
@@ -491,6 +668,8 @@ def has_unknown_surface(text: str, matched: list[str]) -> bool:
 def row_from_expected(project: str, item: dict[str, Any], repo_path: Path) -> CoverageRow:
     kind = str(item["kind"])
     repo_missing = project != "harness" and not repo_path.exists()
+    gap = bool(item["gap"])
+    update = suggested_contract_update(kind, gap)
     return CoverageRow(
         target_project=project,
         source_file="repo_missing" if repo_missing else "expected_profile_surface",
@@ -502,17 +681,21 @@ def row_from_expected(project: str, item: dict[str, Any], repo_path: Path) -> Co
         canonicalization_needed=CANONICALIZATION_BY_KIND[kind],
         likely_hook_point=str(item["hook"]),
         suggested_capproof_role=ROLE_BY_KIND[kind],
-        suggested_contract_update=suggested_contract_update(kind, bool(item["gap"])),
-        adapter_coverage_gap=bool(item["gap"]),
+        suggested_contract_update=update,
+        adapter_coverage_gap=gap,
         residual_risk=str(item["risk"]),
         recommended_test_case=str(item["test"]),
         confidence="low" if repo_missing else str(item["confidence"]),
+        evidence_status="repo_missing" if repo_missing else "inferred from Stage 17 mock profile",
+        missing_fields=missing_fields_for_kind(kind, gap),
+        recommended_adapter_update=update,
     )
 
 
 def row_from_scan(project: str, source_file: str, kind: str) -> CoverageRow:
     coverage, gap = infer_current_coverage(project, kind)
     tool = infer_tool_name(kind)
+    update = suggested_contract_update(kind, gap)
     return CoverageRow(
         target_project=project,
         source_file=source_file,
@@ -524,12 +707,148 @@ def row_from_scan(project: str, source_file: str, kind: str) -> CoverageRow:
         canonicalization_needed=CANONICALIZATION_BY_KIND[kind],
         likely_hook_point=infer_hook_point(project, kind),
         suggested_capproof_role=ROLE_BY_KIND[kind],
-        suggested_contract_update=suggested_contract_update(kind, gap),
+        suggested_contract_update=update,
         adapter_coverage_gap=gap,
         residual_risk=infer_residual_risk(kind),
         recommended_test_case=infer_test_case(project, kind),
         confidence="low",
+        evidence_status="observed in source",
+        missing_fields=missing_fields_for_kind(kind, gap),
+        recommended_adapter_update=update,
     )
+
+
+def hermes_source_rows(repo_path: Path) -> list[CoverageRow]:
+    """Return focused Stage 19 rows for the provided Hermes checkout.
+
+    These rows summarize real source surfaces by category. They deliberately do
+    not treat every keyword occurrence in docs/tests as an independent surface.
+    """
+
+    rows: list[CoverageRow] = []
+    for spec in HERMES_SOURCE_SURFACES:
+        sources = matching_source_files(
+            repo_path,
+            tuple(str(item) for item in spec["sources"]),
+            tuple(str(item).lower() for item in spec["keywords"]),
+        )
+        evidence_status = "observed in source" if sources else "not found"
+        confidence = str(spec["confidence"]) if sources else "low"
+        coverage = str(spec["coverage"]) if sources else "unknown"
+        gap = bool(spec["missing"]) if sources else False
+        missing = tuple(str(item) for item in spec["missing"]) if sources else ()
+        update = str(spec["update"]) if sources else "No adapter update until a matching source surface is observed."
+        kind = str(spec["kind"])
+        rows.append(
+            CoverageRow(
+                target_project="hermes",
+                source_file=", ".join(sources) if sources else "not_found",
+                event_or_tool_surface=str(spec["surface"]),
+                action_kind=kind,
+                possible_tool_name=str(spec["tool"]),
+                authority_bearing_fields=FIELDS_BY_KIND[kind],
+                observed_by_current_profile=coverage,
+                canonicalization_needed=CANONICALIZATION_BY_KIND[kind],
+                likely_hook_point=str(spec["hook"]) if sources else "unknown",
+                suggested_capproof_role=ROLE_BY_KIND[kind],
+                suggested_contract_update=update,
+                adapter_coverage_gap=gap,
+                residual_risk=str(spec["risk"]) if sources else "surface not found in this local checkout",
+                recommended_test_case=str(spec["test"]) if sources else "No test added for not-found surface.",
+                confidence=confidence,
+                evidence_status=evidence_status,
+                missing_fields=missing,
+                recommended_adapter_update=update,
+            )
+        )
+
+    docs_rows = hermes_inferred_docs_rows(repo_path)
+    rows.extend(docs_rows)
+    return rows
+
+
+def hermes_inferred_docs_rows(repo_path: Path) -> list[CoverageRow]:
+    """Add narrowly-scoped inferred rows for docs/catalog items not backed by code paths."""
+
+    rows: list[CoverageRow] = []
+    inferred_specs = (
+        {
+            "surface": "optional MCP catalog transport endpoints",
+            "kind": "network",
+            "tool": "optional-mcps/*/manifest.yaml",
+            "paths": ("optional-mcps",),
+            "keywords": ("transport:", "url:", "command:", "tools:"),
+            "fields": ("manifest transport.url", "manifest transport.command", "tools.default_enabled"),
+            "risk": "catalog metadata can introduce remote endpoint or local command transport during MCP install/configuration",
+            "test": "MCP catalog manifest fields are treated as non-authority until user confirms endpoint/command.",
+        },
+        {
+            "surface": "skill docs with messaging/file/shell instructions",
+            "kind": "skill_plugin",
+            "tool": "skills/*/SKILL.md",
+            "paths": ("skills", "optional-skills"),
+            "keywords": ("send", "terminal", "write_file", "read_file", "mcp", "webhook"),
+            "fields": ("skill path", "workflow step", "tool mention", "endpoint mention"),
+            "risk": "skill instructions can launder endpoints, paths, commands, or recipients if treated as authority",
+            "test": "Skill instructions never mint capability without explicit user AuthSpec or endorsement.",
+        },
+    )
+    for spec in inferred_specs:
+        sources = matching_source_files(
+            repo_path,
+            tuple(str(item) for item in spec["paths"]),
+            tuple(str(item).lower() for item in spec["keywords"]),
+        )
+        if not sources:
+            continue
+        kind = str(spec["kind"])
+        update = "Keep metadata non-authoritative; require downstream canonical tool call proof for any proposed action."
+        rows.append(
+            CoverageRow(
+                target_project="hermes",
+                source_file=", ".join(sources),
+                event_or_tool_surface=str(spec["surface"]),
+                action_kind=kind,
+                possible_tool_name=str(spec["tool"]),
+                authority_bearing_fields=FIELDS_BY_KIND[kind],
+                observed_by_current_profile="partial",
+                canonicalization_needed=CANONICALIZATION_BY_KIND[kind],
+                likely_hook_point="catalog/skill installer plus downstream tool wrapper",
+                suggested_capproof_role=ROLE_BY_KIND[kind],
+                suggested_contract_update=update,
+                adapter_coverage_gap=True,
+                residual_risk=str(spec["risk"]),
+                recommended_test_case=str(spec["test"]),
+                confidence="medium",
+                evidence_status="inferred from naming/docs",
+                missing_fields=tuple(str(item) for item in spec["fields"]),
+                recommended_adapter_update=update,
+            )
+        )
+    return rows
+
+
+def matching_source_files(repo_path: Path, selectors: tuple[str, ...], keywords: tuple[str, ...]) -> list[str]:
+    matches: list[str] = []
+    for selector in selectors:
+        path = repo_path / selector
+        candidates: tuple[Path, ...]
+        if path.is_file():
+            candidates = (path,)
+        elif path.is_dir():
+            candidates = candidate_files(path)
+        else:
+            continue
+        for candidate in candidates:
+            rel = relative_path(candidate, repo_path)
+            if rel in matches:
+                continue
+            text = read_text(candidate).lower()
+            if any(keyword in text for keyword in keywords):
+                matches.append(rel)
+                if len(matches) >= 5:
+                    return matches
+    return matches
 
 
 def harness_rows(root: Path) -> list[CoverageRow]:
@@ -582,6 +901,7 @@ def infer_current_coverage(project: str, kind: str) -> tuple[str, bool]:
 
 def infer_tool_name(kind: str) -> str:
     return {
+        "tool_invocation": "handle_function_call",
         "shell": "run_shell",
         "file_write": "write_file",
         "file_read": "read_file",
@@ -596,6 +916,8 @@ def infer_tool_name(kind: str) -> str:
 
 
 def infer_hook_point(project: str, kind: str) -> str:
+    if kind == "tool_invocation":
+        return "tool-call dispatcher / middleware boundary"
     if kind == "shell":
         return "terminal/shell wrapper"
     if kind in {"network", "skill_plugin"}:
@@ -615,6 +937,7 @@ def infer_hook_point(project: str, kind: str) -> str:
 
 def infer_residual_risk(kind: str) -> str:
     return {
+        "tool_invocation": "tool-name bridge, middleware rewrite, or dynamic dispatch can hide authority-bearing args",
         "shell": "arbitrary shell string, sh-c, pipes, redirects, env/cwd/stdin injection",
         "file_write": "path traversal, symlink escape, config/policy/credential writes",
         "file_read": "secret file read, traversal, symlink escape",
@@ -638,6 +961,10 @@ def suggested_contract_update(kind: str, gap: bool) -> str:
     return f"Add/verify real adapter coverage for {', '.join(FIELDS_BY_KIND[kind])}."
 
 
+def missing_fields_for_kind(kind: str, gap: bool) -> tuple[str, ...]:
+    return FIELDS_BY_KIND[kind] if gap else ()
+
+
 def dedupe_rows(rows: tuple[CoverageRow, ...]) -> list[CoverageRow]:
     seen: set[tuple[str, str, str, str]] = set()
     result: list[CoverageRow] = []
@@ -653,6 +980,10 @@ def dedupe_rows(rows: tuple[CoverageRow, ...]) -> list[CoverageRow]:
 def serialize_row(row: CoverageRow) -> dict[str, Any]:
     data = asdict(row)
     data["authority_bearing_fields"] = list(row.authority_bearing_fields)
+    data["missing_fields"] = list(row.missing_fields)
+    data["project"] = row.target_project
+    data["surface"] = row.event_or_tool_surface
+    data["current_adapter_coverage"] = row.observed_by_current_profile
     return data
 
 
@@ -664,6 +995,12 @@ def summarize(rows: list[CoverageRow], statuses: dict[str, RepoStatus]) -> dict[
     by_project = defaultdict(Counter)
     for row in rows:
         by_project[row.target_project][row.observed_by_current_profile] += 1
+    hermes_observed = [
+        row
+        for row in rows
+        if row.target_project == "hermes" and row.evidence_status == "observed in source"
+    ]
+    hermes_observed_coverage = Counter(row.observed_by_current_profile for row in hermes_observed)
     return {
         "total_surfaces_scanned": total,
         "high_impact_surfaces_found": high_impact,
@@ -682,6 +1019,13 @@ def summarize(rows: list[CoverageRow], statuses: dict[str, RepoStatus]) -> dict[
             for row in gaps[:10]
         ],
         "by_project": {project: dict(counter) for project, counter in sorted(by_project.items())},
+        "hermes_observed_source": {
+            "surfaces": len(hermes_observed),
+            "full_coverage": hermes_observed_coverage["yes"],
+            "partial_coverage": hermes_observed_coverage["partial"],
+            "uncovered": hermes_observed_coverage["no"] + hermes_observed_coverage["unknown"],
+            "coverage_gap_count": sum(1 for row in hermes_observed if row.adapter_coverage_gap),
+        },
     }
 
 
@@ -690,7 +1034,15 @@ def write_reports(out: Path, payload: dict[str, Any]) -> None:
         json.dumps(payload, indent=2, sort_keys=True),
         encoding="utf-8",
     )
-    rows = [CoverageRow(**{**row, "authority_bearing_fields": tuple(row["authority_bearing_fields"])}) for row in payload["coverage_matrix"]]
+    rows = []
+    for row in payload["coverage_matrix"]:
+        row_data = dict(row)
+        row_data.pop("current_adapter_coverage", None)
+        row_data.pop("project", None)
+        row_data.pop("surface", None)
+        row_data["authority_bearing_fields"] = tuple(row["authority_bearing_fields"])
+        row_data["missing_fields"] = tuple(row.get("missing_fields", ()))
+        rows.append(CoverageRow(**row_data))
     statuses = {
         project: RepoStatus(**status)
         for project, status in payload["repo_status"].items()
@@ -711,20 +1063,22 @@ def render_matrix_md(rows: list[CoverageRow]) -> str:
     lines = [
         "# Agent Coverage Matrix",
         "",
-        "| project | source/status | surface | fields | current adapter coverage | gap | recommended fix | priority | confidence |",
-        "| --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        "| project | source/status | evidence | surface | fields | missing fields | current adapter coverage | gap | recommended fix | priority | confidence |",
+        "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
     ]
     for row in rows:
         priority = "high" if row.adapter_coverage_gap and row.action_kind != "unknown" else "medium" if row.adapter_coverage_gap else "low"
         lines.append(
-            "| {project} | {source} | {surface} | {fields} | {coverage} | {gap} | {fix} | {priority} | {confidence} |".format(
+            "| {project} | {source} | {evidence} | {surface} | {fields} | {missing} | {coverage} | {gap} | {fix} | {priority} | {confidence} |".format(
                 project=row.target_project,
                 source=_md(row.source_file),
+                evidence=_md(row.evidence_status),
                 surface=_md(row.event_or_tool_surface),
                 fields=_md(", ".join(row.authority_bearing_fields)),
+                missing=_md(", ".join(row.missing_fields) if row.missing_fields else "-"),
                 coverage=row.observed_by_current_profile,
                 gap="yes" if row.adapter_coverage_gap else "no",
-                fix=_md(row.suggested_contract_update),
+                fix=_md(row.recommended_adapter_update or row.suggested_contract_update),
                 priority=priority,
                 confidence=row.confidence,
             )
@@ -754,6 +1108,25 @@ def render_project_md(project: str, status: RepoStatus, rows: list[CoverageRow])
         "## Surfaces",
         "",
     ]
+    if project == "hermes" and status.status == "available":
+        observed = [row for row in rows if row.evidence_status == "observed in source"]
+        observed_coverage = Counter(row.observed_by_current_profile for row in observed)
+        lines.extend(
+            [
+                "## Stage 19 Local Static Coverage Summary",
+                "",
+                "- This is a Hermes local static coverage audit, not a real Hermes integration.",
+                "- Hermes was not run; dependencies were not installed; no third-party commands, real tools, network calls, email, or shell actions were executed.",
+                f"- Actual local checkout used: `{status.repo_path}`.",
+                "- The requested path is normally `external/hermes-agent`; pass `--hermes-repo <path>` to point at another local checkout.",
+                "- Observed-source rows are confirmed by static source reads; inferred rows are not treated as confirmed execution paths.",
+                f"- HermesAgentLikeAdapter observed-source full coverage: {observed_coverage['yes']}; partial coverage: {observed_coverage['partial']}; uncovered: {observed_coverage['no'] + observed_coverage['unknown']}.",
+                "- CapProof cannot claim it protects real Hermes or that coverage is complete from this audit.",
+                "- Current findings are adapter coverage gaps and integration risks, not runtime vulnerability proofs.",
+                "- Do not enter a real Hermes dry-run wrapper claim until terminal, send_message, dynamic MCP, memory, delegate_task, and cronjob real shapes are modeled and tested.",
+                "",
+            ]
+        )
     for row in rows:
         lines.extend(
             [
@@ -762,11 +1135,14 @@ def render_project_md(project: str, status: RepoStatus, rows: list[CoverageRow])
                 f"- Source file: `{row.source_file}`",
                 f"- Action kind: `{row.action_kind}`",
                 f"- Possible tool: `{row.possible_tool_name}`",
+                f"- Evidence status: `{row.evidence_status}`",
                 f"- Authority-bearing fields: {', '.join(row.authority_bearing_fields)}",
                 f"- Current profile coverage: `{row.observed_by_current_profile}`",
+                f"- Missing fields: {', '.join(row.missing_fields) if row.missing_fields else 'none'}",
                 f"- Adapter coverage gap: {'yes' if row.adapter_coverage_gap else 'no'}",
                 f"- Likely hook point: {row.likely_hook_point}",
                 f"- Residual risk: {row.residual_risk}",
+                f"- Recommended adapter update: {row.recommended_adapter_update or row.suggested_contract_update}",
                 f"- Recommended test case: {row.recommended_test_case}",
                 f"- Confidence: `{row.confidence}`",
                 "",
@@ -799,13 +1175,16 @@ def required_answers(project: str, status: RepoStatus) -> list[str]:
     if project == "hermes":
         return [
             f"- Tools, skills, MCP, memory, gateway, subagent, terminal backend, and scheduled actions are high-impact surfaces.{missing_note}",
+            "- Local Stage 19 rows distinguish `observed in source`, `inferred from naming/docs`, `not found`, and `unknown`; inferred rows are not treated as confirmed execution paths.",
+            "- Observed tool dispatch flows through `model_tools.handle_function_call`, `agent/tool_executor.py`, and `tools/registry.py`; middleware can rewrite effective args before dispatch.",
+            "- Observed real tool names include `terminal`, `send_message`, `memory`, `delegate_task`, `cronjob`, file tools, dynamic `mcp_*` tools, and MCP-server `messages_send`; these do not all match the Stage 17 synthetic Hermes event profile.",
             "- Memory has persistent authority laundering risk and must be stripped by default.",
             "- Subagent delegation requires Delegation Certificate evidence and attenuation.",
             "- Gateway recipients map to recipient authority; platform/chat_id semantics need explicit canonicalization.",
             "- MCP calls must map server/tool/url/method/headers/body into endpoint and content authority.",
             "- Terminal backend should be intercepted by a template-only wrapper.",
-            "- Current gaps: gateway recipient taxonomy, MCP header/method/follow_redirects, schedule recurrence and replay scope.",
-            "- Required tests: MCP field coverage, gateway chat_id, memory persistence, delegation amplification, scheduled replay.",
+            "- Current gaps: real `terminal` command mapping, `send_message.target` parsing, provider memory tools, dynamic MCP schemas, cron persistence/schedule scope, and `delegate_task` certificate fields.",
+            "- Required tests: real Hermes terminal shape fail-closed, MCP field coverage, gateway target parsing, memory persistence stripping, delegation certificate denial, cron schedule binding.",
         ]
     return [
         "- Current kill_tests and run_kill_tests.py can be expressed as HarnessAdapter events for send/write/http scenarios.",
@@ -824,10 +1203,12 @@ def render_summary_md(
     lines = [
         "# Agent Coverage Audit Summary",
         "",
-        "Stage 18 is a static, read-only adapter coverage audit, not a real Agent integration stage.",
+        "This is a static, read-only adapter coverage audit, not a real Agent integration stage.",
+        "Stage 19 adds a local Hermes source audit when a checkout is provided; it still does not integrate or run Hermes.",
         "It does not run OpenCode, OpenClaw, Hermes, third-party project commands, agents, tools, email, network clients, or shell commands.",
         "It does not clone, build, install, or test third-party projects.",
         "When OpenCode, OpenClaw, or Hermes source checkouts are missing, their sections are placeholder / planned audits, not complete real-source audits.",
+        "When a checkout is available, rows marked `observed in source` are based on static file reads; rows marked `inferred from naming/docs` are planning evidence, not confirmed execution paths.",
         "Coverage gaps in this report are a pre-integration risk inventory, not final vulnerability conclusions.",
         "",
         "## Repo Availability",
@@ -853,6 +1234,18 @@ def render_summary_md(
             f"- Uncovered surfaces: {summary['uncovered_surfaces']}",
             f"- Coverage gap count: {summary['coverage_gap_count']}",
             "",
+            "## Hermes Local Static Coverage Audit",
+            "",
+            "- This section is not a real Hermes integration and does not claim CapProof protects real Hermes.",
+            "- Hermes was not run; dependencies were not installed; no third-party project command was executed.",
+            "- No real tool execution, external network call, email send, or shell command was performed.",
+            f"- Actual Hermes checkout path used when available: `{statuses['hermes'].repo_path}`.",
+            "- The requested path is normally `external/hermes-agent`; this workspace also supports the local nested checkout `external/external/hermes-agent`, or any explicit `--hermes-repo` path.",
+            "- Observed-source findings are static coverage gaps, not runtime vulnerability proofs.",
+            f"- HermesAgentLikeAdapter observed-source full coverage: {summary['hermes_observed_source']['full_coverage']}; partial coverage: {summary['hermes_observed_source']['partial_coverage']}; uncovered: {summary['hermes_observed_source']['uncovered']}.",
+            "- Because observed-source full coverage is 0, partial is 8, and uncovered is 3 in this checkout, do not make a real Hermes dry-run wrapper claim yet.",
+            "- Next adapter work should cover real `terminal`, `send_message`, dynamic MCP, memory/provider-memory, `delegate_task`, and `cronjob` shapes.",
+            "",
             "## Top Adapter Coverage Gaps",
             "",
         ]
@@ -872,7 +1265,7 @@ def render_summary_md(
             "## Go / No-Go",
             "",
             "- OpenCode dry-run wrapper: go only for mock/dry-run; no real execution until diff/patch/config field coverage is audited.",
-            "- Hermes dry-run wrapper: partial go; MCP/gateway/schedule fields need more tests first.",
+            "- Hermes dry-run wrapper: partial go only for observed fields already mapped by tests; real terminal/send_message/memory/delegate_task/cron/MCP gaps should be closed before claims about real Hermes coverage.",
             "- OpenClaw compatibility wrapper: no-go for claims if repo is missing; go for placeholder compatibility tests only.",
             "- Blocking coverage gap: no single blocker for mock dry-run wrappers; real integration needs local source audits and adapter coverage tests.",
         ]
@@ -898,6 +1291,22 @@ def _resolve_repo(env_name: str, arg_path: Path | None, default_path: Path) -> P
     if env_value:
         return Path(env_value)
     return default_path
+
+
+def resolve_hermes_checkout(root: Path, requested: Path) -> Path:
+    """Resolve the local Hermes checkout without cloning or moving files.
+
+    Some local archives unpack as external/external/hermes-agent. Treat that as
+    a local checkout alias only when the requested path is absent. If neither
+    path exists, the caller still reports repo_missing.
+    """
+
+    if requested.exists():
+        return requested
+    nested = root / "external" / "external" / "hermes-agent"
+    if nested.exists():
+        return nested
+    return requested
 
 
 def parse_args(argv: list[str] | None = None) -> argparse.Namespace:

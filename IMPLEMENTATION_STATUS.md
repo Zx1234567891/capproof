@@ -635,3 +635,51 @@ Known risks:
 - Third-party source audits are placeholders until local source directories are provided.
 - Static keyword scanning is a starting point and not a proof of adapter completeness.
 - Real integration still requires adapter coverage tests against actual event payloads and hook points.
+
+## Stage 19 - Hermes Local Source Coverage Audit
+
+Status: implemented, self-check pending.
+
+Scope:
+- Perform a static, read-only audit of the local Hermes Agent checkout.
+- Do not run Hermes, install Hermes dependencies, execute Hermes tests, execute third-party commands, call tools, send email, make network requests, or execute shell actions.
+- Compare observed Hermes high-impact surfaces against the current Stage 17 `HermesAgentLikeAdapter` mock profile.
+- Generate coverage rows that distinguish `observed in source`, `inferred from naming/docs`, `not found`, and `unknown`.
+
+Implemented:
+- Updated `run_agent_coverage_audit.py` with focused Hermes source-surface rows for:
+  - model tool-call dispatcher and middleware boundary
+  - file read/write/patch tools
+  - terminal command tool
+  - send_message gateway tool
+  - dynamic MCP client tools
+  - Hermes messaging MCP server tools
+  - built-in and provider memory tools
+  - delegate_task subagent tool
+  - skills/plugins workflows
+  - cronjob scheduled automation
+- Updated `agent_coverage_audit/hermes_audit.md`, `coverage_matrix.json`, `coverage_matrix.md`, and `audit_summary.md`.
+- Added `tests/test_hermes_adapter_coverage.py` for observed Hermes mock event shapes that currently must fail closed.
+- Updated `reproduction_notes.md` with Stage 19 reproduction commands and the local nested-checkout path note.
+
+Hermes repo status:
+- Requested path: `external/hermes-agent`.
+- Local checkout used in this workspace: `external/external/hermes-agent`.
+- Files scanned: 2500 candidate text/source files.
+- No Hermes process was run.
+- No Hermes dependencies were installed.
+- No third-party commands were executed.
+- No real tools, network calls, email sends, or shell actions were executed.
+
+Coverage result:
+- Observed-source high-impact surfaces: 11.
+- HermesAgentLikeAdapter observed-source full coverage: 0.
+- HermesAgentLikeAdapter observed-source partial coverage: 8.
+- HermesAgentLikeAdapter observed-source uncovered surfaces: 3.
+- Because full coverage is 0 and several real Hermes shapes are only partial/uncovered, this stage does not support a real Hermes dry-run wrapper claim.
+
+Known risks:
+- This is still a static source audit, not a real Hermes integration.
+- Current adapter profile only partially covers real Hermes shapes; real tool names such as `terminal`, `memory`, `delegate_task`, `cronjob`, dynamic `mcp_*`, and `send_message.target` need adapter updates before dry-run wrapper claims.
+- Observed gaps are pre-integration risks, not final vulnerability claims.
+- Third-party Hermes source under `external/` must not be committed to the CapProof repository.

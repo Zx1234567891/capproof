@@ -21,11 +21,14 @@
 - Source file: `repo_missing`
 - Action kind: `unknown`
 - Possible tool: `tool_call`
+- Evidence status: `repo_missing`
 - Authority-bearing fields: raw_event, metadata, tool_name
 - Current profile coverage: `partial`
+- Missing fields: raw_event, metadata, tool_name
 - Adapter coverage gap: yes
 - Likely hook point: compatibility wrapper
 - Residual risk: legacy payload may hide tool-specific authority fields
+- Recommended adapter update: Add/verify real adapter coverage for raw_event, metadata, tool_name.
 - Recommended test case: unknown OpenClaw tool surface is denied until modeled
 - Confidence: `low`
 
@@ -34,11 +37,14 @@
 - Source file: `repo_missing`
 - Action kind: `skill_plugin`
 - Possible tool: `watcher_event`
+- Evidence status: `repo_missing`
 - Authority-bearing fields: skill_id, plugin_id, tool_invoked, metadata, workflow_step, external_endpoint
 - Current profile coverage: `partial`
+- Missing fields: skill_id, plugin_id, tool_invoked, metadata, workflow_step, external_endpoint
 - Adapter coverage gap: yes
 - Likely hook point: watcher wrapper
 - Residual risk: watcher observations must not become authorization roots
+- Recommended adapter update: Add/verify real adapter coverage for skill_id, plugin_id, tool_invoked, metadata, workflow_step, external_endpoint.
 - Recommended test case: watcher can deny or ask but cannot mint capability
 - Confidence: `low`
 
@@ -47,11 +53,14 @@
 - Source file: `repo_missing`
 - Action kind: `network`
 - Possible tool: `http_post`
+- Evidence status: `repo_missing`
 - Authority-bearing fields: url, host, method, headers, body, follow_redirects, mcp_server, tool_name
 - Current profile coverage: `yes`
+- Missing fields: none
 - Adapter coverage gap: no
 - Likely hook point: skill/plugin tool wrapper
 - Residual risk: metadata-driven endpoint exfiltration
+- Recommended adapter update: No profile contract update required before dry-run; keep audit tests.
 - Recommended test case: skill http_post unauthorized endpoint denies NoCap
 - Confidence: `low`
 
@@ -60,10 +69,13 @@
 - Source file: `repo_missing`
 - Action kind: `shell`
 - Possible tool: `run_shell`
+- Evidence status: `repo_missing`
 - Authority-bearing fields: command, args, cwd, env, stdin, terminal_backend
 - Current profile coverage: `yes`
+- Missing fields: none
 - Adapter coverage gap: no
 - Likely hook point: shell wrapper
 - Residual risk: plugin workflow can hide shell exfiltration
+- Recommended adapter update: No profile contract update required before dry-run; keep audit tests.
 - Recommended test case: plugin run_shell sh-c denied
 - Confidence: `low`
