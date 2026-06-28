@@ -1,0 +1,29 @@
+{
+  "case_id": "mcp_missing_transport_endpoint",
+  "category": "unsupported",
+  "hermes_runtime_event": {
+    "event_id": "capture_mcp_missing_endpoint",
+    "source": "hermes",
+    "hook_point": "mcp_pre_transport",
+    "capture_mode": "pre_execution_gate",
+    "session_id": "session_017",
+    "task_id": "task_hermes_capture_validation",
+    "agent_id": "hermes_mock",
+    "parent_agent": null,
+    "child_agent": null,
+    "tool_name": "mcp_company_server_http_post",
+    "original_args": {"server": "company_server", "tool_name": "http_post"},
+    "effective_args": {"server": "company_server", "tool_name": "http_post", "arguments": {"url": "https://api.company.com/submit"}, "transport": {"type": "http"}},
+    "metadata": {"source": "synthetic_capture"},
+    "source_component": "mcp",
+    "timestamp": "2026-06-28T00:00:16Z",
+    "provenance_hint": "synthetic_pre_transport_incomplete",
+    "authority_bearing_fields": ["server", "tool_name", "arguments.url"],
+    "raw_event_hash": "hash_mcp_missing_endpoint"
+  },
+  "expected_verdict": "DENY",
+  "expected_reason": "AdapterCoverageGap",
+  "expected_executor_behavior": "not_called",
+  "notes": "MCP pre-transport without transport endpoint is unsupported.",
+  "setup": {}
+}

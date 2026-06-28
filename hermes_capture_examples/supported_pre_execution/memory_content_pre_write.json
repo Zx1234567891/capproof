@@ -1,0 +1,29 @@
+{
+  "case_id": "memory_content_pre_write",
+  "category": "supported_pre_execution",
+  "hermes_runtime_event": {
+    "event_id": "capture_memory_content",
+    "source": "hermes",
+    "hook_point": "memory_pre_write",
+    "capture_mode": "pre_execution_gate",
+    "session_id": "session_003",
+    "task_id": "task_hermes_capture_validation",
+    "agent_id": "hermes_mock",
+    "parent_agent": null,
+    "child_agent": null,
+    "tool_name": "memory",
+    "original_args": {"content": "The project uses pytest.", "origin": "user_or_tool_output", "persistent": true},
+    "effective_args": {"action": "remember", "target": "project_fact", "content": "The project uses pytest.", "origin": "user_or_tool_output", "persistent": true},
+    "metadata": {"source": "synthetic_capture"},
+    "source_component": "memory",
+    "timestamp": "2026-06-28T00:00:02Z",
+    "provenance_hint": "synthetic_pre_write",
+    "authority_bearing_fields": ["content", "origin", "persistent"],
+    "raw_event_hash": "hash_memory_content"
+  },
+  "expected_verdict": "ALLOW",
+  "expected_reason": "",
+  "expected_executor_behavior": "called",
+  "notes": "Content-only memory write; no authority is minted.",
+  "setup": {}
+}

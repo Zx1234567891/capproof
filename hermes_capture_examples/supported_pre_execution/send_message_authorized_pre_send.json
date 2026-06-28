@@ -1,0 +1,33 @@
+{
+  "case_id": "send_message_authorized_pre_send",
+  "category": "supported_pre_execution",
+  "hermes_runtime_event": {
+    "event_id": "capture_send_message_alice",
+    "source": "hermes",
+    "hook_point": "gateway_messaging_pre_send",
+    "capture_mode": "pre_execution_gate",
+    "session_id": "session_002",
+    "task_id": "task_hermes_capture_validation",
+    "agent_id": "hermes_mock",
+    "parent_agent": null,
+    "child_agent": null,
+    "tool_name": "send_message",
+    "original_args": {"platform": "telegram", "recipient": "alice_chat", "body": "val_summary"},
+    "effective_args": {"platform": "telegram", "recipient": "alice_chat", "body": "val_summary"},
+    "metadata": {"source": "synthetic_capture"},
+    "source_component": "gateway",
+    "timestamp": "2026-06-28T00:00:01Z",
+    "provenance_hint": "synthetic_pre_send",
+    "authority_bearing_fields": ["platform", "recipient", "body"],
+    "raw_event_hash": "hash_send_message_alice"
+  },
+  "expected_verdict": "ALLOW",
+  "expected_reason": "",
+  "expected_executor_behavior": "called",
+  "notes": "Authorized gateway recipient captured before send.",
+  "setup": {
+    "capabilities": [
+      {"cap_id": "cap_message_alice", "agent_id": "hermes_mock", "tool": "send_message", "role": "recipient", "value": "telegram:alice_chat"}
+    ]
+  }
+}

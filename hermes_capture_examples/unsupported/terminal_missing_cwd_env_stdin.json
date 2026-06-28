@@ -1,0 +1,29 @@
+{
+  "case_id": "terminal_missing_cwd_env_stdin",
+  "category": "unsupported",
+  "hermes_runtime_event": {
+    "event_id": "capture_terminal_missing_fields",
+    "source": "hermes",
+    "hook_point": "terminal_backend_pre_exec",
+    "capture_mode": "pre_execution_gate",
+    "session_id": "session_015",
+    "task_id": "task_hermes_capture_validation",
+    "agent_id": "hermes_mock",
+    "parent_agent": null,
+    "child_agent": null,
+    "tool_name": "terminal",
+    "original_args": {"command": "pytest tests/"},
+    "effective_args": {"command": "pytest tests/"},
+    "metadata": {"source": "synthetic_capture"},
+    "source_component": "terminal_backend",
+    "timestamp": "2026-06-28T00:00:14Z",
+    "provenance_hint": "synthetic_pre_exec_incomplete",
+    "authority_bearing_fields": ["command"],
+    "raw_event_hash": "hash_terminal_missing"
+  },
+  "expected_verdict": "DENY",
+  "expected_reason": "AdapterCoverageGap",
+  "expected_executor_behavior": "not_called",
+  "notes": "Terminal pre-exec without cwd/env/stdin is unsupported.",
+  "setup": {}
+}

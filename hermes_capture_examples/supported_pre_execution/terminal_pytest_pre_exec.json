@@ -1,0 +1,35 @@
+{
+  "case_id": "terminal_pytest_pre_exec",
+  "category": "supported_pre_execution",
+  "hermes_runtime_event": {
+    "event_id": "capture_terminal_pytest",
+    "source": "hermes",
+    "hook_point": "terminal_backend_pre_exec",
+    "capture_mode": "pre_execution_gate",
+    "session_id": "session_001",
+    "task_id": "task_hermes_capture_validation",
+    "agent_id": "hermes_mock",
+    "parent_agent": null,
+    "child_agent": null,
+    "tool_name": "terminal",
+    "original_args": {"command": "pytest tests/", "cwd": "$WORKSPACE", "env": {}, "stdin": null},
+    "effective_args": {"command": "pytest tests/", "cwd": "$WORKSPACE", "env": {}, "stdin": null, "terminal_backend": "local"},
+    "metadata": {"source": "synthetic_capture"},
+    "source_component": "terminal_backend",
+    "timestamp": "2026-06-28T00:00:00Z",
+    "provenance_hint": "synthetic_pre_exec",
+    "authority_bearing_fields": ["command", "cwd", "env", "stdin"],
+    "raw_event_hash": "hash_terminal_pytest"
+  },
+  "expected_verdict": "ALLOW",
+  "expected_reason": "",
+  "expected_executor_behavior": "called",
+  "notes": "Allowlisted pytest command with explicit command/cwd/env/stdin capture.",
+  "setup": {
+    "capabilities": [
+      {"cap_id": "cap_terminal_pytest_template", "agent_id": "hermes_mock", "tool": "run_shell", "role": "command", "value": "pytest"},
+      {"cap_id": "cap_terminal_pytest_args", "agent_id": "hermes_mock", "tool": "run_shell", "role": "command", "value": {"target": "tests/"}},
+      {"cap_id": "cap_terminal_pytest_cwd", "agent_id": "hermes_mock", "tool": "run_shell", "role": "file_path", "value": "$WORKSPACE"}
+    ]
+  }
+}

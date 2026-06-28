@@ -1,0 +1,33 @@
+{
+  "case_id": "delegate_with_cert_pre_dispatch",
+  "category": "supported_pre_execution",
+  "hermes_runtime_event": {
+    "event_id": "capture_delegate_with_cert",
+    "source": "hermes",
+    "hook_point": "subagent_delegation_pre_dispatch",
+    "capture_mode": "pre_execution_gate",
+    "session_id": "session_004",
+    "task_id": "task_hermes_capture_validation",
+    "agent_id": "email_agent",
+    "parent_agent": "research_agent",
+    "child_agent": "email_agent",
+    "tool_name": "delegate_task",
+    "original_args": {"goal": "send summary to alice@example.com", "context_ref": "val_summary"},
+    "effective_args": {"goal": "send summary to alice@example.com", "context_ref": "val_summary", "toolsets": ["email"], "role": "assistant", "cert_ref": "del_cert_001"},
+    "metadata": {"source": "synthetic_capture"},
+    "source_component": "subagent",
+    "timestamp": "2026-06-28T00:00:03Z",
+    "provenance_hint": "synthetic_pre_dispatch",
+    "authority_bearing_fields": ["parent_agent", "child_agent", "goal", "toolsets", "cert_ref"],
+    "raw_event_hash": "hash_delegate_with_cert"
+  },
+  "expected_verdict": "ALLOW",
+  "expected_reason": "",
+  "expected_executor_behavior": "called",
+  "notes": "Delegated send with matching delegation receipt and attenuated child cap.",
+  "setup": {
+    "delegations": [
+      {"cap_id": "cap_delegate_alice", "receipt_id": "del_cert_001", "parent_agent": "research_agent", "child_agent": "email_agent", "recipient": "alice@example.com", "allowed_recipient": "alice@example.com", "attenuation_valid": true}
+    ]
+  }
+}

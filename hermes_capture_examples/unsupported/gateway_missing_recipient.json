@@ -1,0 +1,29 @@
+{
+  "case_id": "gateway_missing_recipient",
+  "category": "unsupported",
+  "hermes_runtime_event": {
+    "event_id": "capture_gateway_missing_recipient",
+    "source": "hermes",
+    "hook_point": "gateway_messaging_pre_send",
+    "capture_mode": "pre_execution_gate",
+    "session_id": "session_016",
+    "task_id": "task_hermes_capture_validation",
+    "agent_id": "hermes_mock",
+    "parent_agent": null,
+    "child_agent": null,
+    "tool_name": "send_message",
+    "original_args": {"platform": "telegram", "body": "val_summary"},
+    "effective_args": {"platform": "telegram", "body": "val_summary"},
+    "metadata": {"source": "synthetic_capture"},
+    "source_component": "gateway",
+    "timestamp": "2026-06-28T00:00:15Z",
+    "provenance_hint": "synthetic_pre_send_incomplete",
+    "authority_bearing_fields": ["platform", "body"],
+    "raw_event_hash": "hash_gateway_missing"
+  },
+  "expected_verdict": "DENY",
+  "expected_reason": "AdapterCoverageGap",
+  "expected_executor_behavior": "not_called",
+  "notes": "Gateway pre-send without recipient cannot support enforcement.",
+  "setup": {}
+}

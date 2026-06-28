@@ -755,3 +755,40 @@ Known risks:
 - This is still mock/replay dry-run only, not a real Hermes wrapper.
 - Runtime event capture is required before any real Hermes integration claim.
 - Remaining gaps include pty/background terminal sessions, non-http MCP, gateway media/reaction/thread fields, provider memory remote container metadata, ACP delegation fields, cron lifecycle, and full patch semantics.
+
+## Stage 22 - Hermes Runtime Event Capture Design
+
+Status: implemented, self-check pending.
+
+Scope:
+- Define a Hermes runtime capture schema and hook-point taxonomy for future integration.
+- Validate synthetic captured events through a replay bridge into the existing Hermes mock adapter profile.
+- Keep `pre_execution_gate`, `observer_only`, and `unsupported` capture semantics distinct.
+- Do not run Hermes, install dependencies, execute third-party commands, execute real tools, send messages, make network requests, or execute shell actions.
+- Do not modify Reference Monitor, Capability Store, or Proof Model safety semantics.
+
+Implemented:
+- Added `src/capproof/hermes_capture.py` with `HermesRuntimeEvent`, `HermesHookPoint`, `HermesCaptureMode`, `HermesCapturedToolCall`, `HermesCaptureValidationResult`, and `HermesCapturedEventAdapter`.
+- Added `hermes_runtime_capture_design.md`.
+- Added `run_hermes_capture_validation.py`.
+- Added `hermes_capture_examples/` synthetic captured events for supported pre-execution, deny pre-execution, observer-only, and unsupported/missing-field cases.
+- Added `hermes_capture_validation_report.md` and `hermes_capture_examples/summary.json` generated outputs.
+- Added `tests/test_hermes_capture_validation.py`.
+- Updated reproduction notes.
+
+Validation result:
+- Total synthetic events: 19.
+- Pre-execution gate events: 17.
+- Observer-only events: 2.
+- Unsupported events: 5.
+- Allowed: 6.
+- Denied: 13.
+- ASK: 0.
+- AdapterCoverageGap count: 7.
+- Observer-only blocked from enforcement: 2.
+- Executor called on denied: 0.
+
+Known risks:
+- This is capture schema and replay validation only, not a real Hermes wrapper.
+- Real Hermes hook availability and exact runtime payloads still need runtime event capture.
+- Observer-only hooks can support audit claims only, not enforcement claims.

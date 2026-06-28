@@ -48,6 +48,14 @@ from capproof.agent_adapter import (
     profile_tool_contracts,
     send_message_contract,
 )
+from capproof.hermes_capture import (
+    HermesCapturedEventAdapter,
+    HermesCapturedToolCall,
+    HermesCaptureMode,
+    HermesCaptureValidationResult,
+    HermesHookPoint,
+    HermesRuntimeEvent,
+)
 from capproof.contracts import (
     ToolContractRegistry,
     default_tool_contract_registry,
@@ -189,6 +197,12 @@ __all__ = [
     "GuardedExecutor",
     "HarnessAdapter",
     "HermesAgentLikeAdapter",
+    "HermesCapturedEventAdapter",
+    "HermesCapturedToolCall",
+    "HermesCaptureMode",
+    "HermesCaptureValidationResult",
+    "HermesHookPoint",
+    "HermesRuntimeEvent",
     "InMemoryCapabilityStore",
     "InMemoryMemoryStore",
     "LangGraphLikeAdapter",
