@@ -1,0 +1,20 @@
+{
+  "case_id": "inst_mcp_missing_transport_endpoint",
+  "category": "unsupported_missing",
+  "source": "hermes",
+  "hook_point": "mcp_pre_transport",
+  "capture_mode": "pre_execution_gate",
+  "session_id": "s1",
+  "task_id": "task_1",
+  "agent_id": "agent_main",
+  "tool_name": "mcp_company_server_http_post",
+  "effective_args": {
+    "server": "company_server",
+    "tool_name": "http_post",
+    "arguments": {"url": "https://api.company.com/submit", "headers": {}, "body_ref": "val_summary"},
+    "transport": {"type": "http"}
+  },
+  "metadata": {"source_component": "mcp"},
+  "expected_verdict": "DENY",
+  "expected_reason": "AdapterCoverageGap"
+}

@@ -1,0 +1,20 @@
+{
+  "case_id": "inst_memory_content_pre_write",
+  "category": "supported_pre_execution",
+  "source": "hermes",
+  "hook_point": "memory_pre_write",
+  "capture_mode": "pre_execution_gate",
+  "session_id": "s1",
+  "task_id": "task_1",
+  "agent_id": "agent_main",
+  "tool_name": "memory",
+  "effective_args": {
+    "action": "remember",
+    "target": "project_fact",
+    "content": "The project uses pytest.",
+    "origin": "tool_output",
+    "persistent": true
+  },
+  "metadata": {"source_component": "memory"},
+  "expected_verdict": "ALLOW"
+}

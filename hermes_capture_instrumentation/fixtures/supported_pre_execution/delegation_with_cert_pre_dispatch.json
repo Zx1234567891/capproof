@@ -1,0 +1,35 @@
+{
+  "case_id": "inst_delegation_with_cert_pre_dispatch",
+  "category": "supported_pre_execution",
+  "source": "hermes",
+  "hook_point": "subagent_delegation_pre_dispatch",
+  "capture_mode": "pre_execution_gate",
+  "session_id": "s1",
+  "task_id": "task_1",
+  "agent_id": "email_agent",
+  "parent_agent": "research_agent",
+  "child_agent": "email_agent",
+  "tool_name": "delegate_task",
+  "effective_args": {
+    "goal": "send summary to alice@example.com",
+    "context_ref": "val_summary",
+    "toolsets": ["email"],
+    "role": "assistant",
+    "cert_ref": "del_cert_001",
+    "delegated_scope": {"recipient": "alice@example.com"}
+  },
+  "metadata": {"source_component": "subagent"},
+  "expected_verdict": "ALLOW",
+  "setup": {
+    "delegations": [
+      {
+        "cap_id": "cap_delegate_alice_inst",
+        "parent_agent": "research_agent",
+        "child_agent": "email_agent",
+        "recipient": "alice@example.com",
+        "allowed_recipient": "alice@example.com",
+        "attenuation_valid": true
+      }
+    ]
+  }
+}

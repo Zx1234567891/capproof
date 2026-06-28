@@ -60,3 +60,41 @@ rewrite surfaces. Runtime samples must confirm exact field names, whether hooks
 are pre-side-effect, and whether all authority-bearing fields are visible before
 execution. Until then, CapProof can only claim capture schema and replay
 validation for synthetic events.
+
+## Stage 24 Capture-only Instrumentation Prototype
+
+Stage 24 adds capture-only hook wrappers and a fixture/trace runner. This is
+still not a real Hermes integration and not an enforcement wrapper. Hermes is
+not run, dependencies are not installed, third-party project commands are not
+executed, real tools are not called, network is not used, and shell commands are
+not executed.
+
+The wrappers only construct `HermesRuntimeEvent` values:
+
+- `ToolDispatcherCapture` records tool dispatcher pre-call arguments.
+- `TerminalCapture` records terminal command, cwd, env, stdin, and backend
+  without executing the command.
+- `MCPCapture` records MCP server/tool/arguments/transport endpoint/headers
+  without opening a transport.
+- `MemoryCapture` records memory content/origin/persistence/authority-like
+  claims before Memory Authority Stripping.
+- `GatewayCapture` records platform, recipient/target/channel, body,
+  attachments, and headers before sending.
+- `DelegationCapture` records parent/child agent, goal, scope/cert, and
+  toolsets before subagent dispatch.
+- `SchedulerCapture` records schedule id, recurrence, and action targets before
+  scheduler registration or fire.
+- `MiddlewareRewriteCapture` records original/effective args and middleware
+  source. Authorization must use effective args.
+
+`run_hermes_capture_instrumentation.py` reads fixture or trace JSON/JSONL,
+writes a JSONL trace, and then replays the captured events offline through the
+existing capture validation bridge and CapProof guard dry-run. Capture and
+replay are intentionally separate. `pre_execution_gate` events are eligible for
+offline guard dry-run when complete; `observer_only` events remain audit-only;
+unsupported or missing-field events fail closed with `AdapterCoverageGap`.
+
+The Stage 24 fixture set validates hook shape readiness only. A future real
+Hermes runtime capture experiment must still confirm that these hook points
+exist in the runtime, fire before side effects, and expose the required
+authority-bearing fields.

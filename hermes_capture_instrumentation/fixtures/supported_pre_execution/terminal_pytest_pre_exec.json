@@ -1,0 +1,15 @@
+{
+  "case_id": "inst_terminal_pytest_pre_exec",
+  "category": "supported_pre_execution",
+  "source": "hermes",
+  "hook_point": "terminal_backend_pre_exec",
+  "capture_mode": "pre_execution_gate",
+  "session_id": "s1",
+  "task_id": "task_1",
+  "agent_id": "agent_main",
+  "tool_name": "terminal",
+  "original_args": {"command": "pytest tests/", "cwd": "$WORKSPACE", "env": {}, "stdin": null},
+  "effective_args": {"command": "pytest tests/", "cwd": "$WORKSPACE", "env": {}, "stdin": null, "terminal_backend": "local"},
+  "metadata": {"source_component": "terminal_backend"},
+  "expected_verdict": "ALLOW"
+}

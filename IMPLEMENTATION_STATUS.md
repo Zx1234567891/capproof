@@ -828,3 +828,44 @@ Prototype result over `hermes_capture_prototype/input_examples`:
 Known risks:
 - This is still an offline capture prototype over JSON / JSONL examples, not real Hermes instrumentation.
 - Real hook availability, exact runtime payload shapes, and pre-side-effect placement still need verification before any enforcement wrapper claim.
+
+## Stage 24 - Hermes Capture-only Instrumentation
+
+Status: implemented, self-check pending.
+
+Scope:
+- Define capture-only hook wrappers that produce `HermesRuntimeEvent` records for tool dispatcher, terminal, MCP, memory, gateway, delegation, scheduler, and middleware rewrite surfaces.
+- Process fixture or trace JSON/JSONL events, write capture traces, validate required fields, and replay eligible `pre_execution_gate` events through the existing offline guard dry-run.
+- Keep capture and replay separate: capture wrappers do not call CapProof guard, execute tools, run Hermes, install dependencies, run third-party commands, use network, send messages, or execute shell actions.
+- Do not modify Reference Monitor, Capability Store, or Proof Model safety semantics.
+
+Implemented:
+- Added `src/capproof/hermes_instrumentation.py` with capture-only wrappers:
+  `ToolDispatcherCapture`, `TerminalCapture`, `MCPCapture`, `MemoryCapture`,
+  `GatewayCapture`, `DelegationCapture`, `SchedulerCapture`, and
+  `MiddlewareRewriteCapture`.
+- Added `run_hermes_capture_instrumentation.py`.
+- Added `hermes_capture_instrumentation/fixtures/` fixture events.
+- Added generated trace/report outputs under `hermes_capture_instrumentation/traces/`
+  and `hermes_capture_instrumentation/reports/`, plus
+  `hermes_capture_instrumentation_report.md`.
+- Added `tests/test_hermes_capture_instrumentation.py`.
+- Updated reproduction notes and Hermes runtime capture design notes.
+
+Instrumentation fixture result:
+- Total events processed: 19.
+- Pre-execution-gate events: 17.
+- Observer-only events: 2.
+- Unsupported / missing-field events: 5.
+- Allowed: 7.
+- Denied: 12.
+- ASK: 0.
+- AdapterCoverageGap count: 7.
+- Observer-only blocked count: 2.
+- Executor called on deny: 0.
+- Executor called on ask: 0.
+
+Known risks:
+- This is capture-only instrumentation over fixtures and traces, not a real Hermes runtime hook.
+- Real Hermes runtime hook samples are still required before any enforcement wrapper claim.
+- Observer-only captures support audit only; unsupported or missing-field events fail closed.

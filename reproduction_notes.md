@@ -61,6 +61,12 @@ These notes are part of the artifact contract for Stages 12-13. The harness inte
 - `python run_hermes_capture_prototype.py --report`: prints the latest prototype report, summary, and trace paths.
 - `pytest tests/test_hermes_capture_prototype.py -q`: runs the Stage 23 capture prototype tests.
 - Stage 23 capture prototype commands process only JSON / JSONL captured-event examples. They do not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to gateways/MCP servers, call network services, send email, or execute shell actions.
+- `python run_hermes_capture_instrumentation.py --fixture hermes_capture_instrumentation/fixtures`: runs the Stage 24 capture-only instrumentation fixture set and regenerates `hermes_capture_instrumentation_report.md`, `hermes_capture_instrumentation/reports/capture_summary.json`, and `hermes_capture_instrumentation/traces/captured_events.jsonl`.
+- `python run_hermes_capture_instrumentation.py --trace hermes_capture_instrumentation/traces/captured_events.jsonl`: replays an existing captured-event JSONL trace offline.
+- `python run_hermes_capture_instrumentation.py --validate`: validates the default trace if present, otherwise validates the fixture directory.
+- `python run_hermes_capture_instrumentation.py --report`: prints the latest Stage 24 report, summary, and trace paths.
+- `pytest tests/test_hermes_capture_instrumentation.py -q`: runs the Stage 24 capture-only wrapper and instrumentation runner tests.
+- Stage 24 instrumentation commands only process fixture / trace captured events. They do not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to gateways/MCP servers, call network services, send email/messages, or execute shell actions.
 
 Adaptive mode is not implemented in Stage 13. Future adaptive runs should preserve the same task-local observable oracles while varying attack payloads after structured denials.
 

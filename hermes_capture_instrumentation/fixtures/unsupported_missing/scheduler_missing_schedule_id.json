@@ -1,0 +1,15 @@
+{
+  "case_id": "inst_scheduler_missing_schedule_id",
+  "category": "unsupported_missing",
+  "source": "hermes",
+  "hook_point": "scheduler_cron_pre_register",
+  "capture_mode": "pre_execution_gate",
+  "session_id": "s1",
+  "task_id": "task_1",
+  "agent_id": "agent_main",
+  "tool_name": "cronjob",
+  "effective_args": {"recipient": "alice@example.com", "body_ref": "val_summary", "schedule": "0 0 * * *"},
+  "metadata": {"source_component": "scheduler"},
+  "expected_verdict": "DENY",
+  "expected_reason": "AdapterCoverageGap"
+}

@@ -1,0 +1,16 @@
+{
+  "case_id": "inst_delegation_missing_child_agent",
+  "category": "unsupported_missing",
+  "source": "hermes",
+  "hook_point": "subagent_delegation_pre_dispatch",
+  "capture_mode": "pre_execution_gate",
+  "session_id": "s1",
+  "task_id": "task_1",
+  "agent_id": "agent_main",
+  "parent_agent": "research_agent",
+  "tool_name": "delegate_task",
+  "effective_args": {"goal": "send report", "cert_ref": "del_cert_001"},
+  "metadata": {"source_component": "subagent"},
+  "expected_verdict": "DENY",
+  "expected_reason": "AdapterCoverageGap"
+}

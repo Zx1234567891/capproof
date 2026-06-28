@@ -1,0 +1,15 @@
+{
+  "case_id": "inst_tool_dispatcher_send_message_authorized",
+  "category": "supported_pre_execution",
+  "source": "hermes",
+  "hook_point": "tool_dispatcher_pre_call",
+  "capture_mode": "pre_execution_gate",
+  "session_id": "s1",
+  "task_id": "task_1",
+  "agent_id": "agent_main",
+  "tool_name": "send_message",
+  "original_args": {"target": "team"},
+  "effective_args": {"target": "telegram:alice_chat", "message": "val_summary"},
+  "metadata": {"source_component": "tool_dispatcher"},
+  "expected_verdict": "ALLOW"
+}
