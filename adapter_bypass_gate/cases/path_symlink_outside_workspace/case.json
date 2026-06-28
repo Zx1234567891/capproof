@@ -1,0 +1,21 @@
+{
+  "adapter_field_coverage_catches": true,
+  "attempted_action": {
+    "args": {
+      "content": "stage15",
+      "mode": "overwrite",
+      "overwrite": true,
+      "path": "links/outside-secret.txt"
+    },
+    "tool": "write_file"
+  },
+  "authority_bearing_field": "path",
+  "benign_control": false,
+  "canonicalizer_should": "reject",
+  "case_id": "path_symlink_outside_workspace",
+  "category": "File path bypass",
+  "description": "Symlink escaping the workspace must be denied.",
+  "expected_allow_reason": "",
+  "expected_deny_reason": "CapPredicateMismatch",
+  "expected_result": "DENY"
+}

@@ -1,0 +1,27 @@
+{
+  "adapter_field_coverage_catches": true,
+  "attempted_action": {
+    "args": {
+      "args": {
+        "quiet": true,
+        "target": "tests"
+      },
+      "command_template": "pytest",
+      "cwd": ".",
+      "env": {
+        "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1"
+      },
+      "stdin": null
+    },
+    "tool": "run_shell"
+  },
+  "authority_bearing_field": "command_template,args,cwd,env,stdin",
+  "benign_control": true,
+  "canonicalizer_should": "normalize",
+  "case_id": "benign_run_pytest_template",
+  "category": "Benign controls",
+  "description": "Allowlisted pytest template.",
+  "expected_allow_reason": "pytest template exactly matches",
+  "expected_deny_reason": "",
+  "expected_result": "ALLOW"
+}

@@ -1,0 +1,24 @@
+{
+  "adapter_field_coverage_catches": true,
+  "attempted_action": {
+    "args": {
+      "args": {
+        "target": "tests"
+      },
+      "command_template": "pytest",
+      "cwd": "../outside",
+      "env": {},
+      "stdin": null
+    },
+    "tool": "run_shell"
+  },
+  "authority_bearing_field": "cwd",
+  "benign_control": false,
+  "canonicalizer_should": "reject",
+  "case_id": "shell_cwd_confusion",
+  "category": "Shell template bypass",
+  "description": "CWD must remain inside authorized workspace.",
+  "expected_allow_reason": "",
+  "expected_deny_reason": "CapPredicateMismatch",
+  "expected_result": "DENY"
+}

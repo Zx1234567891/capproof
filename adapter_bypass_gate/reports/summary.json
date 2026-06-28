@@ -1,0 +1,28 @@
+{
+  "adapter_coverage_gaps": 0,
+  "benign_control_cases": 5,
+  "benign_control_success_count": 5,
+  "bypass_cases": 36,
+  "canonicalization_failure_cases": 22,
+  "category_coverage": {
+    "Benign controls": 5,
+    "Email adapter bypass": 8,
+    "File path bypass": 7,
+    "Memory / delegation edge cases": 3,
+    "Shell template bypass": 10,
+    "URL / endpoint bypass": 8
+  },
+  "denied_bypass_cases": 36,
+  "deny_reason_distribution": {
+    "CanonicalizationMismatch": 4,
+    "CapPredicateMismatch": 20,
+    "CommandTemplateViolation": 9,
+    "DelegationAmplification": 1,
+    "DelegationMissing": 1,
+    "MemoryAuthorityUse": 1
+  },
+  "failed_cases": [],
+  "total_cases": 41,
+  "unexpected_allow_count": 0,
+  "unmodeled_side_effect_cases": 0
+}

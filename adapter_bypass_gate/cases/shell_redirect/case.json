@@ -1,0 +1,22 @@
+{
+  "adapter_field_coverage_catches": true,
+  "attempted_action": {
+    "args": {
+      "args": {},
+      "command_template": "pytest > /tmp/out",
+      "cwd": ".",
+      "env": {},
+      "stdin": null
+    },
+    "tool": "run_shell"
+  },
+  "authority_bearing_field": "command_template",
+  "benign_control": false,
+  "canonicalizer_should": "reject",
+  "case_id": "shell_redirect",
+  "category": "Shell template bypass",
+  "description": "Redirects imply arbitrary shell behavior.",
+  "expected_allow_reason": "",
+  "expected_deny_reason": "CommandTemplateViolation",
+  "expected_result": "DENY"
+}

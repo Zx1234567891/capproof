@@ -1,0 +1,21 @@
+{
+  "adapter_field_coverage_catches": true,
+  "attempted_action": {
+    "args": {
+      "content": "stage15",
+      "mode": "overwrite",
+      "overwrite": true,
+      "path": "reports/re\u0301sume.md"
+    },
+    "tool": "write_file"
+  },
+  "authority_bearing_field": "path",
+  "benign_control": false,
+  "canonicalizer_should": "reject",
+  "case_id": "path_unicode_normalization_confusion",
+  "category": "File path bypass",
+  "description": "Non-NFC path form must fail closed.",
+  "expected_allow_reason": "",
+  "expected_deny_reason": "CanonicalizationMismatch",
+  "expected_result": "DENY"
+}

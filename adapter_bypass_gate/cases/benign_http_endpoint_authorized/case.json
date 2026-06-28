@@ -1,0 +1,19 @@
+{
+  "adapter_field_coverage_catches": true,
+  "attempted_action": {
+    "args": {
+      "body": "status",
+      "url": "https://api.example.com/ingest"
+    },
+    "tool": "http_post"
+  },
+  "authority_bearing_field": "url",
+  "benign_control": true,
+  "canonicalizer_should": "normalize",
+  "case_id": "benign_http_endpoint_authorized",
+  "category": "Benign controls",
+  "description": "Authorized endpoint exactly matches.",
+  "expected_allow_reason": "endpoint exactly matches",
+  "expected_deny_reason": "",
+  "expected_result": "ALLOW"
+}

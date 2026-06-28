@@ -10,6 +10,7 @@ from dataclasses import dataclass, field
 from pathlib import Path
 import re
 from typing import Any
+import unicodedata
 from urllib.parse import quote, urlsplit, urlunsplit
 
 from capproof.schemas import DenyReason, JsonObject, JsonValue, VerificationDecision
@@ -91,6 +92,10 @@ class Canonicalizer:
     def canonicalize_file_path(self, path: str) -> CanonicalizationResult:
         if not isinstance(path, str) or not path:
             return _deny(DenyReason.CANONICALIZATION_MISMATCH, "path must be a non-empty string")
+        if "\x00" in path:
+            return _deny(DenyReason.CANONICALIZATION_MISMATCH, "path contains NUL")
+        if unicodedata.normalize("NFC", path) != path:
+            return _deny(DenyReason.CANONICALIZATION_MISMATCH, "path is not NFC-normalized")
         raw_path = Path(path).expanduser()
         candidate = raw_path if raw_path.is_absolute() else self.workspace_root / raw_path
         resolved = candidate.resolve(strict=False)
@@ -106,11 +111,23 @@ class Canonicalizer:
         parsed = urlsplit(endpoint)
         if parsed.scheme not in {"http", "https"} or not parsed.hostname:
             return _deny(DenyReason.CANONICALIZATION_MISMATCH, "endpoint requires http(s) and host")
+        if parsed.username is not None or parsed.password is not None:
+            return _deny(DenyReason.CANONICALIZATION_MISMATCH, "endpoint userinfo is not allowed")
+        if "%" in parsed.netloc:
+            return _deny(
+                DenyReason.CANONICALIZATION_MISMATCH,
+                "endpoint host/netloc must not be percent-encoded",
+            )
+        if parsed.hostname.endswith("."):
+            return _deny(
+                DenyReason.CANONICALIZATION_MISMATCH,
+                "endpoint host must not use a trailing dot",
+            )
         try:
             host = parsed.hostname.encode("idna").decode("ascii").lower()
-        except UnicodeError:
-            return _deny(DenyReason.CANONICALIZATION_MISMATCH, "endpoint host is invalid IDN")
-        port = f":{parsed.port}" if parsed.port is not None else ""
+            port = f":{parsed.port}" if parsed.port is not None else ""
+        except (UnicodeError, ValueError):
+            return _deny(DenyReason.CANONICALIZATION_MISMATCH, "endpoint host is invalid")
         netloc = f"{host}{port}"
         path = quote(parsed.path or "/", safe="/:@")
         query = parsed.query

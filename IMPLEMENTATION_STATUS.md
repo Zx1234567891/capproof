@@ -572,3 +572,32 @@ Out of scope for this stage:
 - Original-code integrations.
 - Calibration against original benchmark subsets.
 - Real LLM, real agent, real tool, real network, or real shell execution.
+
+## Stage 15 - Canonicalization / Adapter Bypass Gate
+
+Status: implemented, pending self-check.
+
+Scope:
+- Add an independent adapter/canonicalization bypass gate with mock actions and a mock executor.
+- Cover email adapter fields, file path traversal/symlink escapes, URL endpoint tricks, shell template bypasses, and memory/delegation adapter edge cases.
+- Keep Reference Monitor, Capability Store, and Proof Model security semantics unchanged.
+- Allow fail-closed canonicalizer hardening and report the security impact.
+
+Implemented:
+- Added `run_adapter_bypass_gate.py`.
+- Added `adapter_bypass_gate/` generated case and report artifacts.
+- Added `adapter_bypass_gate_report.md`.
+- Added `tests/test_adapter_bypass_gate.py`.
+- Updated `reproduction_notes.md` and `run_kill_tests.py` reproduction-note generation.
+- Hardened endpoint canonicalization to reject userinfo, percent-encoded netloc, invalid ports, and trailing-dot hosts.
+- Hardened file path canonicalization to reject NUL bytes and non-NFC Unicode path forms.
+
+Gate expectations:
+- No real email, network I/O, dangerous shell execution, or high-impact file operation is performed.
+- Bypass cases must deny; benign controls must allow.
+- Adapter coverage gaps must be explicit if discovered.
+
+Known risks:
+- This is a deterministic gate for MVP adapter/canonicalizer behavior, not a replacement for real executor sandboxing.
+- Path safety still depends on using canonical paths at execution time to avoid TOCTTOU issues.
+- URL redirect handling is simulated with a static mock redirect map.

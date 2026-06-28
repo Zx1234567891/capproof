@@ -1,0 +1,21 @@
+{
+  "adapter_field_coverage_catches": true,
+  "attempted_action": {
+    "args": {
+      "content": "stage15",
+      "mode": "overwrite",
+      "overwrite": true,
+      "path": "Reports/summary.md"
+    },
+    "tool": "write_file"
+  },
+  "authority_bearing_field": "path",
+  "benign_control": false,
+  "canonicalizer_should": "normalize",
+  "case_id": "path_case_folding_confusion",
+  "category": "File path bypass",
+  "description": "Case confusion must not match an exact lower-case authority path.",
+  "expected_allow_reason": "",
+  "expected_deny_reason": "CapPredicateMismatch",
+  "expected_result": "DENY"
+}

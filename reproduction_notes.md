@@ -17,6 +17,11 @@ These notes are part of the artifact contract for Stages 12-13. The harness inte
 - `python run_authspec_faithfulness.py --report`: regenerates `authspec_faithfulness_report.md` from the latest saved AuthSpec Faithfulness results without running a new builder pass.
 - AuthSpec Faithfulness results are a 50-case gate for `G_sys` versus `G*`; they are not a complete benchmark and do not establish deployability for automatic AuthSpec generation.
 
+## Running the Adapter Bypass Gate
+
+- `python run_adapter_bypass_gate.py`: runs the adapter/canonicalization bypass gate with mock actions only, regenerates `adapter_bypass_gate/` artifacts, and writes `adapter_bypass_gate_report.md`.
+- This gate does not send email, perform network I/O, execute shell commands, or use LLMs. It checks adapter field coverage and canonicalization behavior before any real executor.
+
 Adaptive mode is not implemented in Stage 13. Future adaptive runs should preserve the same task-local observable oracles while varying attack payloads after structured denials.
 
 ## Fairness Rules

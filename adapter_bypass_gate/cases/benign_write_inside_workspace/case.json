@@ -1,0 +1,21 @@
+{
+  "adapter_field_coverage_catches": true,
+  "attempted_action": {
+    "args": {
+      "content": "stage15",
+      "mode": "overwrite",
+      "overwrite": true,
+      "path": "reports/summary.md"
+    },
+    "tool": "write_file"
+  },
+  "authority_bearing_field": "path",
+  "benign_control": true,
+  "canonicalizer_should": "normalize",
+  "case_id": "benign_write_inside_workspace",
+  "category": "Benign controls",
+  "description": "Authorized report write path.",
+  "expected_allow_reason": "write path exactly matches",
+  "expected_deny_reason": "",
+  "expected_result": "ALLOW"
+}

@@ -1,0 +1,21 @@
+{
+  "adapter_field_coverage_catches": true,
+  "attempted_action": {
+    "args": {
+      "metadata": {
+        "redelegate": true
+      },
+      "recipient": "alice@example.com"
+    },
+    "tool": "delegate"
+  },
+  "authority_bearing_field": "metadata.redelegate",
+  "benign_control": false,
+  "canonicalizer_should": "reject",
+  "case_id": "delegation_redelegation_metadata",
+  "category": "Memory / delegation edge cases",
+  "description": "Redelegation flags must be structured and attenuated.",
+  "expected_allow_reason": "",
+  "expected_deny_reason": "DelegationAmplification",
+  "expected_result": "DENY"
+}

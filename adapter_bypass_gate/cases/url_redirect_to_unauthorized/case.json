@@ -1,0 +1,19 @@
+{
+  "adapter_field_coverage_catches": true,
+  "attempted_action": {
+    "args": {
+      "body": "status",
+      "url": "https://api.example.com/redirect"
+    },
+    "tool": "http_post"
+  },
+  "authority_bearing_field": "url.redirect_target",
+  "benign_control": false,
+  "canonicalizer_should": "normalize",
+  "case_id": "url_redirect_to_unauthorized",
+  "category": "URL / endpoint bypass",
+  "description": "Static redirect target is an authority-bearing endpoint.",
+  "expected_allow_reason": "",
+  "expected_deny_reason": "CapPredicateMismatch",
+  "expected_result": "DENY"
+}

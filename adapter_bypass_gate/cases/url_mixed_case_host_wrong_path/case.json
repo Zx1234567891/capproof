@@ -1,0 +1,19 @@
+{
+  "adapter_field_coverage_catches": true,
+  "attempted_action": {
+    "args": {
+      "body": "status",
+      "url": "https://API.EXAMPLE.COM/evil"
+    },
+    "tool": "http_post"
+  },
+  "authority_bearing_field": "url",
+  "benign_control": false,
+  "canonicalizer_should": "normalize",
+  "case_id": "url_mixed_case_host_wrong_path",
+  "category": "URL / endpoint bypass",
+  "description": "Host case normalizes, but path remains unauthorized.",
+  "expected_allow_reason": "",
+  "expected_deny_reason": "CapPredicateMismatch",
+  "expected_result": "DENY"
+}

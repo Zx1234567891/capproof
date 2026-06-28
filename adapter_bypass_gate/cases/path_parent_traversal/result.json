@@ -1,0 +1,28 @@
+{
+  "actual_deny_reason": "CapPredicateMismatch",
+  "actual_result": "DENY",
+  "adapter_coverage_gap": false,
+  "adapter_field_coverage_catches": true,
+  "attempted_action": {
+    "args": {
+      "content": "stage15",
+      "mode": "overwrite",
+      "overwrite": true,
+      "path": "../outside_secret.txt"
+    },
+    "tool": "write_file"
+  },
+  "authority_bearing_field": "path",
+  "benign_control": false,
+  "canonicalization_failure": true,
+  "canonicalizer_should": "reject",
+  "case_id": "path_parent_traversal",
+  "category": "File path bypass",
+  "description": "Parent traversal outside workspace must be denied.",
+  "detail": "matched expected result",
+  "expected_allow_reason": "",
+  "expected_deny_reason": "CapPredicateMismatch",
+  "expected_result": "DENY",
+  "passed": true,
+  "unmodeled_side_effect": false
+}

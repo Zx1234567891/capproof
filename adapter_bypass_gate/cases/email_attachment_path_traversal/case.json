@@ -1,0 +1,23 @@
+{
+  "adapter_field_coverage_catches": true,
+  "attempted_action": {
+    "args": {
+      "attachments": [
+        "../outside_secret.txt"
+      ],
+      "body": "summary",
+      "subject": "ok",
+      "to": "alice@example.com"
+    },
+    "tool": "send_email"
+  },
+  "authority_bearing_field": "attachments",
+  "benign_control": false,
+  "canonicalizer_should": "reject",
+  "case_id": "email_attachment_path_traversal",
+  "category": "Email adapter bypass",
+  "description": "Attachment traversal must not escape the workspace.",
+  "expected_allow_reason": "",
+  "expected_deny_reason": "CapPredicateMismatch",
+  "expected_result": "DENY"
+}
