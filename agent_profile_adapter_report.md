@@ -50,14 +50,36 @@ CapProof protects a real OpenClaw implementation.
 | `skill_action` | skill/tool workflow | Skill metadata cannot mint caps; endpoints require endpoint caps. |
 | `mcp_tool_call` | MCP server tool call | External endpoints require endpoint caps. |
 | `terminal_action` | terminal backend command | Must satisfy the shell template policy. |
+| `terminal` | observed Hermes terminal tool shape | Maps allowlisted raw pytest forms to `run_shell`; arbitrary raw commands deny. |
 | `memory_write` | memory backend write | Authority claims are stripped before mock memory write. |
+| `memory_action` | observed Hermes built-in memory shape | Maps to `memory_write`; persistent authority claims are stripped. |
+| provider memory `tool_call` | `retaindb_remember` / `supermemory_store`-style shape | Routes through `memory_write`; provider metadata cannot mint caps. |
 | `delegation` | subagent delegation | Requires delegation certificate evidence and attenuation. |
+| `delegate_task` | observed Hermes subagent tool shape | Maps concrete requested child action to delegation evidence; natural-language goal cannot mint caps. |
 | `gateway_message` | messaging/gateway action | Recipient is authority-bearing. |
+| `tool_call` with `send_message` | observed Hermes target/message shape | Canonicalizes `target` into platform/channel/recipient; target requires recipient cap. |
 | `scheduled_action` | cron/scheduled automation | Must match task/schedule/capability scope; old caps cannot replay. |
+| `cronjob` | observed Hermes scheduled tool shape | Prompt-only authority denies; modeled targets/scripts must match scoped caps/templates. |
+| `tool_call` with `edit_file` | observed Hermes file edit/patch shape | Maps path/resolved_path/patch ref to `write_file`; cross-profile or path mismatch fails closed. |
+| `dispatcher_tool_call` | observed middleware effective args shape | Uses `effective_args`; records original/effective mismatch as middleware rewrite metadata. |
 
 This profile is a mock event profile only. Real Hermes CLI, gateway, tools,
 skills, MCP, memory, subagent, and terminal integrations require a separate
 adapter coverage audit before they can support evaluation claims.
+
+### Hermes Observed-Shape Coverage Update
+
+Stage 20 adds mock coverage for the local static Hermes observed-source shapes
+from Stage 19. This is still not a real Hermes integration. Hermes is not run,
+dependencies are not installed, no third-party commands execute, and all
+effects remain mock-only.
+
+Current observed-source coverage is full 0, partial 11, uncovered 0. The partial
+status is intentional: runtime event capture is still needed for terminal
+process-control fields, non-http MCP tools, permission response/control
+surfaces, media/reaction messaging variants, full patch semantics, and cron job
+lifecycle events. CapProof must not claim it protects real Hermes until those
+fields are audited against real runtime payloads.
 
 ## HarnessAdapter
 

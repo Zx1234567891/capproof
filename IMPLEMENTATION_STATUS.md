@@ -683,3 +683,40 @@ Known risks:
 - Current adapter profile only partially covers real Hermes shapes; real tool names such as `terminal`, `memory`, `delegate_task`, `cronjob`, dynamic `mcp_*`, and `send_message.target` need adapter updates before dry-run wrapper claims.
 - Observed gaps are pre-integration risks, not final vulnerability claims.
 - Third-party Hermes source under `external/` must not be committed to the CapProof repository.
+
+## Stage 20 - Hermes Observed-Shape Mock Adapter Coverage
+
+Status: implemented, self-check pending.
+
+Scope:
+- Strengthen the mock `HermesAgentLikeAdapter` profile against locally observed Hermes high-impact event shapes.
+- Do not connect to real Hermes, run Hermes, install dependencies, execute third-party commands, execute real tools, send email, make network requests, or execute shell actions.
+- Do not modify Reference Monitor, Capability Store, or Proof Model safety semantics.
+
+Implemented:
+- Added mock observed-shape handling for:
+  - terminal backend raw command events
+  - gateway `send_message` target/message events
+  - dynamic MCP `http_post` and `messages_send`-style events
+  - built-in memory action events
+  - provider memory tools such as `retaindb_remember` / `supermemory_store`
+  - `delegate_task` subagent request events
+  - cronjob scheduled action events
+  - `edit_file` path/resolved_path/patch ref events
+  - dispatcher `original_args` / `effective_args` middleware rewrite events
+- Updated profile-only tool contracts for `http_post`, `send_message`, and `memory_write` field coverage.
+- Updated `tests/test_hermes_adapter_coverage.py` to validate deny/allow behavior for the observed shapes.
+- Updated `agent_coverage_audit/` reports and matrix.
+- Updated `agent_profile_adapter_report.md` and `reproduction_notes.md`.
+
+Coverage result:
+- Observed-source high-impact surfaces: 11.
+- HermesAgentLikeAdapter observed-source full coverage: 0.
+- HermesAgentLikeAdapter observed-source partial coverage: 11.
+- HermesAgentLikeAdapter observed-source uncovered surfaces: 0.
+
+Known risks:
+- This is mock observed-shape coverage, not real Hermes integration.
+- All observed-source surfaces remain partial until runtime event capture validates exact payloads and hook points.
+- Remaining gaps include terminal process-control fields, non-http MCP tools, permission response/control surfaces, media/reaction messaging variants, full patch semantics, and cron job lifecycle events.
+- CapProof still cannot claim it protects real Hermes.

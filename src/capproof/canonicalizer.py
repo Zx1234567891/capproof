@@ -27,6 +27,7 @@ _SUSPICIOUS_COMMAND_WORDS = {
     "ssh",
     "wget",
 }
+_GATEWAY_RECIPIENT = re.compile(r"^[a-z][a-z0-9_+-]*:[A-Za-z0-9_.@-]+$")
 
 
 @dataclass(frozen=True)
@@ -77,8 +78,11 @@ class Canonicalizer:
         if not isinstance(recipient, str):
             return _deny(DenyReason.CANONICALIZATION_MISMATCH, "recipient must be a string")
         value = recipient.strip()
+        if _GATEWAY_RECIPIENT.fullmatch(value):
+            platform, target = value.split(":", 1)
+            return _allow(f"{platform.lower()}:{target}")
         if value.count("@") != 1:
-            return _deny(DenyReason.CANONICALIZATION_MISMATCH, "recipient must contain one @")
+            return _deny(DenyReason.CANONICALIZATION_MISMATCH, "recipient must be email or gateway target")
         local, domain = value.split("@", 1)
         if not local or not domain:
             return _deny(DenyReason.CANONICALIZATION_MISMATCH, "recipient local/domain missing")

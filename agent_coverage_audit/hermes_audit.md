@@ -16,22 +16,23 @@
 - Gateway recipients map to recipient authority; platform/chat_id semantics need explicit canonicalization.
 - MCP calls must map server/tool/url/method/headers/body into endpoint and content authority.
 - Terminal backend should be intercepted by a template-only wrapper.
-- Current gaps: real `terminal` command mapping, `send_message.target` parsing, provider memory tools, dynamic MCP schemas, cron persistence/schedule scope, and `delegate_task` certificate fields.
-- Required tests: real Hermes terminal shape fail-closed, MCP field coverage, gateway target parsing, memory persistence stripping, delegation certificate denial, cron schedule binding.
+- Stage 20 mock coverage maps real `terminal`, `send_message.target`, provider memory tools, dynamic MCP http_post, cron prompt/target handling, and `delegate_task` certificate checks, but runtime event capture is still required.
+- Remaining gaps: process-control terminal fields, non-http MCP tools, permission response/control surfaces, full patch semantics, cron job lifecycle, and media/reaction messaging variants.
+- Required tests: runtime event capture replay, non-http MCP fail-closed, permission response control, media attachment messaging, cron fire/replay, and patch diff semantics.
 
 ## Surfaces
 
-## Stage 19 Local Static Coverage Summary
+## Stage 20 Observed-Shape Mock Coverage Summary
 
 - This is a Hermes local static coverage audit, not a real Hermes integration.
 - Hermes was not run; dependencies were not installed; no third-party commands, real tools, network calls, email, or shell actions were executed.
 - Actual local checkout used: `external/external/hermes-agent`.
 - The requested path is normally `external/hermes-agent`; pass `--hermes-repo <path>` to point at another local checkout.
 - Observed-source rows are confirmed by static source reads; inferred rows are not treated as confirmed execution paths.
-- HermesAgentLikeAdapter observed-source full coverage: 0; partial coverage: 8; uncovered: 3.
-- CapProof cannot claim it protects real Hermes or that coverage is complete from this audit.
+- HermesAgentLikeAdapter observed-source full coverage: 0; partial coverage: 11; uncovered: 0.
+- Stage 20 updates Hermes observed-shape mock adapter coverage; CapProof still cannot claim it protects real Hermes or that coverage is complete from this audit.
 - Current findings are adapter coverage gaps and integration risks, not runtime vulnerability proofs.
-- Do not enter a real Hermes dry-run wrapper claim until terminal, send_message, dynamic MCP, memory, delegate_task, and cronjob real shapes are modeled and tested.
+- Do not enter a real Hermes dry-run wrapper claim until remaining partial fields are validated against runtime event capture.
 
 ### tool invocation
 
@@ -169,12 +170,12 @@
 - Evidence status: `observed in source`
 - Authority-bearing fields: function_name, function_args, task_id, session_id, tool_call_id, enabled_toolsets, middleware_trace
 - Current profile coverage: `partial`
-- Missing fields: original_args, effective_args, enabled_toolsets, session_id, turn_id, api_request_id
+- Missing fields: tool_request compatibility shape, enabled_toolsets, turn_id, api_request_id
 - Adapter coverage gap: yes
 - Likely hook point: tool_request middleware or pre-dispatch wrapper before registry.dispatch
 - Residual risk: middleware can rewrite authority-bearing args before execution; bridge tools can unwrap to real tools
-- Recommended adapter update: Add a Hermes real-tool-call event shape carrying original/effective args, tool_call_id, session_id, turn_id, and enabled_toolsets.
-- Recommended test case: Hermes observed tool invocation shape is parsed into canonical tool-specific action or fails closed.
+- Recommended adapter update: Stage 20 adds dispatcher_tool_call effective_args coverage; real tool_request capture still needs runtime field mapping.
+- Recommended test case: Dispatcher effective_args is preferred over original_args and middleware rewrites are recorded.
 - Confidence: `high`
 
 ### core file read/write/patch tools
@@ -185,12 +186,12 @@
 - Evidence status: `observed in source`
 - Authority-bearing fields: path, mode, overwrite, diff, patch, symlink_policy, workspace_root
 - Current profile coverage: `partial`
-- Missing fields: patch, old_string, new_string, replace_all, cross_profile, resolved_path, session_id
+- Missing fields: old_string, new_string, replace_all, session_id, full patch semantics
 - Adapter coverage gap: yes
 - Likely hook point: file tool wrapper before file_tools handlers
 - Residual risk: patch mode, cross_profile, staleness state, and resolved_path need explicit adapter coverage
-- Recommended adapter update: Map real Hermes read_file/write_file/patch schemas into separate CapProof contracts or deny patch until modeled.
-- Recommended test case: Real Hermes write_file path/content and patch path headers are represented or denied fail-closed.
+- Recommended adapter update: Stage 20 maps edit_file path/resolved_path/cross_profile/patch_ref to write_file or fail-closed; full patch semantics remain partial.
+- Recommended test case: Hermes edit_file AGENTS.md without cap denies; authorized workspace edit allows.
 - Confidence: `high`
 
 ### terminal tool shell command
@@ -200,13 +201,13 @@
 - Possible tool: `terminal`
 - Evidence status: `observed in source`
 - Authority-bearing fields: command, args, cwd, env, stdin, terminal_backend
-- Current profile coverage: `no`
-- Missing fields: terminal tool name mapping, command, background, timeout, workdir, pty, notify_on_complete, watch_patterns
+- Current profile coverage: `partial`
+- Missing fields: background, timeout, pty, notify_on_complete, watch_patterns
 - Adapter coverage gap: yes
 - Likely hook point: terminal tool wrapper before terminal_tool(command=...)
 - Residual risk: real Hermes uses tool name terminal with raw command string, background, workdir, pty, notification, and process controls
-- Recommended adapter update: Add a dry-run-only Hermes terminal adapter that maps terminal.command to an allowlisted run_shell template or denies arbitrary commands.
-- Recommended test case: Real Hermes terminal command shape fails closed until template mapping exists.
+- Recommended adapter update: Stage 20 maps terminal.command to allowlisted run_shell templates or denies arbitrary commands; process-control fields remain partial.
+- Recommended test case: Hermes terminal raw curl pipe denies; raw pytest maps to run_shell template with caps.
 - Confidence: `high`
 
 ### cross-channel send_message gateway tool
@@ -217,12 +218,12 @@
 - Evidence status: `observed in source`
 - Authority-bearing fields: recipient, channel, platform, chat_id, body, attachment, headers
 - Current profile coverage: `partial`
-- Missing fields: target, action, message, emoji, message_id, media local_path, thread_id
+- Missing fields: emoji, message_id, media local_path, thread_id, reaction action semantics
 - Adapter coverage gap: yes
 - Likely hook point: send_message tool wrapper / gateway proxy
 - Residual risk: real Hermes target encodes platform, chat_id, thread_id, media attachments, and reaction message_id in one string
-- Recommended adapter update: Canonicalize target into platform/channel/chat_id/thread_id recipient fields and map message to body/content.
-- Recommended test case: Real Hermes send_message target/message shape is denied or mapped to recipient authority.
+- Recommended adapter update: Stage 20 canonicalizes target into platform/channel/recipient and maps message to body; media/reaction variants remain partial.
+- Recommended test case: Hermes send_message target unauthorized denies NoCap; authorized target allows.
 - Confidence: `high`
 
 ### external MCP client dynamic tools
@@ -233,12 +234,12 @@
 - Evidence status: `observed in source`
 - Authority-bearing fields: url, host, method, headers, body, follow_redirects, mcp_server, tool_name
 - Current profile coverage: `partial`
-- Missing fields: server_name, tool_name, inputSchema, arguments, transport.command, transport.url, headers, resources/prompts
+- Missing fields: inputSchema, transport.command, resources/prompts, non-http dynamic tools
 - Adapter coverage gap: yes
 - Likely hook point: MCP proxy before dynamic registry.register handler dispatch
 - Residual risk: MCP server/tool metadata can define arbitrary inputSchema, transport command/url, resources, prompts, and mutating tools
-- Recommended adapter update: Add MCP-specific adapter rows for server name, prefixed tool name, transport endpoint/command, and raw arguments.
-- Recommended test case: Real Hermes mcp_* tool event preserves server/tool/arguments and unauthorized endpoint denies.
+- Recommended adapter update: Stage 20 maps dynamic http_post MCP server/tool/arguments/transport endpoint/header fields; non-http tools remain partial.
+- Recommended test case: Hermes dynamic MCP http_post preserves endpoint fields and unauthorized endpoint denies.
 - Confidence: `high`
 
 ### Hermes messaging MCP server tools
@@ -248,12 +249,12 @@
 - Possible tool: `messages_send`
 - Evidence status: `observed in source`
 - Authority-bearing fields: recipient, channel, platform, chat_id, body, attachment, headers
-- Current profile coverage: `no`
-- Missing fields: session_key, target, message, permission id, decision
+- Current profile coverage: `partial`
+- Missing fields: session_key, permission id, decision, approval/control capability
 - Adapter coverage gap: yes
 - Likely hook point: MCP server tool wrapper before messages_send dispatch
 - Residual risk: external MCP clients can drive Hermes message send and approval response surfaces
-- Recommended adapter update: Model Hermes MCP server tools separately from Hermes internal MCP client tools.
+- Recommended adapter update: Stage 20 maps messages_send-like target/message through send_message; permissions_respond remains unmodeled.
 - Recommended test case: messages_send target/message requires recipient capability; permissions_respond requires endorsement/control capability.
 - Confidence: `high`
 
@@ -265,12 +266,12 @@
 - Evidence status: `observed in source`
 - Authority-bearing fields: content, origin, persistence, authority_claims, scope
 - Current profile coverage: `partial`
-- Missing fields: action, target, old_text, operations, provider metadata, session_id
+- Missing fields: old_text, operations, provider metadata, session_id
 - Adapter coverage gap: yes
 - Likely hook point: memory tool wrapper before memory_tool and provider mirror
 - Residual risk: persistent user/profile memories can encode future authority claims unless stripped
-- Recommended adapter update: Map real memory(action,target,content,operations) to memory_write with origin/persistence/scope and authority stripping.
-- Recommended test case: Real Hermes memory add with authority-like content is stripped or denied fail-closed.
+- Recommended adapter update: Stage 20 maps memory action/target/content/origin/persistent/scope to memory_write with authority stripping; operation diffs remain partial.
+- Recommended test case: Hermes memory action with authority-like content strips authority and does not mint caps.
 - Confidence: `high`
 
 ### external memory provider tools
@@ -280,12 +281,12 @@
 - Possible tool: `retaindb_remember/supermemory_store/openviking_remember`
 - Evidence status: `observed in source`
 - Authority-bearing fields: content, origin, persistence, authority_claims, scope
-- Current profile coverage: `no`
-- Missing fields: provider tool name, memory_type/category, importance, metadata, remote container, scope
+- Current profile coverage: `partial`
+- Missing fields: memory_type/category, importance, metadata, remote container
 - Adapter coverage gap: yes
 - Likely hook point: provider handle_tool_call wrapper
 - Residual risk: provider-specific persistent memory tools can store preferences/instructions outside the built-in memory tool path
-- Recommended adapter update: Route provider memory tool calls through the same Memory Authority Stripping contract.
+- Recommended adapter update: Stage 20 routes retaindb/supermemory/openviking-style memory provider tools through Memory Authority Stripping.
 - Recommended test case: Provider-specific memory save event cannot mint recipient or policy authority.
 - Confidence: `high`
 
@@ -297,12 +298,12 @@
 - Evidence status: `observed in source`
 - Authority-bearing fields: parent_agent, child_agent, delegated_scope, requested_action, task_id, redelegation_flag
 - Current profile coverage: `partial`
-- Missing fields: goal, context, toolsets, tasks, role, acp_command, acp_args, parent_agent_id, child_task_id
+- Missing fields: tasks, acp_command, acp_args, parent_agent_id, child_task_id, non-email requested actions
 - Adapter coverage gap: yes
 - Likely hook point: delegate_task wrapper before child agent spawn
 - Residual risk: child toolsets, model/provider/base_url, ACP command, role, and context can amplify or relay authority
-- Recommended adapter update: Map delegate_task to Delegation Certificate inputs and deny child scope not attenuated by parent caps.
-- Recommended test case: Real delegate_task shape without Delegation Certificate denies DelegationMissing.
+- Recommended adapter update: Stage 20 maps delegate_task parent/child/goal/context/toolsets to delegation request evidence; non-email actions remain partial.
+- Recommended test case: Hermes delegate_task without Delegation Certificate denies DelegationMissing and amplification denies.
 - Confidence: `high`
 
 ### skills and plugin managed workflows
@@ -329,12 +330,12 @@
 - Evidence status: `observed in source`
 - Authority-bearing fields: schedule_id, action, recipient, endpoint, command, recurrence, task_binding
 - Current profile coverage: `partial`
-- Missing fields: action, job_id, prompt, schedule, deliver, script, enabled_toolsets, workdir, no_agent, context_from
+- Missing fields: job_id, enabled_toolsets, no_agent, context_from, job fire semantics
 - Adapter coverage gap: yes
 - Likely hook point: cronjob tool wrapper before job create/update/fire
 - Residual risk: scheduled prompt/script/deliver/workdir/toolsets can preserve authority beyond one task and replay stale caps
-- Recommended adapter update: Bind scheduled capabilities to schedule_id/task scope and model script/workdir/deliver as high-impact fields.
-- Recommended test case: Real cronjob create/update shape without schedule-bound caps denies or asks.
+- Recommended adapter update: Stage 20 binds modeled cronjob target/script to task/schedule metadata and denies prompt-only authority; full job lifecycle remains partial.
+- Recommended test case: Hermes cronjob prompt cannot mint recipient; stale capability replay denies.
 - Confidence: `high`
 
 ### optional MCP catalog transport endpoints

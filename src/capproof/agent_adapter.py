@@ -11,6 +11,8 @@ from __future__ import annotations
 from dataclasses import dataclass, field, replace
 import json
 from pathlib import Path
+import re
+import shlex
 import tempfile
 from typing import Any, Protocol
 
@@ -380,10 +382,15 @@ class HermesAgentLikeAdapter(_BaseAdapter):
         "skill_action",
         "mcp_tool_call",
         "terminal_action",
+        "terminal",
         "memory_write",
+        "memory_action",
         "delegation",
+        "delegate_task",
         "gateway_message",
         "scheduled_action",
+        "cronjob",
+        "dispatcher_tool_call",
     )
 
     def supports(self, raw_event: JsonObject) -> bool:
@@ -397,13 +404,39 @@ class HermesAgentLikeAdapter(_BaseAdapter):
         event_type = str(raw_event.get("event_type", ""))
         metadata = _profile_metadata(raw_event)
         metadata["metadata_cannot_mint_capability"] = True
-        if event_type in {"tool_call", "skill_action", "mcp_tool_call", "terminal_action", "scheduled_action"}:
+        if event_type == "dispatcher_tool_call":
             tool_name = str(raw_event.get("tool", ""))
-            args = _normalize_tool_args(tool_name, _input(raw_event))
-        elif event_type == "memory_write":
+            args = _normalize_dispatcher_args(tool_name, _input(raw_event), metadata)
+        elif event_type in {"terminal", "terminal_action"}:
+            tool_name = "run_shell"
+            args = _normalize_hermes_terminal_args(_input(raw_event))
+            metadata["terminal_sensitive_fields"] = ("command", "workdir", "env", "stdin")
+        elif event_type == "mcp_tool_call":
+            tool_name = str(raw_event.get("tool", ""))
+            event_input = _input(raw_event)
+            if _is_dynamic_mcp_send_message(tool_name, event_input):
+                tool_name = "send_message"
+            elif _is_dynamic_mcp_http_post(tool_name, event_input):
+                tool_name = "http_post"
+            args = _normalize_tool_args(tool_name, event_input)
+            metadata["mcp_metadata_non_authority"] = True
+        elif event_type in {"memory_write", "memory_action"}:
             tool_name = "memory_write"
             args = _normalize_memory_write_args(_input(raw_event))
             metadata["memory_authority_stripped"] = bool(args.get("stripped_authority"))
+        elif event_type == "tool_call" and _is_memory_provider_tool(str(raw_event.get("tool", ""))):
+            tool_name = "memory_write"
+            args = _normalize_memory_write_args(
+                {
+                    **_input(raw_event),
+                    "provider": str(raw_event.get("tool", "")),
+                }
+            )
+            metadata["memory_authority_stripped"] = bool(args.get("stripped_authority"))
+            metadata["provider_memory_tool"] = str(raw_event.get("tool", ""))
+        elif event_type == "tool_call" and str(raw_event.get("tool", "")) == "edit_file":
+            tool_name = "write_file"
+            args = _normalize_edit_file_args(_input(raw_event))
         elif event_type == "delegation":
             payload = _input(raw_event)
             tool_name = str(payload.get("tool", ""))
@@ -415,17 +448,30 @@ class HermesAgentLikeAdapter(_BaseAdapter):
                 metadata["parent_agent"] = raw_event["parent_agent"]
             if "child_agent" in raw_event:
                 metadata["child_agent"] = raw_event["child_agent"]
+        elif event_type == "delegate_task":
+            tool_name, args = _normalize_delegate_task(raw_event, metadata)
         elif event_type == "gateway_message":
             tool_name = str(raw_event.get("tool", "send_message"))
             args = _normalize_tool_args(tool_name, _input(raw_event))
             if "platform" in raw_event:
                 args.setdefault("platform", str(raw_event["platform"]))
+        elif event_type in {"scheduled_action", "cronjob"}:
+            tool_name, args = _normalize_scheduled_action(raw_event, metadata)
+        elif event_type in {"tool_call", "skill_action"}:
+            tool_name = str(raw_event.get("tool", ""))
+            args = _normalize_tool_args(tool_name, _input(raw_event))
         else:
             raise _unsupported_event("unsupported Hermes-like event_type")
-        if event_type == "scheduled_action":
-            metadata["schedule_id"] = str(raw_event.get("schedule_id", ""))
+        if event_type in {"scheduled_action", "cronjob"}:
+            event_input = _input(raw_event)
+            metadata["schedule_id"] = str(raw_event.get("schedule_id") or event_input.get("schedule_id", ""))
         return AgentAction(
-            agent_id=str(raw_event.get("agent_id") or raw_event.get("child_agent") or "hermes_mock"),
+            agent_id=str(
+                raw_event.get("agent_id")
+                or raw_event.get("child_agent")
+                or metadata.get("child_agent")
+                or "hermes_mock"
+            ),
             task_id=str(raw_event.get("task_id") or "task_agent_profile"),
             tool_name=tool_name,
             raw_args=args,
@@ -680,17 +726,25 @@ def http_post_contract() -> ToolContract:
             "required": ["url"],
             "properties": {
                 "url": {"type": "string", "role": AuthorityRole.EXTERNAL_ENDPOINT.value},
+                "transport_endpoint": {"type": "string", "role": AuthorityRole.EXTERNAL_ENDPOINT.value},
+                "headers": {"type": "object", "role": AuthorityRole.CREDENTIAL.value},
+                "method": {"type": "string", "role": AuthorityRole.COMMAND.value},
+                "follow_redirects": {"type": "boolean", "role": AuthorityRole.COMMAND.value},
                 "body": {"type": "string", "role": AuthorityRole.CONTENT.value},
             },
             "additionalProperties": False,
         },
         authority=(
             AuthorityField(name="url", role=AuthorityRole.EXTERNAL_ENDPOINT),
+            AuthorityField(name="transport_endpoint", role=AuthorityRole.EXTERNAL_ENDPOINT, required=False),
+            AuthorityField(name="headers", role=AuthorityRole.CREDENTIAL, required=False),
+            AuthorityField(name="method", role=AuthorityRole.COMMAND, required=False),
+            AuthorityField(name="follow_redirects", role=AuthorityRole.COMMAND, required=False),
             AuthorityField(name="body", role=AuthorityRole.CONTENT, high_impact=False),
         ),
         side_effects=("posts(url)",),
-        coverage_fields=("url", "body"),
-        high_impact_fields=("url",),
+        coverage_fields=("url", "transport_endpoint", "headers", "method", "follow_redirects", "body"),
+        high_impact_fields=("url", "transport_endpoint", "headers", "method", "follow_redirects"),
         metadata={"mock_profile_only": True, "no_real_network": True},
     )
 
@@ -705,6 +759,7 @@ def send_message_contract() -> ToolContract:
                 "recipient": {"type": "string", "role": AuthorityRole.RECIPIENT.value},
                 "body": {"type": "string", "role": AuthorityRole.CONTENT.value},
                 "platform": {"type": "string"},
+                "channel": {"type": "string"},
             },
             "additionalProperties": False,
         },
@@ -713,7 +768,7 @@ def send_message_contract() -> ToolContract:
             AuthorityField(name="body", role=AuthorityRole.CONTENT, high_impact=False),
         ),
         side_effects=("message(recipient)",),
-        coverage_fields=("recipient", "body", "platform"),
+        coverage_fields=("recipient", "body", "platform", "channel"),
         high_impact_fields=("recipient",),
         metadata={"mock_profile_only": True, "gateway_message": True},
     )
@@ -728,6 +783,11 @@ def memory_write_contract() -> ToolContract:
             "properties": {
                 "content": {"type": "string"},
                 "origin": {"type": "string"},
+                "action": {"type": "string"},
+                "target": {"type": "string"},
+                "persistent": {"type": "boolean"},
+                "scope": {"type": "string"},
+                "provider": {"type": "string"},
                 "authority_claims": {"type": "object"},
                 "stripped_authority": {"type": "boolean"},
             },
@@ -735,7 +795,17 @@ def memory_write_contract() -> ToolContract:
         },
         authority=(),
         side_effects=("memory_write(content)",),
-        coverage_fields=("content", "origin", "authority_claims", "stripped_authority"),
+        coverage_fields=(
+            "content",
+            "origin",
+            "action",
+            "target",
+            "persistent",
+            "scope",
+            "provider",
+            "authority_claims",
+            "stripped_authority",
+        ),
         high_impact_fields=(),
         metadata={"mock_profile_only": True, "authority_stripped": True},
     )
@@ -757,6 +827,7 @@ def _profile_metadata(raw_event: JsonObject) -> JsonObject:
         "terminal_backend",
         "platform",
         "schedule_id",
+        "session_id",
     ):
         if key in raw_event:
             metadata[key] = raw_event[key]
@@ -793,15 +864,9 @@ def _normalize_tool_args(tool_name: str, args: JsonObject) -> JsonObject:
     if tool_name == "write_file":
         return _normalize_write_file_args(args)
     if tool_name == "http_post":
-        normalized = dict(args)
-        if "body" not in normalized and "body_ref" in normalized:
-            normalized["body"] = normalized.pop("body_ref")
-        return normalized
+        return _normalize_http_post_args(args)
     if tool_name == "send_message":
-        normalized = dict(args)
-        if "body" not in normalized and "body_ref" in normalized:
-            normalized["body"] = normalized.pop("body_ref")
-        return normalized
+        return _normalize_send_message_args(args)
     if tool_name == "run_shell":
         return _normalize_run_shell_args(args)
     return dict(args)
@@ -816,6 +881,77 @@ def _normalize_write_file_args(args: JsonObject) -> JsonObject:
     normalized.setdefault("overwrite", overwrite)
     normalized.setdefault("mode", "overwrite" if overwrite else "create")
     return normalized
+
+
+def _normalize_edit_file_args(args: JsonObject) -> JsonObject:
+    if args.get("cross_profile") is True:
+        raise AdapterError(
+            "Hermes edit_file cross_profile writes require explicit modeling",
+            deny_reason=DenyReason.CANONICALIZATION_MISMATCH,
+            failure_reason=ProofFailureReason.CANONICALIZATION_MISMATCH,
+        )
+    path = str(args.get("path", ""))
+    resolved_path = args.get("resolved_path")
+    if isinstance(resolved_path, str) and path:
+        if Path(path).resolve(strict=False) != Path(resolved_path).resolve(strict=False):
+            raise AdapterError(
+                "Hermes edit_file path and resolved_path mismatch",
+                deny_reason=DenyReason.CANONICALIZATION_MISMATCH,
+                failure_reason=ProofFailureReason.CANONICALIZATION_MISMATCH,
+            )
+    normalized = dict(args)
+    if "content" not in normalized:
+        for source in ("patch_ref", "content_ref", "patch", "new_string"):
+            if source in normalized:
+                normalized["content"] = normalized[source]
+                break
+    allowed = {"path", "content", "mode", "overwrite"}
+    normalized = {key: value for key, value in normalized.items() if key in allowed}
+    return _normalize_write_file_args(normalized)
+
+
+def _normalize_http_post_args(args: JsonObject) -> JsonObject:
+    normalized = dict(args)
+    arguments = normalized.pop("arguments", None)
+    if isinstance(arguments, dict):
+        merged = dict(arguments)
+        merged.update({key: value for key, value in normalized.items() if key not in {"server", "tool_name", "transport"}})
+        normalized = merged
+    transport = args.get("transport")
+    if isinstance(transport, dict) and "endpoint" in transport:
+        normalized.setdefault("transport_endpoint", transport["endpoint"])
+    if "body" not in normalized and "body_ref" in normalized:
+        normalized["body"] = normalized.pop("body_ref")
+    allowed = {"url", "transport_endpoint", "headers", "method", "follow_redirects", "body"}
+    return {key: value for key, value in normalized.items() if key in allowed}
+
+
+def _normalize_send_message_args(args: JsonObject) -> JsonObject:
+    normalized = dict(args)
+    arguments = normalized.pop("arguments", None)
+    if isinstance(arguments, dict):
+        merged = dict(arguments)
+        merged.update({key: value for key, value in normalized.items() if key not in {"server", "tool_name", "transport"}})
+        normalized = merged
+    target = normalized.get("target") or normalized.get("recipient") or normalized.get("chat_id") or normalized.get("channel")
+    platform = normalized.get("platform")
+    if isinstance(target, str) and ":" in target:
+        platform_part, channel_part = target.split(":", 1)
+        normalized.setdefault("platform", platform_part)
+        normalized.setdefault("channel", channel_part)
+        normalized["recipient"] = f"{platform_part}:{channel_part}"
+    elif isinstance(target, str) and platform:
+        normalized.setdefault("channel", target)
+        normalized["recipient"] = f"{platform}:{target}"
+    elif isinstance(target, str):
+        normalized["recipient"] = target
+    if "body" not in normalized:
+        for source in ("message", "body_ref", "text"):
+            if source in normalized:
+                normalized["body"] = normalized[source]
+                break
+    allowed = {"recipient", "body", "platform", "channel"}
+    return {key: value for key, value in normalized.items() if key in allowed}
 
 
 def _normalize_run_shell_args(args: JsonObject) -> JsonObject:
@@ -840,16 +976,167 @@ def _normalize_run_shell_args(args: JsonObject) -> JsonObject:
     return normalized
 
 
+def _normalize_hermes_terminal_args(args: JsonObject) -> JsonObject:
+    normalized = dict(args)
+    if "cwd" not in normalized and "workdir" in normalized:
+        normalized["cwd"] = normalized["workdir"]
+    if "command_template" not in normalized and "command" in normalized:
+        mapped = _map_allowlisted_raw_command(str(normalized["command"]))
+        if mapped is not None:
+            normalized["command_template"] = mapped["command_template"]
+            normalized["args"] = mapped["args"]
+        else:
+            normalized["command_template"] = str(normalized["command"])
+            normalized.setdefault("args", {})
+    shell_args = _normalize_run_shell_args(normalized)
+    allowed = {"command_template", "args", "cwd", "env", "stdin"}
+    return {key: value for key, value in shell_args.items() if key in allowed}
+
+
+def _map_allowlisted_raw_command(command: str) -> JsonObject | None:
+    try:
+        parts = shlex.split(command)
+    except ValueError:
+        return None
+    if parts[:3] == ["python", "-m", "pytest"]:
+        pytest_args = parts[3:]
+    elif parts[:1] == ["pytest"]:
+        pytest_args = parts[1:]
+    else:
+        return None
+    quiet = False
+    if "-q" in pytest_args:
+        quiet = True
+        pytest_args = [part for part in pytest_args if part != "-q"]
+    if len(pytest_args) > 1:
+        return None
+    args: JsonObject = {}
+    if pytest_args:
+        args["target"] = pytest_args[0]
+    if quiet:
+        args["quiet"] = True
+    return {"command_template": "pytest", "args": args}
+
+
 def _normalize_memory_write_args(args: JsonObject) -> JsonObject:
     content = str(args.get("content", ""))
     origin = str(args.get("origin", ""))
     authority_claims = _extract_memory_authority_claims(content)
-    return {
+    normalized: JsonObject = {
         "content": content,
         "origin": origin,
         "authority_claims": {},
         "stripped_authority": bool(authority_claims),
     }
+    for key in ("action", "target", "scope", "provider"):
+        if key in args:
+            normalized[key] = str(args[key])
+    if "persistent" in args:
+        normalized["persistent"] = bool(args["persistent"])
+    return normalized
+
+
+def _normalize_delegate_task(raw_event: JsonObject, metadata: JsonObject) -> tuple[str, JsonObject]:
+    payload = _input(raw_event)
+    parent_agent = str(payload.get("parent_agent") or raw_event.get("parent_agent") or raw_event.get("agent_id") or "")
+    child_agent = str(payload.get("child_agent") or raw_event.get("child_agent") or "hermes_child")
+    metadata["delegation_required"] = True
+    metadata["parent_agent"] = parent_agent
+    metadata["child_agent"] = child_agent
+    metadata["delegated_toolsets"] = _json_value(payload.get("toolsets", ()))
+    recipient = payload.get("to") or payload.get("recipient") or _extract_email(str(payload.get("goal", "")))
+    if not recipient:
+        raise AdapterError(
+            "Hermes delegate_task goal cannot supply authority without concrete requested recipient",
+            deny_reason=DenyReason.NO_CAP,
+            failure_reason=ProofFailureReason.NO_CAP,
+        )
+    body_ref = payload.get("body_ref") or payload.get("context_ref") or payload.get("context") or "val_summary"
+    return "send_email", _normalize_tool_args("send_email", {"to": str(recipient), "body_ref": str(body_ref)})
+
+
+def _normalize_scheduled_action(raw_event: JsonObject, metadata: JsonObject) -> tuple[str, JsonObject]:
+    payload = _input(raw_event)
+    schedule_id = str(raw_event.get("schedule_id") or payload.get("schedule_id") or "")
+    metadata["schedule_id"] = schedule_id
+    metadata["scheduled_action_scope_required"] = True
+    if payload.get("script"):
+        return "run_shell", _normalize_hermes_terminal_args(
+            {
+                "command": str(payload["script"]),
+                "workdir": payload.get("workdir") or ".",
+                "env": payload.get("env", {}),
+                "stdin": payload.get("stdin"),
+            }
+        )
+    target = payload.get("target") or payload.get("recipient")
+    if target:
+        return "send_message", _normalize_tool_args(
+            "send_message",
+            {"target": str(target), "message": payload.get("message") or payload.get("body_ref") or "val_report"},
+        )
+    if payload.get("to"):
+        return "send_email", _normalize_tool_args(
+            "send_email",
+            {"to": str(payload["to"]), "body_ref": payload.get("body_ref") or "val_report"},
+        )
+    raise AdapterError(
+        "Hermes cronjob prompt cannot mint authority-bearing recipient or endpoint",
+        deny_reason=DenyReason.NO_CAP,
+        failure_reason=ProofFailureReason.NO_CAP,
+    )
+
+
+def _normalize_dispatcher_args(tool_name: str, args: JsonObject, metadata: JsonObject) -> JsonObject:
+    original_args = args.get("original_args", {})
+    effective_args = args.get("effective_args", {})
+    if not isinstance(original_args, dict) or not isinstance(effective_args, dict):
+        raise AdapterError(
+            "Hermes dispatcher original_args/effective_args must be objects",
+            deny_reason=DenyReason.CANONICALIZATION_MISMATCH,
+            failure_reason=ProofFailureReason.CANONICALIZATION_MISMATCH,
+        )
+    if _json_value(original_args) != _json_value(effective_args):
+        metadata["middleware_rewrite_detected"] = True
+        metadata["original_args"] = _json_value(original_args)
+    session_metadata = args.get("session_metadata", {})
+    if isinstance(session_metadata, dict):
+        metadata["session_metadata"] = _json_value(session_metadata)
+    return _normalize_tool_args(tool_name, effective_args)
+
+
+def _is_dynamic_mcp_http_post(tool_name: str, args: JsonObject) -> bool:
+    arguments = args.get("arguments")
+    if isinstance(arguments, dict) and str(args.get("tool_name", arguments.get("tool_name", ""))) == "http_post":
+        return True
+    if isinstance(arguments, dict) and "url" in arguments and tool_name.startswith("mcp_"):
+        return True
+    return False
+
+
+def _is_dynamic_mcp_send_message(tool_name: str, args: JsonObject) -> bool:
+    arguments = args.get("arguments")
+    requested_tool = str(args.get("tool_name", ""))
+    if isinstance(arguments, dict):
+        requested_tool = str(args.get("tool_name", arguments.get("tool_name", requested_tool)))
+    return tool_name == "messages_send" or requested_tool in {"messages_send", "send_message"}
+
+
+def _is_memory_provider_tool(tool_name: str) -> bool:
+    lowered = tool_name.lower()
+    return lowered in {
+        "retaindb_remember",
+        "supermemory_store",
+        "openviking_remember",
+    } or lowered.endswith("_remember") or lowered.endswith("_store")
+
+
+_EMAIL_RE = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}")
+
+
+def _extract_email(value: str) -> str | None:
+    match = _EMAIL_RE.search(value)
+    return match.group(0) if match else None
 
 
 def _extract_memory_authority_claims(content: str) -> JsonObject:

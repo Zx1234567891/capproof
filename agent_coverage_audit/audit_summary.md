@@ -26,8 +26,8 @@ Coverage gaps in this report are a pre-integration risk inventory, not final vul
 - Total surfaces scanned: 236
 - High-impact surfaces found: 228
 - Covered by current profile: 145
-- Partial coverage: 20
-- Uncovered surfaces: 71
+- Partial coverage: 23
+- Uncovered surfaces: 68
 - Coverage gap count: 91
 
 ## Hermes Local Static Coverage Audit
@@ -38,9 +38,9 @@ Coverage gaps in this report are a pre-integration risk inventory, not final vul
 - Actual Hermes checkout path used when available: `external/external/hermes-agent`.
 - The requested path is normally `external/hermes-agent`; this workspace also supports the local nested checkout `external/external/hermes-agent`, or any explicit `--hermes-repo` path.
 - Observed-source findings are static coverage gaps, not runtime vulnerability proofs.
-- HermesAgentLikeAdapter observed-source full coverage: 0; partial coverage: 8; uncovered: 3.
-- Because observed-source full coverage is 0, partial is 8, and uncovered is 3 in this checkout, do not make a real Hermes dry-run wrapper claim yet.
-- Next adapter work should cover real `terminal`, `send_message`, dynamic MCP, memory/provider-memory, `delegate_task`, and `cronjob` shapes.
+- HermesAgentLikeAdapter observed-source full coverage: 0; partial coverage: 11; uncovered: 0.
+- Stage 20 adds mock observed-shape coverage for terminal, send_message, dynamic MCP http_post, memory/provider-memory, delegate_task, cronjob, edit_file, and dispatcher effective args.
+- Remaining partial coverage still blocks a real Hermes integration claim until runtime event capture validates the adapter profile.
 
 ## Top Adapter Coverage Gaps
 
