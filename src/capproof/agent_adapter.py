@@ -21,11 +21,13 @@ from capproof.monitor import MonitorState, ReferenceMonitor, VerificationResult,
 from capproof.proof_synthesizer import ProofFailureReason, ProofSynthesisResult, synthesize_proof
 from capproof.schemas import (
     Action,
+    AuthorityField,
     AuthorityRole,
     DenyReason,
     JsonObject,
     JsonValue,
     Proof,
+    ToolContract,
     ValueRef,
     VerificationDecision,
 )
@@ -251,27 +253,239 @@ class CodingAgentLikeAdapter(_BaseAdapter):
         )
 
 
+@dataclass(frozen=True)
+class AdapterParseResult:
+    adapter: ToolCallAdapter
+    agent_action: AgentAction
+    canonical_call: CanonicalToolCall
+
+
+class AgentAdapterRegistry:
+    """Fail-closed registry for mutually exclusive adapter profiles."""
+
+    def __init__(self, adapters: tuple[ToolCallAdapter, ...] = ()) -> None:
+        self._adapters: list[ToolCallAdapter] = []
+        for adapter in adapters:
+            self.register(adapter)
+
+    def register(self, adapter: ToolCallAdapter) -> None:
+        self._adapters.append(adapter)
+
+    def all(self) -> tuple[ToolCallAdapter, ...]:
+        return tuple(self._adapters)
+
+    def select(self, raw_event: JsonObject) -> ToolCallAdapter:
+        matches = tuple(adapter for adapter in self._adapters if adapter.supports(raw_event))
+        if not matches:
+            raise AdapterError(
+                "unsupported agent event",
+                deny_reason=DenyReason.CANONICALIZATION_MISMATCH,
+                failure_reason=ProofFailureReason.CANONICALIZATION_MISMATCH,
+            )
+        if len(matches) > 1:
+            names = ", ".join(type(adapter).__name__ for adapter in matches)
+            raise AdapterError(
+                f"ambiguous agent event matched multiple adapters: {names}",
+                deny_reason=DenyReason.CANONICALIZATION_MISMATCH,
+                failure_reason=ProofFailureReason.CANONICALIZATION_MISMATCH,
+            )
+        return matches[0]
+
+    def parse_and_canonicalize(self, raw_event: JsonObject) -> AdapterParseResult:
+        adapter = self.select(raw_event)
+        agent_action = adapter.parse(raw_event)
+        canonical_call = adapter.canonicalize(agent_action)
+        return AdapterParseResult(
+            adapter=adapter,
+            agent_action=agent_action,
+            canonical_call=canonical_call,
+        )
+
+
+class OpenCodeLikeAdapter(_BaseAdapter):
+    source_agent_type = "opencode_like"
+    supported_event_types = ("tool_call",)
+
+    def supports(self, raw_event: JsonObject) -> bool:
+        return (
+            isinstance(raw_event, dict)
+            and raw_event.get("source") == "opencode"
+            and raw_event.get("event_type") in self.supported_event_types
+        )
+
+    def parse(self, raw_event: JsonObject) -> AgentAction:
+        event_type = str(raw_event.get("event_type", ""))
+        if event_type not in self.supported_event_types:
+            raise _unsupported_event("unsupported OpenCode-like event_type")
+        args = _input(raw_event)
+        tool_name = str(raw_event.get("tool", ""))
+        metadata = _profile_metadata(raw_event)
+        mode = str(raw_event.get("mode") or "plan")
+        if mode != "build":
+            metadata["proposed_only"] = True
+            metadata["proposal_mode"] = mode
+        return AgentAction(
+            agent_id=str(raw_event.get("agent_id") or "opencode_mock"),
+            task_id=str(raw_event.get("task_id") or "task_agent_profile"),
+            tool_name=tool_name,
+            raw_args=_normalize_tool_args(tool_name, args),
+            source_agent_type=self.source_agent_type,
+            trace_id=str(raw_event.get("trace_id") or "opencode_event"),
+            metadata=metadata,
+        )
+
+
+class OpenClawLikeAdapter(_BaseAdapter):
+    source_agent_type = "openclaw_like"
+    supported_event_types = ("tool_call", "watcher_event", "skill_action")
+
+    def supports(self, raw_event: JsonObject) -> bool:
+        return (
+            isinstance(raw_event, dict)
+            and raw_event.get("source") == "openclaw"
+            and raw_event.get("event_type") in self.supported_event_types
+        )
+
+    def parse(self, raw_event: JsonObject) -> AgentAction:
+        event_type = str(raw_event.get("event_type", ""))
+        metadata = _profile_metadata(raw_event)
+        if event_type == "watcher_event":
+            observed = raw_event.get("observed_action", {})
+            if not isinstance(observed, dict):
+                raise _unsupported_event("OpenClaw watcher observed_action must be an object")
+            tool_name = str(observed.get("tool", ""))
+            args = _normalize_tool_args(tool_name, _input(observed))
+            metadata["observed_only"] = True
+        elif event_type in {"tool_call", "skill_action"}:
+            tool_name = str(raw_event.get("tool", ""))
+            args = _normalize_tool_args(tool_name, _input(raw_event))
+        else:
+            raise _unsupported_event("unsupported OpenClaw-like event_type")
+        metadata["metadata_cannot_mint_capability"] = True
+        return AgentAction(
+            agent_id=str(raw_event.get("agent_id") or "openclaw_mock"),
+            task_id=str(raw_event.get("task_id") or "task_agent_profile"),
+            tool_name=tool_name,
+            raw_args=args,
+            source_agent_type=self.source_agent_type,
+            trace_id=str(raw_event.get("trace_id") or raw_event.get("skill_id") or "openclaw_event"),
+            metadata=metadata,
+        )
+
+
+class HermesAgentLikeAdapter(_BaseAdapter):
+    source_agent_type = "hermes_agent_like"
+    supported_event_types = (
+        "tool_call",
+        "skill_action",
+        "mcp_tool_call",
+        "terminal_action",
+        "memory_write",
+        "delegation",
+        "gateway_message",
+        "scheduled_action",
+    )
+
+    def supports(self, raw_event: JsonObject) -> bool:
+        return (
+            isinstance(raw_event, dict)
+            and raw_event.get("source") == "hermes"
+            and raw_event.get("event_type") in self.supported_event_types
+        )
+
+    def parse(self, raw_event: JsonObject) -> AgentAction:
+        event_type = str(raw_event.get("event_type", ""))
+        metadata = _profile_metadata(raw_event)
+        metadata["metadata_cannot_mint_capability"] = True
+        if event_type in {"tool_call", "skill_action", "mcp_tool_call", "terminal_action", "scheduled_action"}:
+            tool_name = str(raw_event.get("tool", ""))
+            args = _normalize_tool_args(tool_name, _input(raw_event))
+        elif event_type == "memory_write":
+            tool_name = "memory_write"
+            args = _normalize_memory_write_args(_input(raw_event))
+            metadata["memory_authority_stripped"] = bool(args.get("stripped_authority"))
+        elif event_type == "delegation":
+            payload = _input(raw_event)
+            tool_name = str(payload.get("tool", ""))
+            payload_args = dict(payload)
+            payload_args.pop("tool", None)
+            args = _normalize_tool_args(tool_name, payload_args)
+            metadata["delegation_required"] = True
+            if "parent_agent" in raw_event:
+                metadata["parent_agent"] = raw_event["parent_agent"]
+            if "child_agent" in raw_event:
+                metadata["child_agent"] = raw_event["child_agent"]
+        elif event_type == "gateway_message":
+            tool_name = str(raw_event.get("tool", "send_message"))
+            args = _normalize_tool_args(tool_name, _input(raw_event))
+            if "platform" in raw_event:
+                args.setdefault("platform", str(raw_event["platform"]))
+        else:
+            raise _unsupported_event("unsupported Hermes-like event_type")
+        if event_type == "scheduled_action":
+            metadata["schedule_id"] = str(raw_event.get("schedule_id", ""))
+        return AgentAction(
+            agent_id=str(raw_event.get("agent_id") or raw_event.get("child_agent") or "hermes_mock"),
+            task_id=str(raw_event.get("task_id") or "task_agent_profile"),
+            tool_name=tool_name,
+            raw_args=args,
+            source_agent_type=self.source_agent_type,
+            trace_id=str(raw_event.get("trace_id") or raw_event.get("schedule_id") or "hermes_event"),
+            metadata=metadata,
+        )
+
+
+class HarnessAdapter(_BaseAdapter):
+    source_agent_type = "harness_native"
+    supported_event_types = ("kill_test_action", "tool_call")
+
+    def supports(self, raw_event: JsonObject) -> bool:
+        return (
+            isinstance(raw_event, dict)
+            and raw_event.get("source") == "harness"
+            and raw_event.get("event_type") in self.supported_event_types
+        )
+
+    def parse(self, raw_event: JsonObject) -> AgentAction:
+        event_type = str(raw_event.get("event_type", ""))
+        if event_type not in self.supported_event_types:
+            raise _unsupported_event("unsupported harness event_type")
+        tool_name = str(raw_event.get("tool", ""))
+        metadata = _profile_metadata(raw_event)
+        metadata["harness_mode"] = str(raw_event.get("mode", "attack"))
+        return AgentAction(
+            agent_id=str(raw_event.get("agent_id") or "harness_agent"),
+            task_id=str(raw_event.get("task_id") or "task_agent_profile"),
+            tool_name=tool_name,
+            raw_args=_normalize_tool_args(tool_name, _input(raw_event)),
+            source_agent_type=self.source_agent_type,
+            trace_id=str(raw_event.get("trace_id") or "harness_event"),
+            metadata=metadata,
+        )
+
+
 class CapProofMiddleware:
     def __init__(
         self,
-        adapters: tuple[ToolCallAdapter, ...],
+        adapters: tuple[ToolCallAdapter, ...] | AgentAdapterRegistry,
         *,
         monitor: ReferenceMonitor | None = None,
     ) -> None:
-        self.adapters = adapters
+        self.registry = adapters if isinstance(adapters, AgentAdapterRegistry) else AgentAdapterRegistry(adapters)
         self.monitor = monitor or ReferenceMonitor()
 
     def guard(self, raw_event: JsonObject, runtime_state: AgentRuntimeState) -> GuardDecision:
-        adapter = self._select_adapter(raw_event)
-        if adapter is None:
+        try:
+            parsed = self.registry.parse_and_canonicalize(raw_event)
+        except AdapterError as exc:
             return _guard_deny(
-                DenyReason.UNKNOWN_TOOL,
-                ProofFailureReason.UNKNOWN_TOOL,
-                "no adapter supports raw event",
+                exc.deny_reason or DenyReason.CANONICALIZATION_MISMATCH,
+                exc.failure_reason or ProofFailureReason.CANONICALIZATION_MISMATCH,
+                str(exc),
             )
         try:
-            agent_action = adapter.parse(raw_event)
-            canonical_call = adapter.canonicalize(agent_action)
+            agent_action = parsed.agent_action
+            canonical_call = parsed.canonical_call
             action = _action_from_agent_action(agent_action, value_refs=runtime_state.value_refs)
             canonical_call = _canonical_call_for_action(action, runtime_state.monitor_state, canonical_call)
         except AdapterError as exc:
@@ -279,6 +493,22 @@ class CapProofMiddleware:
                 exc.deny_reason or DenyReason.CANONICALIZATION_MISMATCH,
                 exc.failure_reason or ProofFailureReason.CANONICALIZATION_MISMATCH,
                 str(exc),
+            )
+        if agent_action.metadata.get("proposed_only") is True:
+            return GuardDecision(
+                decision=VerificationDecision.ASK,
+                agent_action=agent_action,
+                action=action,
+                canonical_call=canonical_call,
+                endorsement_challenge={
+                    "type": "proposed_action",
+                    "task_id": action.task_id,
+                    "agent_id": action.agent_id,
+                    "tool_name": action.tool,
+                    "action_hash": canonical_call.action_hash,
+                    "mode": agent_action.metadata.get("proposal_mode", "plan"),
+                },
+                message="plan mode proposed action only",
             )
 
         proof_result = synthesize_proof(
@@ -333,12 +563,6 @@ class CapProofMiddleware:
             verifier_result=verifier_result,
         )
 
-    def _select_adapter(self, raw_event: JsonObject) -> ToolCallAdapter | None:
-        for adapter in self.adapters:
-            if adapter.supports(raw_event):
-                return adapter
-        return None
-
 
 class GuardedExecutor:
     def __init__(self, executor: "MockExecutor") -> None:
@@ -387,6 +611,12 @@ class MockExecutor:
             event = {"mock_tool": "read_file", "args": call.canonical_args}
         elif call.tool_name == "summarize":
             event = {"mock_tool": "summarize", "args": call.canonical_args}
+        elif call.tool_name == "http_post":
+            event = {"mock_tool": "http_post", "would_post": call.canonical_args}
+        elif call.tool_name == "send_message":
+            event = {"mock_tool": "send_message", "args": call.canonical_args}
+        elif call.tool_name == "memory_write":
+            event = {"mock_tool": "memory_write", "args": call.canonical_args}
         else:
             event = {"mock_tool": call.tool_name, "args": call.canonical_args}
         self.executions.append(event)
@@ -415,20 +645,177 @@ def default_agent_adapters(
     )
 
 
+def default_profile_agent_adapters(
+    *,
+    tool_contracts: ToolContractRegistry | None = None,
+    canonicalizer: Canonicalizer | None = None,
+) -> tuple[ToolCallAdapter, ...]:
+    return (
+        *default_agent_adapters(tool_contracts=tool_contracts, canonicalizer=canonicalizer),
+        OpenCodeLikeAdapter(tool_contracts=tool_contracts, canonicalizer=canonicalizer),
+        OpenClawLikeAdapter(tool_contracts=tool_contracts, canonicalizer=canonicalizer),
+        HermesAgentLikeAdapter(tool_contracts=tool_contracts, canonicalizer=canonicalizer),
+        HarnessAdapter(tool_contracts=tool_contracts, canonicalizer=canonicalizer),
+    )
+
+
+def profile_tool_contracts() -> tuple[ToolContract, ...]:
+    return (
+        http_post_contract(),
+        send_message_contract(),
+        memory_write_contract(),
+    )
+
+
+def profile_tool_contract_registry(*, include_default: bool = True) -> ToolContractRegistry:
+    contracts = default_tool_contract_registry().all() if include_default else ()
+    return ToolContractRegistry((*contracts, *profile_tool_contracts()))
+
+
+def http_post_contract() -> ToolContract:
+    return ToolContract(
+        tool="http_post",
+        args_schema={
+            "type": "object",
+            "required": ["url"],
+            "properties": {
+                "url": {"type": "string", "role": AuthorityRole.EXTERNAL_ENDPOINT.value},
+                "body": {"type": "string", "role": AuthorityRole.CONTENT.value},
+            },
+            "additionalProperties": False,
+        },
+        authority=(
+            AuthorityField(name="url", role=AuthorityRole.EXTERNAL_ENDPOINT),
+            AuthorityField(name="body", role=AuthorityRole.CONTENT, high_impact=False),
+        ),
+        side_effects=("posts(url)",),
+        coverage_fields=("url", "body"),
+        high_impact_fields=("url",),
+        metadata={"mock_profile_only": True, "no_real_network": True},
+    )
+
+
+def send_message_contract() -> ToolContract:
+    return ToolContract(
+        tool="send_message",
+        args_schema={
+            "type": "object",
+            "required": ["recipient", "body"],
+            "properties": {
+                "recipient": {"type": "string", "role": AuthorityRole.RECIPIENT.value},
+                "body": {"type": "string", "role": AuthorityRole.CONTENT.value},
+                "platform": {"type": "string"},
+            },
+            "additionalProperties": False,
+        },
+        authority=(
+            AuthorityField(name="recipient", role=AuthorityRole.RECIPIENT),
+            AuthorityField(name="body", role=AuthorityRole.CONTENT, high_impact=False),
+        ),
+        side_effects=("message(recipient)",),
+        coverage_fields=("recipient", "body", "platform"),
+        high_impact_fields=("recipient",),
+        metadata={"mock_profile_only": True, "gateway_message": True},
+    )
+
+
+def memory_write_contract() -> ToolContract:
+    return ToolContract(
+        tool="memory_write",
+        args_schema={
+            "type": "object",
+            "required": ["content", "origin", "authority_claims", "stripped_authority"],
+            "properties": {
+                "content": {"type": "string"},
+                "origin": {"type": "string"},
+                "authority_claims": {"type": "object"},
+                "stripped_authority": {"type": "boolean"},
+            },
+            "additionalProperties": False,
+        },
+        authority=(),
+        side_effects=("memory_write(content)",),
+        coverage_fields=("content", "origin", "authority_claims", "stripped_authority"),
+        high_impact_fields=(),
+        metadata={"mock_profile_only": True, "authority_stripped": True},
+    )
+
+
 def _metadata(raw_event: JsonObject) -> JsonObject:
     metadata = raw_event.get("metadata", {})
     return dict(metadata) if isinstance(metadata, dict) else {}
 
 
+def _profile_metadata(raw_event: JsonObject) -> JsonObject:
+    metadata = _metadata(raw_event)
+    for key in (
+        "source",
+        "event_type",
+        "mode",
+        "skill_id",
+        "mcp_server",
+        "terminal_backend",
+        "platform",
+        "schedule_id",
+    ):
+        if key in raw_event:
+            metadata[key] = raw_event[key]
+    return metadata
+
+
+def _input(raw_event: JsonObject) -> JsonObject:
+    args = raw_event.get("input", {})
+    if not isinstance(args, dict):
+        raise AdapterError(
+            "profile input must be an object",
+            deny_reason=DenyReason.CANONICALIZATION_MISMATCH,
+            failure_reason=ProofFailureReason.CANONICALIZATION_MISMATCH,
+        )
+    return dict(args)
+
+
+def _unsupported_event(message: str) -> AdapterError:
+    return AdapterError(
+        message,
+        deny_reason=DenyReason.CANONICALIZATION_MISMATCH,
+        failure_reason=ProofFailureReason.CANONICALIZATION_MISMATCH,
+    )
+
+
 def _normalize_tool_args(tool_name: str, args: JsonObject) -> JsonObject:
     if tool_name == "send_email":
         normalized = dict(args)
+        if "body" not in normalized and "body_ref" in normalized:
+            normalized["body"] = normalized.pop("body_ref")
         if "subject" not in normalized and "body" in normalized:
             normalized["subject"] = "summary"
+        return normalized
+    if tool_name == "write_file":
+        return _normalize_write_file_args(args)
+    if tool_name == "http_post":
+        normalized = dict(args)
+        if "body" not in normalized and "body_ref" in normalized:
+            normalized["body"] = normalized.pop("body_ref")
+        return normalized
+    if tool_name == "send_message":
+        normalized = dict(args)
+        if "body" not in normalized and "body_ref" in normalized:
+            normalized["body"] = normalized.pop("body_ref")
         return normalized
     if tool_name == "run_shell":
         return _normalize_run_shell_args(args)
     return dict(args)
+
+
+def _normalize_write_file_args(args: JsonObject) -> JsonObject:
+    normalized = dict(args)
+    if "content" not in normalized and "content_ref" in normalized:
+        normalized["content"] = normalized.pop("content_ref")
+    normalized.setdefault("content", "")
+    overwrite = bool(normalized.get("overwrite", False))
+    normalized.setdefault("overwrite", overwrite)
+    normalized.setdefault("mode", "overwrite" if overwrite else "create")
+    return normalized
 
 
 def _normalize_run_shell_args(args: JsonObject) -> JsonObject:
@@ -451,6 +838,27 @@ def _normalize_run_shell_args(args: JsonObject) -> JsonObject:
     normalized.setdefault("env", {})
     normalized.setdefault("stdin", None)
     return normalized
+
+
+def _normalize_memory_write_args(args: JsonObject) -> JsonObject:
+    content = str(args.get("content", ""))
+    origin = str(args.get("origin", ""))
+    authority_claims = _extract_memory_authority_claims(content)
+    return {
+        "content": content,
+        "origin": origin,
+        "authority_claims": {},
+        "stripped_authority": bool(authority_claims),
+    }
+
+
+def _extract_memory_authority_claims(content: str) -> JsonObject:
+    lowered = content.lower()
+    if "recipient" in lowered and "@" in lowered:
+        return {"recipient": content}
+    if "authorize" in lowered or "remember" in lowered:
+        return {"claim": content}
+    return {}
 
 
 def _action_from_agent_action(
