@@ -10,6 +10,16 @@
     "trace_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/hermes_capture_run/traces/captured_events.jsonl"
   },
   "go_no_go": {
+    "blocking_hook_points": [
+      "tool_dispatcher",
+      "terminal",
+      "MCP",
+      "memory",
+      "gateway",
+      "delegation",
+      "scheduler",
+      "middleware_rewrite"
+    ],
     "enforcement_wrapper": "no-go",
     "more_runtime_samples_needed": true,
     "real_capture_trace_collected": false,
@@ -17,72 +27,84 @@
     "real_hermes_integration_claim": "no"
   },
   "hook_readiness": {
+    "MCP": {
+      "complete_fields": "unknown",
+      "enforcement_ready": "no",
+      "missing_fields": [],
+      "observed": "no",
+      "pre_execution_observed": "unknown",
+      "side_effect_already_happened": "unknown"
+    },
     "delegation": {
       "complete_fields": "unknown",
       "enforcement_ready": "no",
       "missing_fields": [],
-      "observed": "unknown",
-      "pre_execution": "unknown"
+      "observed": "no",
+      "pre_execution_observed": "unknown",
+      "side_effect_already_happened": "unknown"
     },
     "gateway": {
       "complete_fields": "unknown",
       "enforcement_ready": "no",
       "missing_fields": [],
-      "observed": "unknown",
-      "pre_execution": "unknown"
-    },
-    "mcp": {
-      "complete_fields": "unknown",
-      "enforcement_ready": "no",
-      "missing_fields": [],
-      "observed": "unknown",
-      "pre_execution": "unknown"
+      "observed": "no",
+      "pre_execution_observed": "unknown",
+      "side_effect_already_happened": "unknown"
     },
     "memory": {
       "complete_fields": "unknown",
       "enforcement_ready": "no",
       "missing_fields": [],
-      "observed": "unknown",
-      "pre_execution": "unknown"
+      "observed": "no",
+      "pre_execution_observed": "unknown",
+      "side_effect_already_happened": "unknown"
     },
     "middleware_rewrite": {
       "complete_fields": "unknown",
       "enforcement_ready": "no",
       "missing_fields": [],
-      "observed": "unknown",
-      "pre_execution": "unknown"
+      "observed": "no",
+      "pre_execution_observed": "unknown",
+      "side_effect_already_happened": "unknown"
     },
     "scheduler": {
       "complete_fields": "unknown",
       "enforcement_ready": "no",
       "missing_fields": [],
-      "observed": "unknown",
-      "pre_execution": "unknown"
+      "observed": "no",
+      "pre_execution_observed": "unknown",
+      "side_effect_already_happened": "unknown"
     },
     "terminal": {
       "complete_fields": "unknown",
       "enforcement_ready": "no",
       "missing_fields": [],
-      "observed": "unknown",
-      "pre_execution": "unknown"
+      "observed": "no",
+      "pre_execution_observed": "unknown",
+      "side_effect_already_happened": "unknown"
     },
     "tool_dispatcher": {
       "complete_fields": "unknown",
       "enforcement_ready": "no",
       "missing_fields": [],
-      "observed": "unknown",
-      "pre_execution": "unknown"
+      "observed": "no",
+      "pre_execution_observed": "unknown",
+      "side_effect_already_happened": "unknown"
     }
   },
   "safety_status": {
+    "no_dependency_install": true,
     "no_hermes_source_modification": true,
     "no_real_email": true,
-    "no_real_external_network": true,
     "no_real_mcp_external_server": true,
+    "no_real_network": true,
     "no_real_shell_high_risk_execution": true,
+    "no_real_tool_execution": true,
     "no_secrets_used": true,
+    "no_third_party_project_command": true,
     "not_enforcement_wrapper": true
   },
+  "trace_source": "no-run",
   "trace_validation": {
     "AdapterCoverageGap": 0,
     "allowed": 0,
@@ -95,6 +117,7 @@
     "observer_only_events": 0,
     "pre_execution_gate_events": 0,
     "schema_valid_events": 0,
+    "side_effect_blocked": 0,
     "total_events": 0,
     "unsupported_events": 0
   }

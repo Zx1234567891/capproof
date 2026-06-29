@@ -1,0 +1,41 @@
+{
+  "capture_run": {
+    "command_hash": "n/a",
+    "denial_reason": "default no-run preflight: explicit capture-run authorization not provided",
+    "events_captured": 0,
+    "run_allowed": false,
+    "run_attempted": false,
+    "state": "DENY_CAPTURE_RUN",
+    "timeout_seconds": 20,
+    "trace_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/hermes_capture_run/traces/captured_events.jsonl"
+  },
+  "go_no_go": {
+    "blocking_hook_points": [
+      "tool_dispatcher",
+      "terminal",
+      "MCP",
+      "memory",
+      "gateway",
+      "delegation",
+      "scheduler",
+      "middleware_rewrite"
+    ],
+    "enforcement_wrapper": "no-go",
+    "more_runtime_samples_needed": true,
+    "real_capture_trace_collected": false,
+    "real_hermes_integration": false,
+    "real_hermes_integration_claim": "no"
+  },
+  "safety_status": {
+    "no_dependency_install": true,
+    "no_hermes_source_modification": true,
+    "no_real_email": true,
+    "no_real_mcp_external_server": true,
+    "no_real_network": true,
+    "no_real_shell_high_risk_execution": true,
+    "no_real_tool_execution": true,
+    "no_secrets_used": true,
+    "no_third_party_project_command": true,
+    "not_enforcement_wrapper": true
+  }
+}

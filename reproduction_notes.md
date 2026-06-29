@@ -81,6 +81,12 @@ These notes are part of the artifact contract for Stages 12-13. The harness inte
 - Stage 27 controlled capture-run trial uses the same safety gate. `python run_hermes_trace_collection_plan.py --validate-command` checks command safety without executing it, and `python run_hermes_runtime_capture_experiment.py --preflight` / `--report` generate the no-run capture report under `hermes_capture_run/reports/`.
 - `pytest tests/test_hermes_capture_run.py -q`: runs Stage 27 no-run, capture-run gate, empty-trace, synthetic-trace, and report tests.
 - Do not run Stage 27 `--capture-run` without explicit user authorization. Stage 27 is not an enforcement wrapper and does not claim real Hermes integration.
+- `python run_hermes_capture_run.py --preflight`: runs the Stage 28 no-run capture-run safety gate and regenerates `hermes_capture_run/reports/`.
+- `python run_hermes_capture_run.py --import-trace <trace.jsonl>`: imports an existing Hermes runtime JSONL trace into `hermes_capture_run/imported_traces/` and validates it offline. It does not run Hermes or execute tools.
+- `python run_hermes_capture_run.py --capture-run`: attempts a capture-only command only when `ALLOW_HERMES_CAPTURE_RUN=1`, `HERMES_CAPTURE_COMMAND`, `HERMES_CAPTURE_TRACE_PATH`, `CAPPROOF_CAPTURE_ONLY=1`, `CAPPROOF_NO_REAL_TOOLS=1`, `NO_NETWORK=1`, and `HERMES_TEST_WORKSPACE` are all set and the command passes safety checks.
+- `python run_hermes_capture_run.py --report`: prints the Stage 28 capture-run, trace-validation, and hook-readiness report paths.
+- `pytest tests/test_hermes_capture_run_stage28.py -q`: runs Stage 28 no-run, trace-import, capture-run gate, command-safety, hook-readiness, side-effect, and report tests.
+- Stage 28 remains capture-only / trace-import only. It is not an enforcement wrapper, does not claim real Hermes integration, and must not run `--capture-run` without explicit user authorization.
 
 Adaptive mode is not implemented in Stage 13. Future adaptive runs should preserve the same task-local observable oracles while varying attack payloads after structured denials.
 

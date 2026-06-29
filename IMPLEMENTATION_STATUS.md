@@ -967,3 +967,35 @@ Known risks:
 - No real Hermes runtime was run in the default Stage 27 path.
 - No real capture trace was collected unless the user explicitly authorizes a later capture-run.
 - Real Hermes integration and enforcement wrapper claims remain out of scope.
+
+## Stage 28 - Controlled Hermes Capture-run or Trace Import Validation
+
+Status: implemented, self-check pending.
+
+Scope:
+- Provide a Stage 28 entry point for default no-run preflight, existing trace import, and explicitly authorized capture-only run attempts.
+- Keep `--capture-run` fail-closed unless all explicit safety environment variables are present and the command passes safety checks.
+- Validate imported or generated JSONL traces offline through schema checks, hook field completeness, side-effect timing checks, and mock CapProof guard replay.
+- Generate capture-run, trace-validation, hook-readiness, and safety-log artifacts under `hermes_capture_run/`.
+- Do not modify Reference Monitor, Capability Store, or Proof Model safety semantics.
+
+Implemented:
+- Added `run_hermes_capture_run.py`.
+- Added `tests/test_hermes_capture_run_stage28.py`.
+- Extended `hermes_capture_run/` with `reports/`, `traces/`, `imported_traces/`, and `safety_logs/`.
+- Updated reproduction notes.
+
+Default no-run result:
+- Capture-run attempted: false.
+- Capture-run allowed: false.
+- Trace source: no-run.
+- Events captured: 0.
+- Trace validation events: 0.
+- Hook readiness: unknown / not enforcement-ready.
+- Enforcement wrapper readiness: no-go.
+
+Known risks:
+- No real Hermes runtime was run in the default Stage 28 path.
+- No real capture trace was collected unless the user provides a trace or explicitly authorizes a capture-only run.
+- Side-effect-posthoc traces, observer-only traces, and missing-field traces cannot support enforcement claims.
+- Real Hermes integration and enforcement wrapper claims remain out of scope.
