@@ -7,7 +7,7 @@
     "run_attempted": false,
     "state": "DENY_CAPTURE_RUN",
     "timeout_seconds": 20,
-    "trace_path": "hermes_capture_run/imported_traces/manual/terminal_edge_trace.jsonl"
+    "trace_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/hermes_capture_run/traces/captured_events.jsonl"
   },
   "go_no_go": {
     "blocking_hook_points": [
@@ -22,7 +22,7 @@
     ],
     "enforcement_wrapper": "no-go",
     "more_runtime_samples_needed": true,
-    "real_capture_trace_collected": true,
+    "real_capture_trace_collected": false,
     "real_hermes_integration": false,
     "real_hermes_integration_claim": "no"
   },

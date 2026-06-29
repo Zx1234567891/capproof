@@ -7,7 +7,7 @@
     "run_attempted": false,
     "state": "DENY_CAPTURE_RUN",
     "timeout_seconds": 20,
-    "trace_path": "hermes_capture_run/imported_traces/manual/terminal_edge_trace.jsonl"
+    "trace_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/hermes_capture_run/traces/captured_events.jsonl"
   },
   "go_no_go": {
     "blocking_hook_points": [
@@ -22,7 +22,7 @@
     ],
     "enforcement_wrapper": "no-go",
     "more_runtime_samples_needed": true,
-    "real_capture_trace_collected": true,
+    "real_capture_trace_collected": false,
     "real_hermes_integration": false,
     "real_hermes_integration_claim": "no"
   },
@@ -76,16 +76,12 @@
       "side_effect_already_happened": "unknown"
     },
     "terminal": {
-      "complete_fields": "partial",
+      "complete_fields": "unknown",
       "enforcement_ready": "no",
-      "missing_fields": [
-        "effective_args.cwd",
-        "effective_args.env",
-        "effective_args.stdin"
-      ],
-      "observed": "yes",
-      "pre_execution_observed": "yes",
-      "side_effect_already_happened": "yes"
+      "missing_fields": [],
+      "observed": "no",
+      "pre_execution_observed": "unknown",
+      "side_effect_already_happened": "unknown"
     },
     "tool_dispatcher": {
       "complete_fields": "unknown",
@@ -108,21 +104,21 @@
     "no_third_party_project_command": true,
     "not_enforcement_wrapper": true
   },
-  "trace_source": "imported trace",
+  "trace_source": "no-run",
   "trace_validation": {
-    "AdapterCoverageGap": 3,
+    "AdapterCoverageGap": 0,
     "allowed": 0,
     "ask": 0,
-    "denied": 3,
+    "denied": 0,
     "executor_called_on_ask": 0,
     "executor_called_on_deny": 0,
-    "missing_field_events": 1,
+    "missing_field_events": 0,
     "observer_only_blocked": 0,
     "observer_only_events": 0,
-    "pre_execution_gate_events": 3,
-    "schema_valid_events": 3,
-    "side_effect_blocked": 1,
-    "total_events": 3,
-    "unsupported_events": 1
+    "pre_execution_gate_events": 0,
+    "schema_valid_events": 0,
+    "side_effect_blocked": 0,
+    "total_events": 0,
+    "unsupported_events": 0
   }
 }

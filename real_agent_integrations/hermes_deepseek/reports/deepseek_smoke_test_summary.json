@@ -1,0 +1,18 @@
+{
+  "base_url": "https://api.deepseek.com",
+  "error_type": "",
+  "key_value_printed": false,
+  "model": "deepseek-v4-pro",
+  "no_capproof_data_sent": true,
+  "no_hermes_run": true,
+  "no_secret_logged": true,
+  "no_tool_call": true,
+  "prompt_hash": "",
+  "reason": "--smoke-test was not requested",
+  "request_id": "",
+  "response_preview": "",
+  "run_allowed": false,
+  "run_attempted": false,
+  "status": "smoke_test_skipped",
+  "total_tokens": null
+}

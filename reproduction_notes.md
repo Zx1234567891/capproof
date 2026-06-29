@@ -61,44 +61,6 @@ These notes are part of the artifact contract for Stages 12-13. The harness inte
 - `python run_hermes_capture_prototype.py --report`: prints the latest prototype report, summary, and trace paths.
 - `pytest tests/test_hermes_capture_prototype.py -q`: runs the Stage 23 capture prototype tests.
 - Stage 23 capture prototype commands process only JSON / JSONL captured-event examples. They do not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to gateways/MCP servers, call network services, send email, or execute shell actions.
-- `python run_hermes_capture_instrumentation.py --fixture hermes_capture_instrumentation/fixtures`: runs the Stage 24 capture-only instrumentation fixture set and regenerates `hermes_capture_instrumentation_report.md`, `hermes_capture_instrumentation/reports/capture_summary.json`, and `hermes_capture_instrumentation/traces/captured_events.jsonl`.
-- `python run_hermes_capture_instrumentation.py --trace hermes_capture_instrumentation/traces/captured_events.jsonl`: replays an existing captured-event JSONL trace offline.
-- `python run_hermes_capture_instrumentation.py --validate`: validates the default trace if present, otherwise validates the fixture directory.
-- `python run_hermes_capture_instrumentation.py --report`: prints the latest Stage 24 report, summary, and trace paths.
-- `pytest tests/test_hermes_capture_instrumentation.py -q`: runs the Stage 24 capture-only wrapper and instrumentation runner tests.
-- Stage 24 instrumentation commands only process fixture / trace captured events. They do not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to gateways/MCP servers, call network services, send email/messages, or execute shell actions.
-- `python run_hermes_runtime_capture_experiment.py --preflight`: runs the Stage 25 no-run Hermes runtime capture preflight. It scans local source files only and does not execute Hermes.
-- `python run_hermes_runtime_capture_experiment.py --validate-trace <trace_path>`: validates an existing captured-event JSONL trace offline through the capture schema and mock guard replay.
-- `python run_hermes_runtime_capture_experiment.py --report`: prints or regenerates the Stage 25 runtime capture report paths and the Stage 27 `hermes_capture_run/reports/` no-run report paths.
-- `pytest tests/test_hermes_runtime_capture_experiment.py -q`: runs the Stage 25 preflight, capture-run gate, and trace validation tests.
-- `python run_hermes_runtime_capture_experiment.py --capture-run` is denied unless `ALLOW_HERMES_CAPTURE_RUN=1`, `HERMES_CAPTURE_COMMAND`, `HERMES_CAPTURE_TRACE_PATH`, `CAPPROOF_CAPTURE_ONLY=1`, `CAPPROOF_NO_REAL_TOOLS=1`, `NO_NETWORK=1`, and `HERMES_TEST_WORKSPACE` are all present and the command passes capture-only safety checks. The default artifact does not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to network services, send email/messages, or execute shell actions. Any future capture-run must remain capture-only / no-real-tools / no-network / no-shell-risk mode.
-- `python run_hermes_trace_collection_plan.py --preflight`: generates the Stage 26 trace collection no-run preflight and plan reports.
-- `python run_hermes_trace_collection_plan.py --generate-template`: generates the captured-event schema, example JSONL, safe task templates, safety checks, and sample mock capture command.
-- `python run_hermes_trace_collection_plan.py --validate-command`: validates `HERMES_CAPTURE_COMMAND` safety from environment variables without executing it.
-- `python run_hermes_trace_collection_plan.py --report`: prints the Stage 26 plan, command-validation, and go/no-go report paths.
-- `pytest tests/test_hermes_trace_collection_plan.py -q`: runs the Stage 26 planning and command validation tests.
-- Stage 26 commands only generate plans, templates, and safety-check reports. They do not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to network services, send email/messages, or execute shell actions. Capture-run remains out of scope unless explicitly authorized and must stay capture-only / mock-tool / no-real-tools / no-network / no-shell-risk.
-- Stage 27 controlled capture-run trial uses the same safety gate. `python run_hermes_trace_collection_plan.py --validate-command` checks command safety without executing it, and `python run_hermes_runtime_capture_experiment.py --preflight` / `--report` generate the no-run capture report under `hermes_capture_run/reports/`.
-- `pytest tests/test_hermes_capture_run.py -q`: runs Stage 27 no-run, capture-run gate, empty-trace, synthetic-trace, and report tests.
-- Do not run Stage 27 `--capture-run` without explicit user authorization. Stage 27 is not an enforcement wrapper and does not claim real Hermes integration.
-- `python run_hermes_capture_run.py --preflight`: runs the Stage 28 no-run capture-run safety gate and regenerates `hermes_capture_run/reports/`.
-- `python run_hermes_capture_run.py --import-trace <trace.jsonl>`: imports an existing Hermes runtime JSONL trace into `hermes_capture_run/imported_traces/` and validates it offline. It does not run Hermes or execute tools.
-- `python run_hermes_capture_run.py --capture-run`: attempts a capture-only command only when `ALLOW_HERMES_CAPTURE_RUN=1`, `HERMES_CAPTURE_COMMAND`, `HERMES_CAPTURE_TRACE_PATH`, `CAPPROOF_CAPTURE_ONLY=1`, `CAPPROOF_NO_REAL_TOOLS=1`, `NO_NETWORK=1`, and `HERMES_TEST_WORKSPACE` are all set and the command passes safety checks.
-- `python run_hermes_capture_run.py --report`: prints the Stage 28 capture-run, trace-validation, and hook-readiness report paths.
-- `pytest tests/test_hermes_capture_run_stage28.py -q`: runs Stage 28 no-run, trace-import, capture-run gate, command-safety, hook-readiness, side-effect, and report tests.
-- Stage 28 remains capture-only / trace-import only. It is not an enforcement wrapper, does not claim real Hermes integration, and must not run `--capture-run` without explicit user authorization.
-- `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/supported_trace.jsonl`: imports the Stage 29A hand-written supported Hermes JSONL trace and validates it offline.
-- `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/denied_trace.jsonl`: imports the Stage 29A hand-written denied Hermes JSONL trace and validates unauthorized high-impact events offline.
-- `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/mixed_trace.jsonl`: imports the Stage 29A mixed Hermes JSONL trace and validates observer-only, missing-field, and post-side-effect fail-closed behavior offline.
-- `pytest tests/test_hermes_trace_import_stage29a.py -q`: runs Stage 29A manual trace-import tests.
-- Stage 29A uses hand-written JSONL traces only. It does not run Hermes, execute capture-run, install dependencies, execute third-party project commands, execute real tools, connect to network services, send email/messages, or execute shell actions. The result validates trace-import and replay behavior; it is not evidence of real Hermes runtime capture or real Hermes integration.
-- `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/dispatcher_rewrite_trace.jsonl`: imports the Stage 29B dispatcher rewrite trace and verifies authorization uses `effective_args`.
-- `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/scheduler_trace.jsonl`: imports the Stage 29B scheduler trace and verifies authorized registration plus replay/mismatch denials.
-- `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/mcp_unsupported_trace.jsonl`: imports the Stage 29B MCP unsupported trace and validates fail-closed behavior for stdio, missing endpoint, and resource/prompt shapes.
-- `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/gateway_attachment_trace.jsonl`: imports the Stage 29B gateway trace and validates attachment/thread and missing-recipient fail-closed behavior.
-- `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/terminal_edge_trace.jsonl`: imports the Stage 29B terminal edge trace and validates pty/background, missing-field, and post-side-effect fail-closed behavior.
-- `pytest tests/test_hermes_trace_import_stage29b.py -q`: runs Stage 29B expanded manual trace-import tests.
-- Stage 29B remains offline trace-import only. It does not run Hermes, execute capture-run, install dependencies, execute third-party project commands, execute real tools, connect to network services, send email/messages, or execute shell actions.
 
 Adaptive mode is not implemented in Stage 13. Future adaptive runs should preserve the same task-local observable oracles while varying attack payloads after structured denials.
 
@@ -237,3 +199,29 @@ Adaptive mode is not implemented in Stage 13. Future adaptive runs should preser
 - Assumptions:
   - Relevant dependencies are visible in the trace.
   - Approval consumption is not modeled.
+
+## Stage 30R - Real Hermes + DeepSeek + Local MCP/CapProof Debug
+
+This stage actually runs Hermes from the local checkout, calls DeepSeek as the model backend, and exercises a localhost/stdio MCP server that routes tool calls through CapProof. It is not a production enforcement wrapper and does not claim production Hermes protection.
+
+Commands:
+
+```bash
+python run_real_hermes_mcp_test.py --bootstrap
+python run_real_hermes_mcp_test.py --all
+pytest tests/test_real_hermes_mcp_test.py -q
+python run_hermes_deepseek_setup.py --preflight
+python run_hermes_capture_run.py --preflight
+python run_kill_tests.py --mode all --baselines
+python run_adapter_bypass_gate.py
+python run_authspec_faithfulness.py --mode auto
+python -m compileall src tests run_real_hermes_mcp_test.py run_hermes_deepseek_setup.py run_hermes_capture_run.py run_hermes_mcp_proxy.py
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
+```
+
+Requirements:
+- `DEEPSEEK_API_KEY` must be present in the environment; its value must not be printed or written.
+- `.venv-hermes/` is an ignored local virtualenv for installing the local Hermes checkout.
+- The runner auto-sets Stage 30R safety flags and creates a temp Hermes workspace.
+- ALLOW actions only enter `MockExecutor`; DENY/ASK actions do not execute.
+- No real email, gateway, dangerous shell, external MCP, or non-DeepSeek external network is allowed.

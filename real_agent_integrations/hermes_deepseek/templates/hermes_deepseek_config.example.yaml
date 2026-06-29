@@ -1,0 +1,25 @@
+# Hermes DeepSeek provider template
+# Observed Hermes mapping:
+# - Built-in provider id: deepseek
+# - Credential env var: DEEPSEEK_API_KEY
+# - Provider default base URL: https://api.deepseek.com/v1
+# - OpenAI-chat transport via Hermes provider profile
+# Do not write a real key here.
+model:
+  provider: deepseek
+  default: deepseek-v4-pro
+  # Optional override only. Prefer the built-in provider default unless needed.
+  # base_url: https://api.deepseek.com/v1
+agent:
+  reasoning_effort: high
+security:
+  deepseek_not_in_capproof_tcb: true
+  deepseek_cannot_mint_capability: true
+  deepseek_cannot_allow_tool_call: true
+  capproof_guard_required_for_tools: true
+  reference_monitor_final_authority: true
+runtime_limits:
+  no_real_tools: true
+  no_shell_tool: true
+  no_gateway_message: true
+  no_mcp_external_network: true

@@ -15,12 +15,12 @@ capture-only safety environment variables are present and the command passes saf
 - Denial reason: default no-run preflight: explicit capture-run authorization not provided
 - Command hash: n/a
 - Timeout seconds: 20
-- Trace path: `hermes_capture_run/imported_traces/manual/terminal_edge_trace.jsonl`
+- Trace path: `/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/hermes_capture_run/traces/captured_events.jsonl`
 - Events captured: 0
 
 ## Trace Source
 
-- Source: imported trace
+- Source: no-run
 
 ## Safety Status
 
@@ -37,27 +37,27 @@ capture-only safety environment variables are present and the command passes saf
 
 ## Trace Validation Summary
 
-- Total events: 3
-- Schema-valid events: 3
-- Pre-execution-gate events: 3
+- Total events: 0
+- Schema-valid events: 0
+- Pre-execution-gate events: 0
 - Observer-only events: 0
-- Unsupported events: 1
-- Missing-field events: 1
+- Unsupported events: 0
+- Missing-field events: 0
 - Allowed: 0
-- Denied: 3
+- Denied: 0
 - Ask: 0
-- AdapterCoverageGap: 3
+- AdapterCoverageGap: 0
 - Observer-only blocked: 0
 - Executor called on deny: 0
 - Executor called on ask: 0
-- Side-effect-already-happened blocked: 1
+- Side-effect-already-happened blocked: 0
 
 ## Hook Readiness
 
 | Hook | Observed | Complete fields | Pre-execution observed | Side effect already happened | Enforcement-ready |
 | --- | --- | --- | --- | --- | --- |
 | tool_dispatcher | no | unknown | unknown | unknown | no |
-| terminal | yes | partial | yes | yes | no |
+| terminal | no | unknown | unknown | unknown | no |
 | MCP | no | unknown | unknown | unknown | no |
 | memory | no | unknown | unknown | unknown | no |
 | gateway | no | unknown | unknown | unknown | no |
@@ -70,6 +70,6 @@ capture-only safety environment variables are present and the command passes saf
 - Enforcement wrapper: no-go.
 - Real Hermes integration: False.
 - Real Hermes integration claim: no.
-- Real capture trace collected: True.
+- Real capture trace collected: False.
 - More runtime samples needed: True.
 - Blocking hook points: tool_dispatcher, terminal, MCP, memory, gateway, delegation, scheduler, middleware_rewrite.

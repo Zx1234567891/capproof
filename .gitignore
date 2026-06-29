@@ -3,7 +3,13 @@ __pycache__/
 .mypy_cache/
 .ruff_cache/
 *.py[cod]
+.env
+.env.local
+*.env.local
+*.secret
+*.secrets
 .venv/
+.venv-hermes/
 venv/
 dist/
 build/

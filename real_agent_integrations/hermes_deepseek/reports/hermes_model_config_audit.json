@@ -1,0 +1,59 @@
+{
+  "api_key_env_field_found": true,
+  "base_url_field_found": true,
+  "deepseek_support_found": true,
+  "files_scanned": 5000,
+  "inferred_from_docs": [
+    "Docs mention model/provider switching; exact runtime mapping still needs manual verification."
+  ],
+  "mapping_recommendation": "Set Hermes `model.provider: deepseek` and `model.default: deepseek-v4-pro`; keep API key in `DEEPSEEK_API_KEY`.",
+  "model_field_found": true,
+  "needs_manual_verification": [
+    "Confirm exact Hermes provider config schema before writing any real local config.",
+    "Keep DEEPSEEK_API_KEY in environment only; never commit real keys."
+  ],
+  "observed_in_source": [
+    "Provider directory or provider-like path exists in local Hermes checkout.",
+    "OpenAI-related provider/config references observed in source or docs.",
+    "OpenRouter-related provider/config references observed in source or docs.",
+    "DeepSeek-related references observed in local checkout.",
+    "Built-in `plugins/model-providers/deepseek` provider profile observed.",
+    "base_url / api_base / endpoint-like configuration fields observed.",
+    "API key / token / environment variable references observed."
+  ],
+  "openai_compatible_path_found": true,
+  "provider_config_found": true,
+  "provider_dir_found": true,
+  "repo_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/external/hermes-agent",
+  "repo_status": "available",
+  "sample_files": [
+    ".env.example",
+    ".github/ISSUE_TEMPLATE/bug_report.yml",
+    ".github/ISSUE_TEMPLATE/feature_request.yml",
+    ".github/ISSUE_TEMPLATE/setup_help.yml",
+    ".github/PULL_REQUEST_TEMPLATE.md",
+    ".github/actions/detect-changes/action.yml",
+    ".github/actions/nix-setup/action.yml",
+    ".github/actions/retry/action.yml",
+    ".github/dependabot.yml",
+    ".github/workflows/ci.yml",
+    ".github/workflows/deploy-site.yml",
+    ".github/workflows/docker-lint.yml",
+    ".github/workflows/docker.yml",
+    ".github/workflows/skills-index-freshness.yml",
+    ".github/workflows/skills-index.yml",
+    ".github/workflows/supply-chain-audit.yml",
+    ".github/workflows/tests.yml",
+    ".github/workflows/upload_to_pypi.yml",
+    ".hadolint.yaml",
+    ".plans/openai-api-server.md",
+    ".plans/streaming-support.md",
+    "AGENTS.md",
+    "CONTRIBUTING.es.md",
+    "CONTRIBUTING.md",
+    "README.es.md"
+  ],
+  "unknown": [
+    "Exact Hermes local config write path and command remain unverified without running Hermes."
+  ]
+}

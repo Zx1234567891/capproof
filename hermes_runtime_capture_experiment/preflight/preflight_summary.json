@@ -4,7 +4,7 @@
   "files_scanned": 2000,
   "hook_candidates": {
     "delegation": {
-      "hits": 285,
+      "hits": 286,
       "sample_files": [
         "AGENTS.md",
         "CONTRIBUTING.es.md",
@@ -24,7 +24,7 @@
       ]
     },
     "mcp": {
-      "hits": 854,
+      "hits": 855,
       "sample_files": [
         "AGENTS.md",
         "CONTRIBUTING.es.md",
@@ -44,7 +44,7 @@
       ]
     },
     "middleware_rewrite": {
-      "hits": 952,
+      "hits": 953,
       "sample_files": [
         ".hadolint.yaml",
         "AGENTS.md",
@@ -54,7 +54,7 @@
       ]
     },
     "scheduler": {
-      "hits": 445,
+      "hits": 448,
       "sample_files": [
         "AGENTS.md",
         "CONTRIBUTING.es.md",
@@ -64,7 +64,7 @@
       ]
     },
     "terminal": {
-      "hits": 1177,
+      "hits": 1173,
       "sample_files": [
         ".hadolint.yaml",
         "AGENTS.md",
@@ -74,7 +74,7 @@
       ]
     },
     "tool_dispatcher": {
-      "hits": 449,
+      "hits": 450,
       "sample_files": [
         "AGENTS.md",
         "CONTRIBUTING.es.md",

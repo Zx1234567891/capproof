@@ -27,14 +27,14 @@ trusted for validation; natural-language logs are not authorization evidence.
 
 | Hook | Candidate hits | Sample files |
 | --- | ---: | --- |
-| tool_dispatcher | 449 | AGENTS.md, CONTRIBUTING.es.md, CONTRIBUTING.md, SECURITY.md, batch_runner.py |
-| terminal | 1177 | .hadolint.yaml, AGENTS.md, CONTRIBUTING.es.md, CONTRIBUTING.md, README.es.md |
-| mcp | 854 | AGENTS.md, CONTRIBUTING.es.md, CONTRIBUTING.md, README.es.md, README.md |
+| tool_dispatcher | 450 | AGENTS.md, CONTRIBUTING.es.md, CONTRIBUTING.md, SECURITY.md, batch_runner.py |
+| terminal | 1173 | .hadolint.yaml, AGENTS.md, CONTRIBUTING.es.md, CONTRIBUTING.md, README.es.md |
+| mcp | 855 | AGENTS.md, CONTRIBUTING.es.md, CONTRIBUTING.md, README.es.md, README.md |
 | memory | 552 | AGENTS.md, CONTRIBUTING.es.md, CONTRIBUTING.md, README.es.md, README.md |
 | gateway | 1151 | AGENTS.md, CONTRIBUTING.es.md, CONTRIBUTING.md, README.es.md, README.md |
-| delegation | 285 | AGENTS.md, CONTRIBUTING.es.md, CONTRIBUTING.md, README.es.md, README.md |
-| scheduler | 445 | AGENTS.md, CONTRIBUTING.es.md, CONTRIBUTING.md, README.es.md, README.md |
-| middleware_rewrite | 952 | .hadolint.yaml, AGENTS.md, CONTRIBUTING.es.md, CONTRIBUTING.md, README.es.md |
+| delegation | 286 | AGENTS.md, CONTRIBUTING.es.md, CONTRIBUTING.md, README.es.md, README.md |
+| scheduler | 448 | AGENTS.md, CONTRIBUTING.es.md, CONTRIBUTING.md, README.es.md, README.md |
+| middleware_rewrite | 953 | .hadolint.yaml, AGENTS.md, CONTRIBUTING.es.md, CONTRIBUTING.md, README.es.md |
 
 ## Capture Run Summary
 

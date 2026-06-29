@@ -1,0 +1,24 @@
+{
+  "base_url": "https://api.deepseek.com",
+  "hermes_repo_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/external/hermes-agent",
+  "hermes_repo_status": "available",
+  "hermes_run_allowed": false,
+  "hermes_run_reason": "missing explicit Hermes DeepSeek no-tools run authorization or safe environment",
+  "key_present": true,
+  "key_value_printed": false,
+  "model": "deepseek-v4-pro",
+  "no_deepseek_call": true,
+  "no_hermes_run": true,
+  "no_key_written": true,
+  "no_real_tool_execution": true,
+  "reasoning_effort": "high",
+  "security_boundary": {
+    "deepseek_can_allow_tool_call": false,
+    "deepseek_can_mint_capability": false,
+    "deepseek_in_capproof_tcb": false,
+    "hermes_tool_calls_require_capproof_guard": true,
+    "llm_output_can_bypass_reference_monitor": false,
+    "reference_monitor_final_authority": true
+  },
+  "smoke_test_allowed": false
+}
