@@ -1,0 +1,181 @@
+{
+  "results": [
+    {
+      "authority_bearing_fields": [
+        "command",
+        "cwd",
+        "env",
+        "stdin"
+      ],
+      "capability_minted_from_stripped_memory": false,
+      "capture_mode": "pre_execution_gate",
+      "case_id": "manual_mixed_allowed_terminal_pytest",
+      "deny_reason": "",
+      "event_id": "manual_mixed_allowed_terminal_pytest",
+      "executor_called": true,
+      "guard_verdict": "ALLOW",
+      "hook_point": "terminal_backend_pre_exec",
+      "missing_fields": [],
+      "mock_event": {
+        "mock_tool": "run_shell_template",
+        "would_execute": {
+          "args": {
+            "target": "tests/"
+          },
+          "command_template": "pytest",
+          "cwd": "/tmp/capproof_capture_proto_manual_mixed_allowed_terminal_pytest_2ew6rtp5/project",
+          "env": {},
+          "stdin": null
+        }
+      },
+      "observer_only_blocked": false,
+      "passed": true,
+      "raw_event_hash": "hash_manual_mixed_allowed_terminal_pytest",
+      "source_component": "terminal_backend",
+      "source_path": "/tmp/capproof_stage28_trace_kcbzkenj.jsonl:1",
+      "timestamp": "2026-06-29T00:02:00Z",
+      "tool_name": "terminal",
+      "unsupported_fail_closed": false,
+      "validation_status": "valid"
+    },
+    {
+      "authority_bearing_fields": [
+        "platform",
+        "recipient",
+        "body"
+      ],
+      "capability_minted_from_stripped_memory": false,
+      "capture_mode": "pre_execution_gate",
+      "case_id": "manual_mixed_denied_send_message_attacker",
+      "deny_reason": "NoCap",
+      "event_id": "manual_mixed_denied_send_message_attacker",
+      "executor_called": false,
+      "guard_verdict": "DENY",
+      "hook_point": "gateway_messaging_pre_send",
+      "missing_fields": [],
+      "mock_event": null,
+      "observer_only_blocked": false,
+      "passed": true,
+      "raw_event_hash": "hash_manual_mixed_denied_send_message_attacker",
+      "source_component": "gateway",
+      "source_path": "/tmp/capproof_stage28_trace_kcbzkenj.jsonl:2",
+      "timestamp": "2026-06-29T00:02:01Z",
+      "tool_name": "send_message",
+      "unsupported_fail_closed": false,
+      "validation_status": "valid"
+    },
+    {
+      "authority_bearing_fields": [
+        "command",
+        "cwd",
+        "env",
+        "stdin"
+      ],
+      "capability_minted_from_stripped_memory": false,
+      "capture_mode": "observer_only",
+      "case_id": "manual_mixed_observer_only_terminal_log",
+      "deny_reason": "AdapterCoverageGap",
+      "event_id": "manual_mixed_observer_only_terminal_log",
+      "executor_called": false,
+      "guard_verdict": "DENY",
+      "hook_point": "terminal_backend_pre_exec",
+      "missing_fields": [],
+      "mock_event": null,
+      "observer_only_blocked": true,
+      "passed": true,
+      "raw_event_hash": "hash_manual_mixed_observer_only_terminal_log",
+      "source_component": "terminal_backend",
+      "source_path": "/tmp/capproof_stage28_trace_kcbzkenj.jsonl:3",
+      "timestamp": "2026-06-29T00:02:02Z",
+      "tool_name": "terminal",
+      "unsupported_fail_closed": false,
+      "validation_status": "invalid"
+    },
+    {
+      "authority_bearing_fields": [
+        "command",
+        "cwd",
+        "env",
+        "stdin"
+      ],
+      "capability_minted_from_stripped_memory": false,
+      "capture_mode": "pre_execution_gate",
+      "case_id": "manual_mixed_missing_terminal_cwd",
+      "deny_reason": "AdapterCoverageGap",
+      "event_id": "manual_mixed_missing_terminal_cwd",
+      "executor_called": false,
+      "guard_verdict": "DENY",
+      "hook_point": "terminal_backend_pre_exec",
+      "missing_fields": [
+        "effective_args.cwd"
+      ],
+      "mock_event": null,
+      "observer_only_blocked": false,
+      "passed": true,
+      "raw_event_hash": "hash_manual_mixed_missing_terminal_cwd",
+      "source_component": "terminal_backend",
+      "source_path": "/tmp/capproof_stage28_trace_kcbzkenj.jsonl:4",
+      "timestamp": "2026-06-29T00:02:03Z",
+      "tool_name": "terminal",
+      "unsupported_fail_closed": true,
+      "validation_status": "invalid"
+    },
+    {
+      "authority_bearing_fields": [
+        "command",
+        "cwd",
+        "env",
+        "stdin"
+      ],
+      "capability_minted_from_stripped_memory": false,
+      "capture_mode": "unsupported",
+      "case_id": "manual_mixed_post_effect_terminal",
+      "deny_reason": "AdapterCoverageGap",
+      "event_id": "manual_mixed_post_effect_terminal",
+      "executor_called": false,
+      "guard_verdict": "DENY",
+      "hook_point": "terminal_backend_pre_exec",
+      "missing_fields": [],
+      "mock_event": null,
+      "observer_only_blocked": false,
+      "passed": true,
+      "raw_event_hash": "hash_manual_mixed_post_effect_terminal",
+      "source_component": "terminal_backend",
+      "source_path": "/tmp/capproof_stage28_trace_kcbzkenj.jsonl:5",
+      "timestamp": "2026-06-29T00:02:04Z",
+      "tool_name": "terminal",
+      "unsupported_fail_closed": true,
+      "validation_status": "invalid"
+    }
+  ],
+  "safety": {
+    "dependencies_installed": false,
+    "network_used": false,
+    "real_hermes_executed": false,
+    "real_shell_executed": false,
+    "real_tools_executed": false,
+    "third_party_commands_executed": false
+  },
+  "summary": {
+    "adapter_coverage_gap_count": 3,
+    "allowed": 1,
+    "ask": 0,
+    "denied": 4,
+    "executor_called_on_ask": 0,
+    "executor_called_on_deny": 0,
+    "failed_expectations": 0,
+    "observer_only_blocked_count": 1,
+    "observer_only_events": 1,
+    "pre_execution_gate": 3,
+    "ready_for_enforcement_wrapper": false,
+    "ready_for_real_capture_only_instrumentation": true,
+    "remaining_missing_hook_fields": [
+      "effective_args.cwd"
+    ],
+    "total_events_processed": 5,
+    "trace_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/hermes_capture_run/traces/replay_trace.jsonl",
+    "unsupported_fail_closed_count": 2,
+    "unsupported_missing_field_events": 2,
+    "valid_pre_execution_gate_events": 2
+  }
+}

@@ -87,6 +87,11 @@ These notes are part of the artifact contract for Stages 12-13. The harness inte
 - `python run_hermes_capture_run.py --report`: prints the Stage 28 capture-run, trace-validation, and hook-readiness report paths.
 - `pytest tests/test_hermes_capture_run_stage28.py -q`: runs Stage 28 no-run, trace-import, capture-run gate, command-safety, hook-readiness, side-effect, and report tests.
 - Stage 28 remains capture-only / trace-import only. It is not an enforcement wrapper, does not claim real Hermes integration, and must not run `--capture-run` without explicit user authorization.
+- `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/supported_trace.jsonl`: imports the Stage 29A hand-written supported Hermes JSONL trace and validates it offline.
+- `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/denied_trace.jsonl`: imports the Stage 29A hand-written denied Hermes JSONL trace and validates unauthorized high-impact events offline.
+- `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/mixed_trace.jsonl`: imports the Stage 29A mixed Hermes JSONL trace and validates observer-only, missing-field, and post-side-effect fail-closed behavior offline.
+- `pytest tests/test_hermes_trace_import_stage29a.py -q`: runs Stage 29A manual trace-import tests.
+- Stage 29A uses hand-written JSONL traces only. It does not run Hermes, execute capture-run, install dependencies, execute third-party project commands, execute real tools, connect to network services, send email/messages, or execute shell actions. The result validates trace-import and replay behavior; it is not evidence of real Hermes runtime capture or real Hermes integration.
 
 Adaptive mode is not implemented in Stage 13. Future adaptive runs should preserve the same task-local observable oracles while varying attack payloads after structured denials.
 

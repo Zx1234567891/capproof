@@ -7,7 +7,7 @@
     "run_attempted": false,
     "state": "DENY_CAPTURE_RUN",
     "timeout_seconds": 20,
-    "trace_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/hermes_capture_run/traces/captured_events.jsonl"
+    "trace_path": "hermes_capture_run/imported_traces/manual/mixed_trace.jsonl"
   },
   "go_no_go": {
     "blocking_hook_points": [
@@ -15,14 +15,13 @@
       "terminal",
       "MCP",
       "memory",
-      "gateway",
       "delegation",
       "scheduler",
       "middleware_rewrite"
     ],
     "enforcement_wrapper": "no-go",
     "more_runtime_samples_needed": true,
-    "real_capture_trace_collected": false,
+    "real_capture_trace_collected": true,
     "real_hermes_integration": false,
     "real_hermes_integration_claim": "no"
   },
@@ -44,12 +43,12 @@
       "side_effect_already_happened": "unknown"
     },
     "gateway": {
-      "complete_fields": "unknown",
-      "enforcement_ready": "no",
+      "complete_fields": "yes",
+      "enforcement_ready": "yes",
       "missing_fields": [],
-      "observed": "no",
-      "pre_execution_observed": "unknown",
-      "side_effect_already_happened": "unknown"
+      "observed": "yes",
+      "pre_execution_observed": "yes",
+      "side_effect_already_happened": "no"
     },
     "memory": {
       "complete_fields": "unknown",
@@ -76,12 +75,14 @@
       "side_effect_already_happened": "unknown"
     },
     "terminal": {
-      "complete_fields": "unknown",
+      "complete_fields": "partial",
       "enforcement_ready": "no",
-      "missing_fields": [],
-      "observed": "no",
-      "pre_execution_observed": "unknown",
-      "side_effect_already_happened": "unknown"
+      "missing_fields": [
+        "effective_args.cwd"
+      ],
+      "observed": "yes",
+      "pre_execution_observed": "no",
+      "side_effect_already_happened": "yes"
     },
     "tool_dispatcher": {
       "complete_fields": "unknown",
@@ -104,21 +105,21 @@
     "no_third_party_project_command": true,
     "not_enforcement_wrapper": true
   },
-  "trace_source": "no-run",
+  "trace_source": "imported trace",
   "trace_validation": {
-    "AdapterCoverageGap": 0,
-    "allowed": 0,
+    "AdapterCoverageGap": 3,
+    "allowed": 1,
     "ask": 0,
-    "denied": 0,
+    "denied": 4,
     "executor_called_on_ask": 0,
     "executor_called_on_deny": 0,
-    "missing_field_events": 0,
-    "observer_only_blocked": 0,
-    "observer_only_events": 0,
-    "pre_execution_gate_events": 0,
-    "schema_valid_events": 0,
-    "side_effect_blocked": 0,
-    "total_events": 0,
-    "unsupported_events": 0
+    "missing_field_events": 1,
+    "observer_only_blocked": 1,
+    "observer_only_events": 1,
+    "pre_execution_gate_events": 4,
+    "schema_valid_events": 5,
+    "side_effect_blocked": 1,
+    "total_events": 5,
+    "unsupported_events": 1
   }
 }

@@ -999,3 +999,29 @@ Known risks:
 - No real capture trace was collected unless the user provides a trace or explicitly authorizes a capture-only run.
 - Side-effect-posthoc traces, observer-only traces, and missing-field traces cannot support enforcement claims.
 - Real Hermes integration and enforcement wrapper claims remain out of scope.
+
+## Stage 29A - Hermes Manual Trace Import Offline Validation
+
+Status: implemented, self-check pending.
+
+Scope:
+- Add hand-written Hermes runtime JSONL traces for supported, denied, and mixed offline import validation.
+- Reuse `run_hermes_capture_run.py --import-trace` to validate schema completeness, hook readiness, side-effect timing, and mock CapProof guard replay.
+- Generate `hermes_capture_run/reports/manual_trace_import_report.md` from the manual traces.
+- Do not run Hermes, execute capture-run, install dependencies, execute third-party commands, execute real tools, use network, modify Hermes source, or modify Reference Monitor / Capability Store / Proof Model safety semantics.
+
+Implemented:
+- Added manual traces under `hermes_capture_run/imported_traces/manual/`.
+- Added aggregate manual trace report generation to `run_hermes_capture_run.py`.
+- Added `tests/test_hermes_trace_import_stage29a.py`.
+- Updated reproduction notes.
+
+Manual trace coverage:
+- Supported trace: terminal pytest template, authorized `send_message`, content-only memory write.
+- Denied trace: attacker `send_message`, evil MCP endpoint, raw terminal shell, delegation without certificate.
+- Mixed trace: allowed event, denied event, observer-only event, missing hook field, and post-side-effect event.
+
+Known risks:
+- These traces are hand-written, not captured from a real Hermes runtime.
+- Stage 29A does not establish that real Hermes hook points are available or field-complete.
+- Real Hermes integration and enforcement wrapper claims remain out of scope.

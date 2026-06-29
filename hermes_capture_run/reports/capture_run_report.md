@@ -15,12 +15,12 @@ capture-only safety environment variables are present and the command passes saf
 - Denial reason: default no-run preflight: explicit capture-run authorization not provided
 - Command hash: n/a
 - Timeout seconds: 20
-- Trace path: `/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/hermes_capture_run/traces/captured_events.jsonl`
+- Trace path: `hermes_capture_run/imported_traces/manual/mixed_trace.jsonl`
 - Events captured: 0
 
 ## Trace Source
 
-- Source: no-run
+- Source: imported trace
 
 ## Safety Status
 
@@ -37,30 +37,30 @@ capture-only safety environment variables are present and the command passes saf
 
 ## Trace Validation Summary
 
-- Total events: 0
-- Schema-valid events: 0
-- Pre-execution-gate events: 0
-- Observer-only events: 0
-- Unsupported events: 0
-- Missing-field events: 0
-- Allowed: 0
-- Denied: 0
+- Total events: 5
+- Schema-valid events: 5
+- Pre-execution-gate events: 4
+- Observer-only events: 1
+- Unsupported events: 1
+- Missing-field events: 1
+- Allowed: 1
+- Denied: 4
 - Ask: 0
-- AdapterCoverageGap: 0
-- Observer-only blocked: 0
+- AdapterCoverageGap: 3
+- Observer-only blocked: 1
 - Executor called on deny: 0
 - Executor called on ask: 0
-- Side-effect-already-happened blocked: 0
+- Side-effect-already-happened blocked: 1
 
 ## Hook Readiness
 
 | Hook | Observed | Complete fields | Pre-execution observed | Side effect already happened | Enforcement-ready |
 | --- | --- | --- | --- | --- | --- |
 | tool_dispatcher | no | unknown | unknown | unknown | no |
-| terminal | no | unknown | unknown | unknown | no |
+| terminal | yes | partial | no | yes | no |
 | MCP | no | unknown | unknown | unknown | no |
 | memory | no | unknown | unknown | unknown | no |
-| gateway | no | unknown | unknown | unknown | no |
+| gateway | yes | yes | yes | no | yes |
 | delegation | no | unknown | unknown | unknown | no |
 | scheduler | no | unknown | unknown | unknown | no |
 | middleware_rewrite | no | unknown | unknown | unknown | no |
@@ -70,6 +70,6 @@ capture-only safety environment variables are present and the command passes saf
 - Enforcement wrapper: no-go.
 - Real Hermes integration: False.
 - Real Hermes integration claim: no.
-- Real capture trace collected: False.
+- Real capture trace collected: True.
 - More runtime samples needed: True.
-- Blocking hook points: tool_dispatcher, terminal, MCP, memory, gateway, delegation, scheduler, middleware_rewrite.
+- Blocking hook points: tool_dispatcher, terminal, MCP, memory, delegation, scheduler, middleware_rewrite.

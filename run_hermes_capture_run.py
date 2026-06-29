@@ -26,12 +26,14 @@ CAPTURE_RUN_DIR = ROOT / "hermes_capture_run"
 TRACES_DIR = CAPTURE_RUN_DIR / "traces"
 REPORTS_DIR = CAPTURE_RUN_DIR / "reports"
 IMPORTED_TRACES_DIR = CAPTURE_RUN_DIR / "imported_traces"
+MANUAL_TRACES_DIR = IMPORTED_TRACES_DIR / "manual"
 SAFETY_LOGS_DIR = CAPTURE_RUN_DIR / "safety_logs"
 DEFAULT_TRACE_PATH = TRACES_DIR / "captured_events.jsonl"
 SUMMARY_PATH = REPORTS_DIR / "capture_run_summary.json"
 CAPTURE_RUN_REPORT_PATH = REPORTS_DIR / "capture_run_report.md"
 TRACE_VALIDATION_REPORT_PATH = REPORTS_DIR / "trace_validation_report.md"
 HOOK_READINESS_REPORT_PATH = REPORTS_DIR / "hook_readiness_report.md"
+MANUAL_TRACE_REPORT_PATH = REPORTS_DIR / "manual_trace_import_report.md"
 TRACE_REPLAY_TRACE_PATH = TRACES_DIR / "replay_trace.jsonl"
 TRACE_REPLAY_SUMMARY_PATH = REPORTS_DIR / "trace_replay_summary.json"
 SAFETY_LOG_PATH = SAFETY_LOGS_DIR / "capture_run_safety_log.json"
@@ -132,6 +134,7 @@ def main() -> int:
         print(f"capture_run_summary: {SUMMARY_PATH}")
         print(f"trace_validation_report: {TRACE_VALIDATION_REPORT_PATH}")
         print(f"hook_readiness_report: {HOOK_READINESS_REPORT_PATH}")
+        print(f"manual_trace_import_report: {MANUAL_TRACE_REPORT_PATH}")
         return 0
 
     summary = payload["summary"]
@@ -209,6 +212,7 @@ def validate_stage28_trace(trace_path: Path, *, trace_source: str, root: Path = 
     replay_results = replay_payload["results"]
     hook_readiness = build_hook_readiness(rows, checks, replay_results)
     stage_missing_events = sum(bool(check.missing_schema_fields) for check in checks)
+    hook_missing_events = sum(bool(result.get("missing_fields")) for result in replay_results)
     side_effect_blocked = sum(check.side_effect_already_happened is True for check in checks)
     return Stage28TraceValidation(
         trace_path=str(trace_path),
@@ -218,7 +222,7 @@ def validate_stage28_trace(trace_path: Path, *, trace_source: str, root: Path = 
         pre_execution_gate_events=sum(check.capture_mode == "pre_execution_gate" for check in checks),
         observer_only_events=sum(check.capture_mode == "observer_only" for check in checks),
         unsupported_events=sum(check.capture_mode == "unsupported" or check.fail_closed for check in checks),
-        missing_field_events=max(stage_missing_events, replay_summary["unsupported_missing_field_events"]),
+        missing_field_events=max(stage_missing_events, hook_missing_events),
         allowed=replay_summary["allowed"],
         denied=replay_summary["denied"],
         ask=replay_summary["ask"],
@@ -338,6 +342,190 @@ def write_stage28_outputs(payload: dict[str, Any], *, root: Path = ROOT) -> None
         ),
         encoding="utf-8",
     )
+    write_manual_trace_import_report_if_available(root=root)
+
+
+def write_manual_trace_import_report_if_available(*, root: Path = ROOT) -> None:
+    manual_dir = _path(root, MANUAL_TRACES_DIR)
+    if not manual_dir.exists():
+        return
+    trace_paths = sorted(manual_dir.glob("*.jsonl"))
+    if not trace_paths:
+        return
+    validations = []
+    for trace_path in trace_paths:
+        with tempfile.TemporaryDirectory(prefix="capproof_manual_trace_report_") as temp_root:
+            validations.append(
+                validate_stage28_trace(
+                    trace_path,
+                    trace_source=f"manual trace: {trace_path.name}",
+                    root=Path(temp_root),
+                )
+            )
+    report_path = _path(root, MANUAL_TRACE_REPORT_PATH)
+    report_path.parent.mkdir(parents=True, exist_ok=True)
+    report_path.write_text(
+        render_manual_trace_import_report(validations),
+        encoding="utf-8",
+    )
+
+
+def render_manual_trace_import_report(validations: list[Stage28TraceValidation]) -> str:
+    totals = aggregate_trace_validations(validations)
+    readiness = aggregate_hook_readiness(validations)
+    lines = [
+        "# Manual Hermes Trace Import Report",
+        "",
+        "Stage 29A imports hand-written Hermes runtime JSONL traces for offline validation only.",
+        "This stage does not run Hermes, does not execute capture-run, does not install dependencies,",
+        "does not execute third-party commands, does not execute real tools, does not use network,",
+        "and does not modify Hermes source. It cannot support a real Hermes integration claim or a",
+        "claim that true runtime capture has completed.",
+        "",
+        "This is not an enforcement wrapper. `observer_only` events cannot produce enforcement ALLOW,",
+        "`side_effect_already_happened=true` events cannot support an enforcement claim, missing-field",
+        "events must fail closed with `AdapterCoverageGap`, and DENY / ASK decisions must not execute",
+        "the mock executor.",
+        "",
+        "## Trace Files Imported",
+        "",
+    ]
+    for validation in validations:
+        lines.append(f"- `{validation.trace_path}`")
+    lines.extend(
+        [
+            "",
+            "## Aggregate Summary",
+            "",
+            f"- Trace files: {len(validations)}",
+            f"- Total events: {totals['total_events']}",
+            f"- Valid events: {totals['schema_valid_events']}",
+            f"- Schema-valid events: {totals['schema_valid_events']}",
+            f"- Pre-execution-gate events: {totals['pre_execution_gate_events']}",
+            f"- Observer-only events: {totals['observer_only_events']}",
+            f"- Missing-field events: {totals['missing_field_events']}",
+            f"- Side-effect-already-happened events: {totals['side_effect_blocked']}",
+            f"- Allowed / denied / ask: {totals['allowed']} / {totals['denied']} / {totals['ask']}",
+            f"- Allowed: {totals['allowed']}",
+            f"- Denied: {totals['denied']}",
+            f"- Ask: {totals['ask']}",
+            f"- AdapterCoverageGap: {totals['AdapterCoverageGap']}",
+            f"- Observer-only blocked: {totals['observer_only_blocked']}",
+            f"- Side-effect posthoc blocked: {totals['side_effect_blocked']}",
+            f"- Executor called on deny: {totals['executor_called_on_deny']}",
+            f"- Executor called on ask: {totals['executor_called_on_ask']}",
+            "",
+            "## Per-trace Summary",
+            "",
+            "| Trace | Events | Valid | Pre-exec | Observer-only | Missing-field | Side-effect posthoc | Allow | Deny | Ask | AdapterCoverageGap |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+        ]
+    )
+    per_trace_notes = []
+    for validation in validations:
+        label = "supported" if Path(validation.trace_path).name.startswith("supported") else (
+            "denied" if Path(validation.trace_path).name.startswith("denied") else (
+                "mixed" if Path(validation.trace_path).name.startswith("mixed") else Path(validation.trace_path).stem
+            )
+        )
+        lines.append(
+            f"| {Path(validation.trace_path).name} | {validation.total_events} | "
+            f"{validation.schema_valid_events} | {validation.pre_execution_gate_events} | "
+            f"{validation.observer_only_events} | {validation.missing_field_events} | "
+            f"{validation.side_effect_blocked} | {validation.allowed} | {validation.denied} | "
+            f"{validation.ask} | {validation.adapter_coverage_gap} |"
+        )
+        per_trace_notes.append(
+            f"- {label}: {validation.total_events} events, "
+            f"{validation.allowed} ALLOW, {validation.denied} DENY, "
+            f"{validation.adapter_coverage_gap} AdapterCoverageGap"
+        )
+    lines.extend(
+        [
+            "",
+            "## Per-trace Results",
+            "",
+            *per_trace_notes,
+            "",
+            "",
+            "## Hook Readiness Summary",
+            "",
+            "| Hook | Observed in manual trace | Complete fields | Pre-execution observed | Side effect already happened | Enforcement-ready |",
+            "| --- | --- | --- | --- | --- | --- |",
+        ]
+    )
+    for hook, data in readiness.items():
+        lines.append(
+            f"| {hook} | {data['observed']} | {data['complete_fields']} | "
+            f"{data['pre_execution_observed']} | {data['side_effect_already_happened']} | "
+            f"{data['enforcement_ready']} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Scope",
+            "",
+            "- Trace source: hand-written JSONL files.",
+            "- Capture-run: not executed.",
+            "- Real Hermes runtime: not run.",
+            "- Dependency install: not performed.",
+            "- Third-party commands: not executed.",
+            "- Real tool execution: not performed.",
+            "- External network calls: not performed.",
+            "- Real captured events: none in this stage.",
+            "- Enforcement wrapper: no-go.",
+            "- Real Hermes integration claim: no.",
+            "- More runtime samples are still required before any enforcement wrapper discussion.",
+        ]
+    )
+    return "\n".join(lines) + "\n"
+
+
+def aggregate_trace_validations(validations: list[Stage28TraceValidation]) -> dict[str, int]:
+    return {
+        "total_events": sum(item.total_events for item in validations),
+        "schema_valid_events": sum(item.schema_valid_events for item in validations),
+        "pre_execution_gate_events": sum(item.pre_execution_gate_events for item in validations),
+        "observer_only_events": sum(item.observer_only_events for item in validations),
+        "unsupported_events": sum(item.unsupported_events for item in validations),
+        "missing_field_events": sum(item.missing_field_events for item in validations),
+        "allowed": sum(item.allowed for item in validations),
+        "denied": sum(item.denied for item in validations),
+        "ask": sum(item.ask for item in validations),
+        "AdapterCoverageGap": sum(item.adapter_coverage_gap for item in validations),
+        "observer_only_blocked": sum(item.observer_only_blocked for item in validations),
+        "executor_called_on_deny": sum(item.executor_called_on_deny for item in validations),
+        "executor_called_on_ask": sum(item.executor_called_on_ask for item in validations),
+        "side_effect_blocked": sum(item.side_effect_blocked for item in validations),
+    }
+
+
+def aggregate_hook_readiness(validations: list[Stage28TraceValidation]) -> dict[str, dict[str, Any]]:
+    aggregate = default_hook_readiness()
+    for hook in aggregate:
+        rows = [validation.hook_readiness.get(hook, {}) for validation in validations]
+        observed_rows = [row for row in rows if row.get("observed") == "yes"]
+        if not observed_rows:
+            continue
+        complete_values = {str(row.get("complete_fields", "unknown")) for row in observed_rows}
+        pre_values = {str(row.get("pre_execution_observed", "unknown")) for row in observed_rows}
+        side_values = {str(row.get("side_effect_already_happened", "unknown")) for row in observed_rows}
+        ready_values = {str(row.get("enforcement_ready", "no")) for row in observed_rows}
+        aggregate[hook] = {
+            "observed": "yes",
+            "complete_fields": "yes" if complete_values == {"yes"} else "partial",
+            "pre_execution_observed": "yes" if pre_values == {"yes"} else ("no" if "no" in pre_values else "unknown"),
+            "side_effect_already_happened": "yes" if "yes" in side_values else ("no" if side_values == {"no"} else "unknown"),
+            "enforcement_ready": "yes" if ready_values == {"yes"} else "no",
+            "missing_fields": sorted(
+                {
+                    field
+                    for row in observed_rows
+                    for field in tuple(row.get("missing_fields", ()))
+                }
+            ),
+        }
+    return aggregate
 
 
 def render_capture_run_report(payload: dict[str, Any]) -> str:
@@ -594,6 +782,11 @@ def _write_temp_jsonl(rows: list[dict[str, Any]]) -> Path:
 def _copy_imported_trace(trace_path: Path, *, root: Path) -> Path:
     target_dir = _path(root, IMPORTED_TRACES_DIR)
     target_dir.mkdir(parents=True, exist_ok=True)
+    try:
+        trace_path.resolve().relative_to(target_dir.resolve())
+        return trace_path
+    except ValueError:
+        pass
     target = target_dir / trace_path.name
     if trace_path.resolve() != target.resolve():
         shutil.copyfile(trace_path, target)
