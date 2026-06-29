@@ -1,10 +1,10 @@
-# CapProof Project Handoff: Stage 0 to Stage 31M
+# CapProof Project Handoff: Stage 0 to Stage 32H
 
-Last updated: 2026-06-29
+Last updated: 2026-06-30
 
 Repository: `/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7`
 
-Current effective checkpoint: `9dc04be29603757161452ba6dec45ef0cb36ba63`
+Current effective checkpoint: `12ae85ae2a08ec8a750f673d2be5d925d6630f55`
 
 Current branch at last checkpoint: `main`
 
@@ -33,8 +33,9 @@ The project has evolved from a minimal scaffold into a substantial prototype con
 - DeepSeek configuration support as a Hermes model backend, with strict key-redaction policy and explicit separation from CapProof's safety TCB.
 - Stage 30R real controlled end-to-end test: Hermes actually ran, DeepSeek was actually called, localhost MCP/CapProof proxy was used, Hermes produced local MCP tool calls, and CapProof guarded those calls before mock execution.
 - Stage 31M productized that local MCP path as a standard CapProof MCP server package for Hermes local use, with standard `tools/list` and `tools/call`, a stdio transport, observable workflow traces, and seven v1 CapProof tools.
+- Stage 32H expanded the Hermes-local standard MCP coverage matrix over benign, deny, ask, malformed arguments, prompt variation, metadata injection, and multi-tool workflows, while preserving the canonicalizer -> guard -> Reference Monitor -> executor gate path.
 
-The latest validated state is Stage 31M:
+The latest validated state is Stage 32H:
 
 - Hermes was run as a real local process.
 - DeepSeek API was used as the model backend.
@@ -49,6 +50,18 @@ The latest validated state is Stage 31M:
 - No third-party Hermes source or `.venv-hermes/` environment is intended to be committed.
 - Standard MCP `tools/list` / `tools/call` is available through `run_capproof_mcp_server.py --stdio`.
 - User-visible MCP trace rows include method, tool name, arguments, canonical action hash, verdict, proof ID, reason, and executor status.
+- Hermes-local MCP scenario matrix covers 8 scenarios and 13 steps:
+  - ALLOW 7
+  - DENY 4
+  - ASK 1
+  - ERROR 1
+  - failed steps 0
+  - executor_called_on_deny_ask 0
+  - metadata_injection_unexpected_allow 0
+- Full pytest validation ended with 435 passed.
+- No sandboxed real execution is implemented or claimed.
+- No real shell, email, non-DeepSeek network, or external MCP execution is claimed for Stage 32H.
+- No OpenCode/OpenClaw real integration is complete.
 
 ## 2. Security Boundary and Non-Negotiable Invariants
 
@@ -118,16 +131,18 @@ Important invariants preserved across stages:
 
 ## 3. Current Checkpoint and Commit History
 
-The current effective checkpoint after Stage 31M is:
+The current effective checkpoint after Stage 32H is:
 
 ```text
-9dc04be29603757161452ba6dec45ef0cb36ba63
-checkpoint: productize CapProof MCP server for Hermes local use
+12ae85ae2a08ec8a750f673d2be5d925d6630f55
+checkpoint: expand Hermes MCP coverage and observable workflow traces
 ```
 
 Important later checkpoints, newest first:
 
 ```text
+12ae85a checkpoint: expand Hermes MCP coverage and observable workflow traces
+f604154 docs: archive Stage 31M CapProof MCP handoff
 9dc04be checkpoint: productize CapProof MCP server for Hermes local use
 4096d45 checkpoint: run real Hermes DeepSeek local MCP CapProof test
 4a64656 checkpoint: expand Hermes trace import validation
@@ -152,7 +167,7 @@ f72afdd checkpoint: add benign kill tests and baseline matrix
 6085415 Initial CapProof MVP scaffold
 ```
 
-The active repository was clean at the end of Stage 31M before the Stage 31M.1 handoff archival.
+The active repository was clean at the end of Stage 32H before the Stage 32H.1 handoff archival.
 
 ## 4. High-Level Repository Map
 
@@ -1452,16 +1467,147 @@ Disallowed claims after Stage 31M:
 - Do not claim DeepSeek is part of the safety TCB.
 - Do not claim MCP metadata/tool descriptions/annotations can provide authority.
 
+### Stage 32H: Hermes MCP UX and Coverage Expansion
+
+Checkpoint:
+
+```text
+12ae85ae2a08ec8a750f673d2be5d925d6630f55
+checkpoint: expand Hermes MCP coverage and observable workflow traces
+```
+
+Stage 32H expanded the standard CapProof MCP server product layer with a Hermes-local scenario matrix and stronger observable workflow traces. It did not run real Hermes, did not call DeepSeek, did not enter sandboxed real execution, and did not broaden CapProof verifier semantics.
+
+Primary path preserved for all authority-bearing tool calls:
+
+```text
+MCP tools/call
+  -> CapProof MCP server
+  -> canonicalizer
+  -> CapProofMiddleware.guard(...)
+  -> Reference Monitor
+  -> executor gate
+  -> MockExecutor / no-side-effect local executor only on ALLOW
+```
+
+New and updated artifacts:
+
+- `run_hermes_mcp_coverage.py`
+- `real_agent_integrations/hermes_mcp_server/scenarios/`
+- `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.md`
+- `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.json`
+- `tests/test_hermes_mcp_coverage.py`
+- `tests/test_capproof_mcp_ask_flow.py`
+- `tests/test_capproof_mcp_metadata_injection.py`
+- MCP trace fields in `src/capproof/mcp/trace.py`
+- MCP metadata capture in `src/capproof/mcp/server.py`
+- ASK request payload behavior in `src/capproof/mcp/tool_registry.py`
+
+Scenario matrix coverage:
+
+- `benign_send_authorized`
+- `deny_send_attacker`
+- `ask_authorization_request`
+- `malformed_args`
+- `prompt_variation_authorized`
+- `metadata_injection_attempt`
+- `multi_tool_workflow`
+- `multi_tool_partial_deny`
+
+Scenario matrix result:
+
+- 8 scenarios.
+- 13 steps.
+- ALLOW 7.
+- DENY 4.
+- ASK 1.
+- ERROR 1.
+- Failed steps 0.
+- `executor_called_on_deny_ask` 0.
+- `metadata_injection_unexpected_allow` 0.
+
+User-visible workflow trace fields after Stage 32H:
+
+- `user_task`
+- `mcp_method`
+- `tool_name`
+- `original_arguments`
+- `canonical_action_hash`
+- `verdict`
+- `reason`
+- `proof_id`
+- `executor_called`
+- `mcp_metadata`
+
+ASK behavior:
+
+- `capproof.request_authorization` creates a `pending_authorization_request`.
+- It does not mint a capability.
+- It does not execute an executor.
+
+Adversarial metadata coverage:
+
+- Tool descriptions cannot mint a capability.
+- Tool annotations cannot mint a capability.
+- `_meta` cannot mint a capability.
+- `clientInfo` cannot mint a capability.
+- `clientCapabilities` cannot mint a capability.
+- Hermes or DeepSeek natural language cannot mint a capability.
+
+Stage 32H validation:
+
+- `python run_capproof_mcp_server.py --list-tools`: passed.
+- `python run_capproof_mcp_server.py --self-test`: passed.
+- `python run_hermes_mcp_coverage.py --list-scenarios`: passed.
+- `python run_hermes_mcp_coverage.py --local-client --scenario all`: passed.
+- `python run_hermes_mcp_coverage.py --report`: passed.
+- `pytest tests/test_capproof_mcp_protocol.py -q`: 4 passed.
+- `pytest tests/test_capproof_mcp_guard_path.py -q`: 6 passed.
+- `pytest tests/test_capproof_mcp_trace.py -q`: 3 passed.
+- `pytest tests/test_capproof_mcp_ask_flow.py -q`: 2 passed.
+- `pytest tests/test_capproof_mcp_metadata_injection.py -q`: 3 passed.
+- `pytest tests/test_hermes_mcp_coverage.py -q`: 5 passed.
+- `pytest tests/test_real_hermes_mcp_test.py -q`: 16 passed.
+- `python run_kill_tests.py --mode all --baselines`: 24/24 passed.
+- `python run_adapter_bypass_gate.py`: unexpected allow 0.
+- `python run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 435 passed.
+
+Allowed claims after Stage 32H:
+
+- CapProof has a productized standard MCP server with seven v1 tools.
+- Hermes-local MCP scenarios can exercise standard `tools/list` and `tools/call`.
+- The scenario matrix includes benign, deny, ask, malformed args, prompt variation, metadata injection, and multi-tool workflows.
+- User-visible workflow traces include task, MCP method, tool, original arguments, canonical action hash, verdict, reason, proof ID, and executor status.
+- DENY and ASK do not execute executor in the tested MCP paths.
+- Metadata and natural language cannot mint capability in the tested MCP paths.
+
+Disallowed claims after Stage 32H:
+
+- Do not claim production-level Hermes protection.
+- Do not claim all Hermes tool paths are covered.
+- Do not claim sandboxed real execution.
+- Do not claim real shell, real email, real external MCP, or real non-DeepSeek network execution.
+- Do not claim OpenCode or OpenClaw real integration.
+- Do not claim DeepSeek is in the CapProof safety TCB.
+- Do not claim MCP metadata, tool descriptions, tool annotations, `_meta`, `clientInfo`, or `clientCapabilities` can provide authority.
+
 ## 6. Latest Known Validation Summary
 
-The latest known comprehensive validation at Stage 31M included:
+The latest known comprehensive validation at Stage 32H included:
 
 ```text
 python run_capproof_mcp_server.py --list-tools
 python run_capproof_mcp_server.py --self-test
+python run_hermes_mcp_coverage.py --list-scenarios
+python run_hermes_mcp_coverage.py --local-client --scenario all
+python run_hermes_mcp_coverage.py --report
 pytest tests/test_capproof_mcp_protocol.py -q
 pytest tests/test_capproof_mcp_guard_path.py -q
 pytest tests/test_capproof_mcp_trace.py -q
+pytest tests/test_capproof_mcp_ask_flow.py -q
+pytest tests/test_capproof_mcp_metadata_injection.py -q
+pytest tests/test_hermes_mcp_coverage.py -q
 pytest tests/test_real_hermes_mcp_test.py -q
 python run_kill_tests.py --mode all --baselines
 python run_adapter_bypass_gate.py
@@ -1471,6 +1617,13 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
 
 Known results:
 
+- Hermes MCP coverage matrix:
+  - 8 scenarios.
+  - 13 steps.
+  - ALLOW 7 / DENY 4 / ASK 1 / ERROR 1.
+  - Failed steps 0.
+  - `executor_called_on_deny_ask` 0.
+  - `metadata_injection_unexpected_allow` 0.
 - Real Hermes MCP proxy tests: 16 passed.
 - Kill tests:
   - CapProof adversarial: 12/12 passed.
@@ -1486,7 +1639,7 @@ Known results:
   - 50 cases.
   - Dangerous over-broadening: 0.
 - Full pytest:
-  - 425 passed.
+  - 435 passed.
 
 ## 7. What CapProof Currently Demonstrates
 
@@ -1505,8 +1658,10 @@ CapProof currently demonstrates:
 - Static and mock coverage workflows for Hermes-like agent surfaces.
 - Offline trace-import validation for Hermes runtime event shapes.
 - Real controlled Hermes + DeepSeek + local MCP path with CapProof guard participation.
+- Productized standard MCP `tools/list` and `tools/call` for CapProof tools.
+- Hermes-local standard MCP scenario matrix with observable workflow traces.
 
-The most important practical demonstrations are Stage 30R and Stage 31M:
+The most important practical demonstrations are Stage 30R, Stage 31M, and Stage 32H:
 
 - A real agent process, real model backend, and real local tool-call path were exercised.
 - CapProof saw and guarded the local MCP tool call before mock execution.
@@ -1515,6 +1670,7 @@ The most important practical demonstrations are Stage 30R and Stage 31M:
 - Denied action did not execute.
 - The local MCP path was then productized into a standard MCP server with `tools/list` and `tools/call`.
 - User-visible workflow traces are available for MCP tool calls.
+- The Hermes-local MCP scenario matrix verifies benign, deny, ask, malformed args, prompt variation, metadata injection, and multi-tool workflows.
 
 ## 8. What CapProof Does Not Yet Demonstrate
 
@@ -1570,6 +1726,8 @@ Start with this handoff, then read:
 - `real_agent_integrations/hermes_mcp_server/reports/capproof_mcp_self_test_report.md`
 - `real_agent_integrations/hermes_mcp_server/reports/capproof_mcp_self_test_summary.json`
 - `real_agent_integrations/hermes_mcp_server/reports/hermes_capproof_mcp_demo_report.md`
+- `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.md`
+- `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.json`
 
 For Stage 30R specifically, inspect:
 
@@ -1590,6 +1748,16 @@ For Stage 31M specifically, inspect:
 - `tests/test_capproof_mcp_guard_path.py`
 - `tests/test_capproof_mcp_trace.py`
 
+For Stage 32H specifically, inspect:
+
+- `run_hermes_mcp_coverage.py`
+- `real_agent_integrations/hermes_mcp_server/scenarios/`
+- `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.md`
+- `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.json`
+- `tests/test_hermes_mcp_coverage.py`
+- `tests/test_capproof_mcp_ask_flow.py`
+- `tests/test_capproof_mcp_metadata_injection.py`
+
 ## 11. How to Reproduce Key Non-Secret Checks
 
 Documentation-only and safe checks:
@@ -1598,9 +1766,15 @@ Documentation-only and safe checks:
 git status --short
 python run_capproof_mcp_server.py --list-tools
 python run_capproof_mcp_server.py --self-test
+python run_hermes_mcp_coverage.py --list-scenarios
+python run_hermes_mcp_coverage.py --local-client --scenario all
+python run_hermes_mcp_coverage.py --report
 pytest tests/test_capproof_mcp_protocol.py -q
 pytest tests/test_capproof_mcp_guard_path.py -q
 pytest tests/test_capproof_mcp_trace.py -q
+pytest tests/test_capproof_mcp_ask_flow.py -q
+pytest tests/test_capproof_mcp_metadata_injection.py -q
+pytest tests/test_hermes_mcp_coverage.py -q
 pytest tests/test_real_hermes_mcp_test.py -q
 python run_kill_tests.py --mode all --baselines
 python run_adapter_bypass_gate.py
@@ -1614,12 +1788,13 @@ Do not run real Hermes or DeepSeek tests unless the user explicitly asks for a n
 
 ## 12. Suggested Next Stages
 
-Reasonable next work after Stage 31M:
+Reasonable next work after Stage 32H:
 
-1. Stage 32H: Hermes MCP UX and coverage expansion.
-   - Add scenario matrix for benign, deny, ask, malformed args, prompt variations, metadata injection, and multi-tool workflows.
-   - Strengthen user-visible trace summaries.
-   - Keep all authority-bearing calls on the canonicalizer -> guard -> Reference Monitor -> executor gate path.
+1. Stage 32R: real Hermes standard MCP smoke.
+   - Exercise the Stage 31M/32H standard CapProof MCP server with real Hermes + DeepSeek under local-only constraints.
+   - Keep ALLOW on MockExecutor/no-side-effect local executor.
+   - Keep DENY/ASK executor blocked.
+   - Do not enter sandboxed real execution.
 
 2. Sandboxed real execution design.
    - Define what "real execution" means beyond MockExecutor.
@@ -1660,14 +1835,20 @@ Reasonable next work after Stage 31M:
 
 If a new GPT/Codex session starts from here, it should assume:
 
-- The project is at Stage 31M.
-- Current checkpoint is `9dc04be29603757161452ba6dec45ef0cb36ba63`.
+- The project is at Stage 32H.
+- Current checkpoint is `12ae85ae2a08ec8a750f673d2be5d925d6630f55`.
 - Stage 30R real controlled Hermes + DeepSeek + local MCP path succeeded.
 - CapProof guard was active on the local MCP tool-call path.
 - Stage 31M productized the local CapProof MCP server with standard `tools/list` and `tools/call`.
-- Stage 31M validation ended with full pytest 425 passed.
+- Stage 32H expanded Hermes-local MCP coverage over 8 scenarios and 13 steps.
+- Stage 32H validation ended with full pytest 435 passed.
+- Stage 32H did not run real Hermes or DeepSeek.
+- Stage 32H did not enter sandboxed real execution.
 - Production-level protection is not claimed.
+- All Hermes tool paths are not claimed covered.
+- OpenCode/OpenClaw real integration is not claimed complete.
 - DeepSeek is model backend only, not safety TCB.
 - API keys must stay out of files and commits.
 - The repo should not include `external/` third-party source or `.venv-hermes/`.
+- The next approved direction is Stage 32R real Hermes standard MCP smoke only, not sandboxed real execution.
 - Future work should preserve Reference Monitor / Capability Store / Proof Model safety semantics unless the user explicitly asks for a carefully reviewed semantic change.
