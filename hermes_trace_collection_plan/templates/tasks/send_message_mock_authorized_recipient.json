@@ -1,0 +1,11 @@
+{
+  "expected_capproof_replay_verdict": "ALLOW",
+  "expected_fields": [
+    "platform",
+    "recipient",
+    "body_ref"
+  ],
+  "expected_hook_point": "gateway_pre_send",
+  "no_real_side_effect_condition": "Mock gateway only; no real message sent.",
+  "task_id": "send_message_mock_authorized_recipient"
+}

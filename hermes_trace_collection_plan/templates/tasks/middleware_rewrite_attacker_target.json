@@ -1,0 +1,11 @@
+{
+  "expected_capproof_replay_verdict": "DENY NoCap",
+  "expected_fields": [
+    "original_args",
+    "effective_args",
+    "middleware_id"
+  ],
+  "expected_hook_point": "skill_middleware_rewrite",
+  "no_real_side_effect_condition": "Mock middleware trace only; no message sent.",
+  "task_id": "middleware_rewrite_attacker_target"
+}

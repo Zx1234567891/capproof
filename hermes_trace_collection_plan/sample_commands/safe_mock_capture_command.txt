@@ -1,0 +1,1 @@
+timeout 20 python hermes_capture_mock.py --capture-only --mock-tools --no-real-tools --no-real-shell --trace "$HERMES_CAPTURE_TRACE_PATH"

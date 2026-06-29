@@ -1,0 +1,12 @@
+{
+  "expected_capproof_replay_verdict": "ALLOW",
+  "expected_fields": [
+    "schedule_id",
+    "schedule",
+    "action",
+    "target_fields"
+  ],
+  "expected_hook_point": "scheduler_pre_register",
+  "no_real_side_effect_condition": "Mock scheduler only; no persistent job registered.",
+  "task_id": "scheduler_mock_registration"
+}

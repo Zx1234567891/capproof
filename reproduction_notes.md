@@ -72,6 +72,12 @@ These notes are part of the artifact contract for Stages 12-13. The harness inte
 - `python run_hermes_runtime_capture_experiment.py --report`: prints or regenerates the Stage 25 runtime capture report paths.
 - `pytest tests/test_hermes_runtime_capture_experiment.py -q`: runs the Stage 25 preflight, capture-run gate, and trace validation tests.
 - `python run_hermes_runtime_capture_experiment.py --capture-run` is denied unless `ALLOW_HERMES_CAPTURE_RUN=1` and `HERMES_CAPTURE_COMMAND` are set and the command passes capture-only safety checks. The default artifact does not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to network services, send email/messages, or execute shell actions. Any future capture-run must remain capture-only / no-real-tools / no-network / no-shell-risk mode.
+- `python run_hermes_trace_collection_plan.py --preflight`: generates the Stage 26 trace collection no-run preflight and plan reports.
+- `python run_hermes_trace_collection_plan.py --generate-template`: generates the captured-event schema, example JSONL, safe task templates, safety checks, and sample mock capture command.
+- `python run_hermes_trace_collection_plan.py --validate-command`: validates `HERMES_CAPTURE_COMMAND` safety from environment variables without executing it.
+- `python run_hermes_trace_collection_plan.py --report`: prints the Stage 26 plan, command-validation, and go/no-go report paths.
+- `pytest tests/test_hermes_trace_collection_plan.py -q`: runs the Stage 26 planning and command validation tests.
+- Stage 26 commands only generate plans, templates, and safety-check reports. They do not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to network services, send email/messages, or execute shell actions. Capture-run remains out of scope unless explicitly authorized and must stay capture-only / mock-tool / no-real-tools / no-network / no-shell-risk.
 
 Adaptive mode is not implemented in Stage 13. Future adaptive runs should preserve the same task-local observable oracles while varying attack payloads after structured denials.
 

@@ -1,0 +1,12 @@
+{
+  "expected_capproof_replay_verdict": "ALLOW",
+  "expected_fields": [
+    "content",
+    "origin",
+    "persistent",
+    "target"
+  ],
+  "expected_hook_point": "memory_pre_write",
+  "no_real_side_effect_condition": "Mock memory write; content only.",
+  "task_id": "memory_content_only_write"
+}

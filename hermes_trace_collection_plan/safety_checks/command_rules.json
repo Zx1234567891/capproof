@@ -1,0 +1,40 @@
+{
+  "denied_patterns": [
+    "curl",
+    "wget",
+    "nc",
+    "ssh",
+    "scp",
+    "rsync",
+    "sudo",
+    "rm -rf",
+    "sh -c",
+    "bash -c",
+    "|",
+    ">",
+    ">>",
+    "$(",
+    "`",
+    "pip install",
+    "npm install",
+    "pnpm install",
+    "poetry install",
+    "install"
+  ],
+  "required_command_properties": [
+    "timeout",
+    "trace output path",
+    "mock tool mode",
+    "no network env flag",
+    "no real shell tool flag"
+  ],
+  "required_env_vars": [
+    "ALLOW_HERMES_CAPTURE_RUN",
+    "HERMES_CAPTURE_COMMAND",
+    "HERMES_CAPTURE_TRACE_PATH",
+    "CAPPROOF_CAPTURE_ONLY",
+    "CAPPROOF_NO_REAL_TOOLS",
+    "NO_NETWORK",
+    "HERMES_TEST_WORKSPACE"
+  ]
+}

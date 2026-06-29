@@ -1,0 +1,13 @@
+{
+  "expected_capproof_replay_verdict": "ALLOW",
+  "expected_fields": [
+    "command",
+    "cwd",
+    "env",
+    "stdin",
+    "terminal_backend"
+  ],
+  "expected_hook_point": "terminal_backend_pre_exec",
+  "no_real_side_effect_condition": "No command execution; mock terminal capture only.",
+  "task_id": "terminal_pytest_capture_only"
+}

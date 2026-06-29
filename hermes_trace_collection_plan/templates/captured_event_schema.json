@@ -1,0 +1,99 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "additionalProperties": true,
+  "properties": {
+    "agent_id": {
+      "type": "string"
+    },
+    "authority_bearing_fields": {
+      "items": {
+        "type": "string"
+      },
+      "type": "array"
+    },
+    "capture_mode": {
+      "enum": [
+        "pre_execution_gate",
+        "observer_only",
+        "unsupported"
+      ]
+    },
+    "child_agent": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "effective_args": {
+      "type": "object"
+    },
+    "event_id": {
+      "type": "string"
+    },
+    "hook_point": {
+      "type": "string"
+    },
+    "metadata": {
+      "type": "object"
+    },
+    "original_args": {
+      "type": "object"
+    },
+    "parent_agent": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "pre_execution_observed": {
+      "type": "boolean"
+    },
+    "raw_event_hash": {
+      "type": "string"
+    },
+    "session_id": {
+      "type": "string"
+    },
+    "side_effect_already_happened": {
+      "type": "boolean"
+    },
+    "source": {
+      "const": "hermes"
+    },
+    "source_component": {
+      "type": "string"
+    },
+    "task_id": {
+      "type": "string"
+    },
+    "timestamp": {
+      "type": "string"
+    },
+    "tool_name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "event_id",
+    "source",
+    "hook_point",
+    "capture_mode",
+    "session_id",
+    "task_id",
+    "agent_id",
+    "parent_agent",
+    "child_agent",
+    "tool_name",
+    "original_args",
+    "effective_args",
+    "metadata",
+    "source_component",
+    "authority_bearing_fields",
+    "raw_event_hash",
+    "timestamp",
+    "pre_execution_observed",
+    "side_effect_already_happened"
+  ],
+  "title": "Hermes captured runtime event",
+  "type": "object"
+}

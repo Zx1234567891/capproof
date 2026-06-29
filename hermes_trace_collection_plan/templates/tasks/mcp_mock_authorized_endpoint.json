@@ -1,0 +1,13 @@
+{
+  "expected_capproof_replay_verdict": "ALLOW",
+  "expected_fields": [
+    "server",
+    "tool_name",
+    "arguments.url",
+    "transport.endpoint",
+    "headers"
+  ],
+  "expected_hook_point": "mcp_pre_transport",
+  "no_real_side_effect_condition": "Mock MCP transport only; no network connection.",
+  "task_id": "mcp_mock_authorized_endpoint"
+}

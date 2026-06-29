@@ -901,3 +901,39 @@ Known risks:
 - No true runtime captured trace is present in this stage output.
 - Hook candidates are static preflight indicators, not proof of usable runtime pre-execution hooks.
 - Real capture-only runtime traces are still required before any enforcement wrapper design.
+
+## Stage 26 - Hermes Trace Collection Plan
+
+Status: implemented, self-check pending.
+
+Scope:
+- Design the real Hermes runtime event trace collection plan without running Hermes.
+- Generate a capture safety policy, captured-event schema template, example JSONL trace, safe task templates, command validation report, and go/no-go report.
+- Validate `HERMES_CAPTURE_COMMAND` safety only as a string/env check; do not execute it.
+- Keep capture-run fail-closed unless explicitly authorized with `ALLOW_HERMES_CAPTURE_RUN=1`, `HERMES_CAPTURE_COMMAND`, trace path, capture-only/no-real-tools/no-network flags, and temp workspace.
+- Do not modify Reference Monitor, Capability Store, or Proof Model safety semantics.
+
+Implemented:
+- Added `run_hermes_trace_collection_plan.py`.
+- Added `hermes_trace_collection_plan/safety_policy.md`.
+- Added `hermes_trace_collection_plan/templates/captured_event_schema.json`.
+- Added `hermes_trace_collection_plan/templates/events.example.jsonl`.
+- Added eight safe capture-only task templates under `hermes_trace_collection_plan/templates/tasks/`.
+- Added `hermes_trace_collection_plan/safety_checks/command_rules.json`.
+- Added `hermes_trace_collection_plan/sample_commands/safe_mock_capture_command.txt`.
+- Added reports under `hermes_trace_collection_plan/reports/`.
+- Added `tests/test_hermes_trace_collection_plan.py`.
+- Updated reproduction notes.
+
+Default planning result:
+- Trace schema generated: true.
+- Safe task templates generated: true.
+- Command validator generated: true.
+- Go/no-go report generated: true.
+- Default command validation verdict: `DENY_CAPTURE_RUN`.
+- Enforcement wrapper readiness: no-go.
+
+Known risks:
+- No real Hermes runtime traces were collected in this stage.
+- A future capture-run still requires explicit user authorization and must remain capture-only / mock-tool / no-real-tools / no-network / no-shell-risk.
+- Real integration and enforcement wrapper claims remain out of scope.

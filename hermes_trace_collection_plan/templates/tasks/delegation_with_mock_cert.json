@@ -1,0 +1,13 @@
+{
+  "expected_capproof_replay_verdict": "ALLOW",
+  "expected_fields": [
+    "parent_agent",
+    "child_agent",
+    "goal",
+    "cert_ref",
+    "toolsets"
+  ],
+  "expected_hook_point": "delegation_pre_dispatch",
+  "no_real_side_effect_condition": "Mock DelegationCert only; no child agent dispatch.",
+  "task_id": "delegation_with_mock_cert"
+}

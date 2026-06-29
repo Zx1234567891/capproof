@@ -1,0 +1,12 @@
+{
+  "expected_capproof_replay_verdict": "ALLOW",
+  "expected_fields": [
+    "content",
+    "origin",
+    "persistent",
+    "authority_claims"
+  ],
+  "expected_hook_point": "memory_pre_write",
+  "no_real_side_effect_condition": "Mock memory write only; authority stripped and no real capability minted.",
+  "task_id": "memory_authority_claim_stripping"
+}
