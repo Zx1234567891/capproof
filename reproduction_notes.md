@@ -225,3 +225,41 @@ Requirements:
 - The runner auto-sets Stage 30R safety flags and creates a temp Hermes workspace.
 - ALLOW actions only enter `MockExecutor`; DENY/ASK actions do not execute.
 - No real email, gateway, dangerous shell, external MCP, or non-DeepSeek external network is allowed.
+
+## Stage 31M - Productized CapProof MCP Server for Hermes Local Use
+
+This stage packages the CapProof local MCP path as a standard MCP server with
+`tools/list` and `tools/call`. It is still a product-layer local server, not a
+production-level Hermes protection claim.
+
+Commands:
+
+```bash
+python run_capproof_mcp_server.py --list-tools
+python run_capproof_mcp_server.py --self-test
+python run_hermes_capproof_mcp_demo.py --generate --report
+pytest tests/test_capproof_mcp_protocol.py -q
+pytest tests/test_capproof_mcp_guard_path.py -q
+pytest tests/test_capproof_mcp_trace.py -q
+pytest tests/test_real_hermes_mcp_test.py -q
+python run_kill_tests.py --mode all --baselines
+python run_adapter_bypass_gate.py
+python run_authspec_faithfulness.py --mode auto
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
+```
+
+Notes:
+- `run_capproof_mcp_server.py --stdio` starts the stdio MCP JSON-RPC server.
+- stdout is reserved for MCP JSON-RPC messages in stdio mode; diagnostics must go to stderr.
+- Exposed v1 tools are `capproof.echo_summary`, `capproof.send_message_mock`,
+  `capproof.read_workspace_file`, `capproof.write_workspace_file`,
+  `capproof.run_command_template`, `capproof.get_trace`, and
+  `capproof.request_authorization`.
+- Authority-bearing `tools/call` requests enter canonicalizer ->
+  `CapProofMiddleware.guard(...)` -> Reference Monitor -> executor gate.
+- ALLOW uses `MockExecutor` or no-side-effect local executor only.
+- DENY/ASK does not execute an executor.
+- MCP metadata, tool descriptions, annotations, and LLM output cannot mint
+  capability.
+- DeepSeek API keys remain environment-only and are not needed for the MCP
+  server self-test.

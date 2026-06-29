@@ -1,0 +1,19 @@
+{
+  "args": [
+    "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/run_capproof_mcp_server.py",
+    "--stdio"
+  ],
+  "command": "/home/xiaowu/anaconda3/bin/python",
+  "env": {
+    "CAPPROOF_MCP_TRACE_PATH": "${HERMES_CAPPROOF_MCP_TRACE_PATH}",
+    "CAPPROOF_MCP_WORKSPACE": "${HERMES_TEST_WORKSPACE}",
+    "CAPPROOF_NO_REAL_TOOLS": "1"
+  },
+  "name": "capproof_local_mcp",
+  "notes": [
+    "Do not put DEEPSEEK_API_KEY in this config.",
+    "DeepSeek is model backend only; CapProof remains the tool guard.",
+    "This is local MCP only and not production-level protection."
+  ],
+  "transport": "stdio"
+}

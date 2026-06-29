@@ -1135,3 +1135,61 @@ Known risks:
 - This is a controlled local MCP path, not a production Hermes enforcement wrapper.
 - Only the local MCP mock/proxy path was exercised.
 - Sandboxed real execution requires a separate approval and broader runtime samples.
+
+## Stage 31M - CapProof MCP Server Productization for Hermes
+
+Status: implemented, checkpoint pending.
+
+Scope:
+- Productize the Stage 30R local MCP proxy into a package under `src/capproof/mcp/`.
+- Expose standard MCP `initialize`, `tools/list`, and `tools/call` over stdio.
+- Keep stdout reserved for JSON-RPC in stdio mode; diagnostics belong on stderr.
+- Preserve CapProof core verifier / Reference Monitor / Capability Store / Proof Model semantics.
+- Keep ALLOW execution limited to `MockExecutor` / no-side-effect local execution.
+- Keep DENY/ASK executor-blocking behavior.
+- Keep MCP metadata, tool descriptions, annotations, and LLM output non-authoritative.
+- Avoid production-level Hermes protection claims.
+
+Implemented:
+- Added `src/capproof/mcp/` modules:
+  - `schemas.py`
+  - `errors.py`
+  - `context.py`
+  - `executors.py`
+  - `trace.py`
+  - `tool_registry.py`
+  - `server.py`
+  - `stdio.py`
+- Added `run_capproof_mcp_server.py`.
+- Added `run_hermes_capproof_mcp_demo.py`.
+- Updated `run_hermes_mcp_proxy.py` to use the productized MCP server for list/call paths while preserving legacy Stage 30 tool-name aliases.
+- Updated `real_agent_integrations/hermes_mcp_proxy/server/capproof_mcp_stdio_server.py` as a compatibility entrypoint for the productized stdio server.
+- Added `real_agent_integrations/hermes_mcp_server/` configs, prompts, traces, and reports.
+- Added tests:
+  - `tests/test_capproof_mcp_protocol.py`
+  - `tests/test_capproof_mcp_guard_path.py`
+  - `tests/test_capproof_mcp_trace.py`
+
+Exposed v1 tools:
+- `capproof.echo_summary`
+- `capproof.send_message_mock`
+- `capproof.read_workspace_file`
+- `capproof.write_workspace_file`
+- `capproof.run_command_template`
+- `capproof.get_trace`
+- `capproof.request_authorization`
+
+Observable trace fields:
+- `mcp_method`
+- `tool_name`
+- `arguments`
+- `canonical_action_hash`
+- `capproof_verdict`
+- `proof_id`
+- `reason`
+- `executor_called`
+
+Known boundaries:
+- This is a local MCP productization stage, not production-level protection.
+- Real Hermes can discover these tools via normal MCP `tools/list`, but production enforcement-wrapper claims remain out of scope.
+- DeepSeek remains model-backend-only and outside the CapProof safety TCB.

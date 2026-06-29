@@ -1,0 +1,24 @@
+{
+  "allow_executor_called": true,
+  "allow_verdict": "ALLOW",
+  "deny_executor_called": false,
+  "deny_reason": "NoCap",
+  "deny_verdict": "DENY",
+  "executor_called_on_deny_count": 0,
+  "metadata_cannot_mint_capability": true,
+  "production_level_protection_claim": false,
+  "shell_reason": "CommandTemplateViolation",
+  "shell_verdict": "DENY",
+  "tools": [
+    "capproof.echo_summary",
+    "capproof.send_message_mock",
+    "capproof.read_workspace_file",
+    "capproof.write_workspace_file",
+    "capproof.run_command_template",
+    "capproof.get_trace",
+    "capproof.request_authorization"
+  ],
+  "tools_count": 7,
+  "trace_entries_visible": 3,
+  "unexpected_allow_count": 0
+}
