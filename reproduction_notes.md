@@ -92,6 +92,13 @@ These notes are part of the artifact contract for Stages 12-13. The harness inte
 - `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/mixed_trace.jsonl`: imports the Stage 29A mixed Hermes JSONL trace and validates observer-only, missing-field, and post-side-effect fail-closed behavior offline.
 - `pytest tests/test_hermes_trace_import_stage29a.py -q`: runs Stage 29A manual trace-import tests.
 - Stage 29A uses hand-written JSONL traces only. It does not run Hermes, execute capture-run, install dependencies, execute third-party project commands, execute real tools, connect to network services, send email/messages, or execute shell actions. The result validates trace-import and replay behavior; it is not evidence of real Hermes runtime capture or real Hermes integration.
+- `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/dispatcher_rewrite_trace.jsonl`: imports the Stage 29B dispatcher rewrite trace and verifies authorization uses `effective_args`.
+- `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/scheduler_trace.jsonl`: imports the Stage 29B scheduler trace and verifies authorized registration plus replay/mismatch denials.
+- `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/mcp_unsupported_trace.jsonl`: imports the Stage 29B MCP unsupported trace and validates fail-closed behavior for stdio, missing endpoint, and resource/prompt shapes.
+- `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/gateway_attachment_trace.jsonl`: imports the Stage 29B gateway trace and validates attachment/thread and missing-recipient fail-closed behavior.
+- `python run_hermes_capture_run.py --import-trace hermes_capture_run/imported_traces/manual/terminal_edge_trace.jsonl`: imports the Stage 29B terminal edge trace and validates pty/background, missing-field, and post-side-effect fail-closed behavior.
+- `pytest tests/test_hermes_trace_import_stage29b.py -q`: runs Stage 29B expanded manual trace-import tests.
+- Stage 29B remains offline trace-import only. It does not run Hermes, execute capture-run, install dependencies, execute third-party project commands, execute real tools, connect to network services, send email/messages, or execute shell actions.
 
 Adaptive mode is not implemented in Stage 13. Future adaptive runs should preserve the same task-local observable oracles while varying attack payloads after structured denials.
 

@@ -7,7 +7,7 @@
     "run_attempted": false,
     "state": "DENY_CAPTURE_RUN",
     "timeout_seconds": 20,
-    "trace_path": "hermes_capture_run/imported_traces/manual/mixed_trace.jsonl"
+    "trace_path": "hermes_capture_run/imported_traces/manual/terminal_edge_trace.jsonl"
   },
   "go_no_go": {
     "blocking_hook_points": [
@@ -15,6 +15,7 @@
       "terminal",
       "MCP",
       "memory",
+      "gateway",
       "delegation",
       "scheduler",
       "middleware_rewrite"

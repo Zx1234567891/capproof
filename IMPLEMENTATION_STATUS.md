@@ -1025,3 +1025,34 @@ Known risks:
 - These traces are hand-written, not captured from a real Hermes runtime.
 - Stage 29A does not establish that real Hermes hook points are available or field-complete.
 - Real Hermes integration and enforcement wrapper claims remain out of scope.
+
+## Stage 29B - Hermes Manual Trace Import Expanded Set
+
+Status: implemented, self-check pending.
+
+Scope:
+- Extend the hand-written Hermes JSONL trace-import corpus with dispatcher rewrite, scheduler, MCP unsupported, gateway attachment, and terminal edge-case traces.
+- Validate additional missing-field, unsupported, posthoc side-effect, replay/mismatch, and effective-args authorization behavior offline.
+- Keep all processing in trace-import mode only: no Hermes run, no capture-run, no dependency install, no third-party commands, no real tools, no network, no Hermes source modification, and no Reference Monitor / Capability Store / Proof Model safety semantics changes.
+
+Implemented:
+- Added `dispatcher_rewrite_trace.jsonl`.
+- Added `scheduler_trace.jsonl`.
+- Added `mcp_unsupported_trace.jsonl`.
+- Added `gateway_attachment_trace.jsonl`.
+- Added `terminal_edge_trace.jsonl`.
+- Updated the manual trace aggregate report to distinguish original and expanded trace sets.
+- Added `tests/test_hermes_trace_import_stage29b.py`.
+- Updated reproduction notes.
+
+Expanded trace coverage:
+- Dispatcher rewrite: `original_args=team`, `effective_args=telegram:attacker_chat`, denied with `NoCap`.
+- Scheduler: authorized registration allowed; unauthorized replay and schedule-id mismatch denied.
+- MCP: stdio transport, missing endpoint, and resource/prompt shapes denied with `AdapterCoverageGap`.
+- Gateway: attachment/thread fields and missing recipient fail closed.
+- Terminal: pty/background, missing cwd/env/stdin, and post-side-effect traces fail closed.
+
+Known risks:
+- These traces are hand-written, not captured from a real Hermes runtime.
+- Stage 29B still does not establish real Hermes hook availability, field completeness, or enforcement-wrapper readiness.
+- Real Hermes integration and enforcement wrapper claims remain out of scope.

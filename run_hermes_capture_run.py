@@ -373,10 +373,21 @@ def write_manual_trace_import_report_if_available(*, root: Path = ROOT) -> None:
 def render_manual_trace_import_report(validations: list[Stage28TraceValidation]) -> str:
     totals = aggregate_trace_validations(validations)
     readiness = aggregate_hook_readiness(validations)
+    groups = {
+        "original": [
+            item for item in validations
+            if Path(item.trace_path).name in {"supported_trace.jsonl", "denied_trace.jsonl", "mixed_trace.jsonl"}
+        ],
+        "expanded": [
+            item for item in validations
+            if Path(item.trace_path).name not in {"supported_trace.jsonl", "denied_trace.jsonl", "mixed_trace.jsonl"}
+        ],
+    }
     lines = [
         "# Manual Hermes Trace Import Report",
         "",
-        "Stage 29A imports hand-written Hermes runtime JSONL traces for offline validation only.",
+        "Stages 29A and 29B import hand-written Hermes runtime JSONL traces for offline validation only.",
+        "This report covers manual JSONL trace-import validation only.",
         "This stage does not run Hermes, does not execute capture-run, does not install dependencies,",
         "does not execute third-party commands, does not execute real tools, does not use network,",
         "and does not modify Hermes source. It cannot support a real Hermes integration claim or a",
@@ -384,8 +395,8 @@ def render_manual_trace_import_report(validations: list[Stage28TraceValidation])
         "",
         "This is not an enforcement wrapper. `observer_only` events cannot produce enforcement ALLOW,",
         "`side_effect_already_happened=true` events cannot support an enforcement claim, missing-field",
-        "events must fail closed with `AdapterCoverageGap`, and DENY / ASK decisions must not execute",
-        "the mock executor.",
+        "events must fail closed with `AdapterCoverageGap`, unsupported events must fail closed, and",
+        "DENY / ASK decisions must not execute the mock executor.",
         "",
         "## Trace Files Imported",
         "",
@@ -403,6 +414,7 @@ def render_manual_trace_import_report(validations: list[Stage28TraceValidation])
             f"- Schema-valid events: {totals['schema_valid_events']}",
             f"- Pre-execution-gate events: {totals['pre_execution_gate_events']}",
             f"- Observer-only events: {totals['observer_only_events']}",
+            f"- Unsupported events: {totals['unsupported_events']}",
             f"- Missing-field events: {totals['missing_field_events']}",
             f"- Side-effect-already-happened events: {totals['side_effect_blocked']}",
             f"- Allowed / denied / ask: {totals['allowed']} / {totals['denied']} / {totals['ask']}",
@@ -414,6 +426,13 @@ def render_manual_trace_import_report(validations: list[Stage28TraceValidation])
             f"- Side-effect posthoc blocked: {totals['side_effect_blocked']}",
             f"- Executor called on deny: {totals['executor_called_on_deny']}",
             f"- Executor called on ask: {totals['executor_called_on_ask']}",
+            "",
+            "## Original vs Expanded Trace Sets",
+            "",
+            "| Set | Trace files | Events | Valid | Pre-exec | Observer-only | Unsupported | Missing-field | Side-effect posthoc | Allow | Deny | Ask | AdapterCoverageGap |",
+            "| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |",
+            trace_group_row("original", groups["original"]),
+            trace_group_row("expanded", groups["expanded"]),
             "",
             "## Per-trace Summary",
             "",
@@ -447,6 +466,14 @@ def render_manual_trace_import_report(validations: list[Stage28TraceValidation])
             "",
             *per_trace_notes,
             "",
+            "## Key Scenario Results",
+            "",
+            "- dispatcher rewrite: effective attacker target -> DENY NoCap.",
+            "- scheduler replay: authorized register ALLOW; unauthorized replay / mismatch DENY.",
+            "- MCP unsupported: stdio, missing endpoint, resource/prompt -> DENY AdapterCoverageGap.",
+            "- gateway attachment: attachment/thread and missing recipient -> DENY AdapterCoverageGap.",
+            "- terminal edge cases: pty/background, missing fields, post-effect -> DENY AdapterCoverageGap.",
+            "",
             "",
             "## Hook Readiness Summary",
             "",
@@ -465,7 +492,7 @@ def render_manual_trace_import_report(validations: list[Stage28TraceValidation])
             "",
             "## Scope",
             "",
-            "- Trace source: hand-written JSONL files.",
+        "- Trace source: hand-written JSONL files from the original Stage 29A set and expanded Stage 29B set.",
             "- Capture-run: not executed.",
             "- Real Hermes runtime: not run.",
             "- Dependency install: not performed.",
@@ -479,6 +506,18 @@ def render_manual_trace_import_report(validations: list[Stage28TraceValidation])
         ]
     )
     return "\n".join(lines) + "\n"
+
+
+def trace_group_row(label: str, validations: list[Stage28TraceValidation]) -> str:
+    totals = aggregate_trace_validations(validations)
+    return (
+        f"| {label} | {len(validations)} | {totals['total_events']} | "
+        f"{totals['schema_valid_events']} | {totals['pre_execution_gate_events']} | "
+        f"{totals['observer_only_events']} | {totals['unsupported_events']} | "
+        f"{totals['missing_field_events']} | {totals['side_effect_blocked']} | "
+        f"{totals['allowed']} | {totals['denied']} | {totals['ask']} | "
+        f"{totals['AdapterCoverageGap']} |"
+    )
 
 
 def aggregate_trace_validations(validations: list[Stage28TraceValidation]) -> dict[str, int]:

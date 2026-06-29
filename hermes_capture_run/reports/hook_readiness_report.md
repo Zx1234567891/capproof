@@ -6,10 +6,10 @@ not enforcement-ready. Observer-only or post-effect captures cannot support enfo
 | Hook | Observed | Complete fields | Pre-execution observed | Side effect already happened | Enforcement-ready | Missing fields |
 | --- | --- | --- | --- | --- | --- | --- |
 | tool_dispatcher | no | unknown | unknown | unknown | no | none |
-| terminal | yes | partial | no | yes | no | effective_args.cwd |
+| terminal | yes | partial | yes | yes | no | effective_args.cwd, effective_args.env, effective_args.stdin |
 | MCP | no | unknown | unknown | unknown | no | none |
 | memory | no | unknown | unknown | unknown | no | none |
-| gateway | yes | yes | yes | no | yes | none |
+| gateway | no | unknown | unknown | unknown | no | none |
 | delegation | no | unknown | unknown | unknown | no | none |
 | scheduler | no | unknown | unknown | unknown | no | none |
 | middleware_rewrite | no | unknown | unknown | unknown | no | none |

@@ -275,32 +275,30 @@ class HermesCapturedEventAdapter:
         }
 
         if event.hook_point == HermesHookPoint.TERMINAL_BACKEND_PRE_EXEC:
+            input_args = dict(event.effective_args)
+            if "cwd" in input_args and "workdir" not in input_args:
+                input_args["workdir"] = input_args["cwd"]
             return {
                 **base,
                 "event_type": "terminal",
                 "tool": "terminal",
-                "input": {
-                    "command": event.effective_args.get("command"),
-                    "workdir": event.effective_args.get("cwd"),
-                    "env": event.effective_args.get("env"),
-                    "stdin": event.effective_args.get("stdin"),
-                    "terminal_backend": event.effective_args.get("terminal_backend"),
-                },
+                "input": input_args,
             }
         if event.hook_point == HermesHookPoint.GATEWAY_MESSAGING_PRE_SEND:
             recipient = str(event.effective_args.get("recipient", ""))
             platform = str(event.effective_args.get("platform", ""))
             target = str(event.effective_args.get("target") or f"{platform}:{recipient}")
+            input_args = dict(event.effective_args)
+            input_args.setdefault("target", target)
+            if "body" in input_args and "message" not in input_args:
+                input_args["message"] = input_args["body"]
+            input_args.setdefault("platform", platform)
+            input_args.setdefault("channel", event.effective_args.get("channel") or recipient)
             return {
                 **base,
                 "event_type": "tool_call",
                 "tool": "send_message",
-                "input": {
-                    "target": target,
-                    "message": event.effective_args.get("body"),
-                    "platform": platform,
-                    "channel": event.effective_args.get("channel") or recipient,
-                },
+                "input": input_args,
             }
         if event.hook_point == HermesHookPoint.MCP_PRE_TRANSPORT:
             server = str(event.effective_args.get("server", ""))

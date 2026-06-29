@@ -7,7 +7,7 @@
     "run_attempted": false,
     "state": "DENY_CAPTURE_RUN",
     "timeout_seconds": 20,
-    "trace_path": "hermes_capture_run/imported_traces/manual/mixed_trace.jsonl"
+    "trace_path": "hermes_capture_run/imported_traces/manual/terminal_edge_trace.jsonl"
   },
   "go_no_go": {
     "blocking_hook_points": [
@@ -15,6 +15,7 @@
       "terminal",
       "MCP",
       "memory",
+      "gateway",
       "delegation",
       "scheduler",
       "middleware_rewrite"
@@ -43,12 +44,12 @@
       "side_effect_already_happened": "unknown"
     },
     "gateway": {
-      "complete_fields": "yes",
-      "enforcement_ready": "yes",
+      "complete_fields": "unknown",
+      "enforcement_ready": "no",
       "missing_fields": [],
-      "observed": "yes",
-      "pre_execution_observed": "yes",
-      "side_effect_already_happened": "no"
+      "observed": "no",
+      "pre_execution_observed": "unknown",
+      "side_effect_already_happened": "unknown"
     },
     "memory": {
       "complete_fields": "unknown",
@@ -78,10 +79,12 @@
       "complete_fields": "partial",
       "enforcement_ready": "no",
       "missing_fields": [
-        "effective_args.cwd"
+        "effective_args.cwd",
+        "effective_args.env",
+        "effective_args.stdin"
       ],
       "observed": "yes",
-      "pre_execution_observed": "no",
+      "pre_execution_observed": "yes",
       "side_effect_already_happened": "yes"
     },
     "tool_dispatcher": {
@@ -108,18 +111,18 @@
   "trace_source": "imported trace",
   "trace_validation": {
     "AdapterCoverageGap": 3,
-    "allowed": 1,
+    "allowed": 0,
     "ask": 0,
-    "denied": 4,
+    "denied": 3,
     "executor_called_on_ask": 0,
     "executor_called_on_deny": 0,
     "missing_field_events": 1,
-    "observer_only_blocked": 1,
-    "observer_only_events": 1,
-    "pre_execution_gate_events": 4,
-    "schema_valid_events": 5,
+    "observer_only_blocked": 0,
+    "observer_only_events": 0,
+    "pre_execution_gate_events": 3,
+    "schema_valid_events": 3,
     "side_effect_blocked": 1,
-    "total_events": 5,
+    "total_events": 3,
     "unsupported_events": 1
   }
 }
