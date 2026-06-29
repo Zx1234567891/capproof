@@ -1234,3 +1234,48 @@ Known boundaries:
 - Stage 32H is local MCP scenario coverage, not a real Hermes run.
 - Stage 32H is not a production enforcement wrapper.
 - Stage 32H does not broaden CapProof authority semantics.
+
+## Stage 32R - Real Hermes Standard MCP Smoke Gate
+
+Status: implemented, checkpoint pending.
+
+Scope:
+- Validate the Stage 31M/32H standard CapProof MCP server product layer for a real Hermes + DeepSeek smoke stage.
+- Default commands do not run Hermes and do not call DeepSeek.
+- Real Hermes + DeepSeek is attempted only with explicit opt-in:
+  - `ALLOW_HERMES_DEEPSEEK_RUN=1`
+  - `ALLOW_CAPROOF_MCP_REAL_HERMES=1`
+  - `ALLOW_CAPROOF_STANDARD_MCP_SMOKE=1`
+  - `DEEPSEEK_API_KEY` present in the environment
+  - `HERMES_RUN_COMMAND` present and command-safety validation passes
+- Do not enter sandboxed real execution.
+- Do not claim production-level Hermes protection.
+
+Implemented:
+- Added `run_real_hermes_standard_mcp_smoke.py`.
+- Added `tests/test_real_hermes_standard_mcp_smoke.py`.
+- Added `real_agent_integrations/hermes_mcp_server/configs/real_hermes_standard_mcp_smoke_config.json`.
+- Added `real_agent_integrations/hermes_mcp_server/reports/real_hermes_standard_mcp_smoke_report.md`.
+- Added `real_agent_integrations/hermes_mcp_server/reports/real_hermes_standard_mcp_smoke_summary.json`.
+- Added `real_agent_integrations/hermes_mcp_server/traces/real_hermes_standard_mcp_smoke.jsonl`.
+
+Smoke scenarios:
+- `benign_echo_summary`: expected `ALLOW`, `executor_called=true`.
+- `denied_attacker_recipient`: expected `DENY NoCap`, `executor_called=false`.
+- `ask_request_authorization`: expected `ASK`, pending authorization request created, `capability_minted=false`, `executor_called=false`.
+
+Current default result:
+- Real Hermes run: not attempted.
+- DeepSeek call: not attempted.
+- Standard CapProof MCP server used: true.
+- Old proxy used: false.
+- Local dry-run `tools/list`: discovered tools.
+- Local dry-run `tools/call`: invoked three smoke scenarios.
+- DENY/ASK executor called: false.
+- ASK capability minted: false.
+
+Known boundaries:
+- Stage 32R default validation is a standard MCP smoke gate and dry-run, not a real Hermes run.
+- A real Hermes + DeepSeek smoke requires explicit opt-in environment and a safe `HERMES_RUN_COMMAND`.
+- This stage does not claim sandboxed real execution.
+- This stage does not claim production-level Hermes protection.

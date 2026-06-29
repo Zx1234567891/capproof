@@ -279,3 +279,46 @@ Coverage categories:
 The generated matrix reports are:
 - `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.md`
 - `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.json`
+
+## Stage 32R - Real Hermes Standard MCP Smoke Gate
+
+This stage validates the standard CapProof MCP server product layer for a real
+Hermes + DeepSeek smoke path. Default commands do not run Hermes or call
+DeepSeek. Real execution is only allowed with explicit opt-in environment and a
+safe `HERMES_RUN_COMMAND`.
+
+Default safe commands:
+
+```bash
+python run_real_hermes_standard_mcp_smoke.py --preflight
+python run_real_hermes_standard_mcp_smoke.py --list-scenarios
+python run_real_hermes_standard_mcp_smoke.py --dry-run
+pytest tests/test_real_hermes_standard_mcp_smoke.py -q
+```
+
+Explicit real smoke command shape:
+
+```bash
+ALLOW_HERMES_DEEPSEEK_RUN=1 \
+ALLOW_CAPROOF_MCP_REAL_HERMES=1 \
+ALLOW_CAPROOF_STANDARD_MCP_SMOKE=1 \
+DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" \
+HERMES_RUN_COMMAND="<safe Hermes command using standard CapProof MCP server>" \
+python run_real_hermes_standard_mcp_smoke.py --all
+```
+
+Notes:
+- `DEEPSEEK_API_KEY` must come only from the environment.
+- The key must not be written to config, reports, traces, logs, or commits.
+- `--dry-run` uses the standard CapProof MCP server and local JSON-RPC calls.
+- `--all` is the only mode that may attempt real Hermes + DeepSeek, and only
+  after safety validation passes.
+- ALLOW enters MockExecutor/no-side-effect local executor only.
+- DENY/ASK does not execute executor.
+- ASK creates a pending authorization request and does not mint capability.
+- This stage is not sandboxed real execution.
+- This stage is not a production-level Hermes protection claim.
+
+Generated reports:
+- `real_agent_integrations/hermes_mcp_server/reports/real_hermes_standard_mcp_smoke_report.md`
+- `real_agent_integrations/hermes_mcp_server/reports/real_hermes_standard_mcp_smoke_summary.json`

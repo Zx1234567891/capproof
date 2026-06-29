@@ -1,0 +1,15 @@
+{
+  "api_key_written": false,
+  "args": [
+    "run_capproof_mcp_server.py",
+    "--stdio"
+  ],
+  "command": "python",
+  "deepseek_key_source": "DEEPSEEK_API_KEY",
+  "old_proxy_used": false,
+  "production_level_protection_claim": false,
+  "server_name": "capproof-standard-mcp",
+  "stage": "32R",
+  "trace_path_env": "CAPPROOF_MCP_TRACE_PATH",
+  "transport": "stdio"
+}
