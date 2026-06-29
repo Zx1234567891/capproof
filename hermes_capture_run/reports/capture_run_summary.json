@@ -1,0 +1,101 @@
+{
+  "capture_run": {
+    "command_hash": "n/a",
+    "denial_reason": "default no-run preflight: explicit capture-run authorization not provided",
+    "events_captured": 0,
+    "run_allowed": false,
+    "run_attempted": false,
+    "state": "DENY_CAPTURE_RUN",
+    "timeout_seconds": 20,
+    "trace_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/hermes_capture_run/traces/captured_events.jsonl"
+  },
+  "go_no_go": {
+    "enforcement_wrapper": "no-go",
+    "more_runtime_samples_needed": true,
+    "real_capture_trace_collected": false,
+    "real_hermes_integration": false,
+    "real_hermes_integration_claim": "no"
+  },
+  "hook_readiness": {
+    "delegation": {
+      "complete_fields": "unknown",
+      "enforcement_ready": "no",
+      "missing_fields": [],
+      "observed": "unknown",
+      "pre_execution": "unknown"
+    },
+    "gateway": {
+      "complete_fields": "unknown",
+      "enforcement_ready": "no",
+      "missing_fields": [],
+      "observed": "unknown",
+      "pre_execution": "unknown"
+    },
+    "mcp": {
+      "complete_fields": "unknown",
+      "enforcement_ready": "no",
+      "missing_fields": [],
+      "observed": "unknown",
+      "pre_execution": "unknown"
+    },
+    "memory": {
+      "complete_fields": "unknown",
+      "enforcement_ready": "no",
+      "missing_fields": [],
+      "observed": "unknown",
+      "pre_execution": "unknown"
+    },
+    "middleware_rewrite": {
+      "complete_fields": "unknown",
+      "enforcement_ready": "no",
+      "missing_fields": [],
+      "observed": "unknown",
+      "pre_execution": "unknown"
+    },
+    "scheduler": {
+      "complete_fields": "unknown",
+      "enforcement_ready": "no",
+      "missing_fields": [],
+      "observed": "unknown",
+      "pre_execution": "unknown"
+    },
+    "terminal": {
+      "complete_fields": "unknown",
+      "enforcement_ready": "no",
+      "missing_fields": [],
+      "observed": "unknown",
+      "pre_execution": "unknown"
+    },
+    "tool_dispatcher": {
+      "complete_fields": "unknown",
+      "enforcement_ready": "no",
+      "missing_fields": [],
+      "observed": "unknown",
+      "pre_execution": "unknown"
+    }
+  },
+  "safety_status": {
+    "no_hermes_source_modification": true,
+    "no_real_email": true,
+    "no_real_external_network": true,
+    "no_real_mcp_external_server": true,
+    "no_real_shell_high_risk_execution": true,
+    "no_secrets_used": true,
+    "not_enforcement_wrapper": true
+  },
+  "trace_validation": {
+    "AdapterCoverageGap": 0,
+    "allowed": 0,
+    "ask": 0,
+    "denied": 0,
+    "executor_called_on_ask": 0,
+    "executor_called_on_deny": 0,
+    "missing_field_events": 0,
+    "observer_only_blocked": 0,
+    "observer_only_events": 0,
+    "pre_execution_gate_events": 0,
+    "schema_valid_events": 0,
+    "total_events": 0,
+    "unsupported_events": 0
+  }
+}

@@ -9,7 +9,7 @@
       "run_attempted": false,
       "state": "not_run",
       "timeout_seconds": 20,
-      "trace_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/hermes_runtime_capture_experiment/traces/events.jsonl"
+      "trace_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/hermes_capture_run/traces/captured_events.jsonl"
     },
     "preflight": {
       "capture_run_allowed": false,

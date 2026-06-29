@@ -937,3 +937,33 @@ Known risks:
 - No real Hermes runtime traces were collected in this stage.
 - A future capture-run still requires explicit user authorization and must remain capture-only / mock-tool / no-real-tools / no-network / no-shell-risk.
 - Real integration and enforcement wrapper claims remain out of scope.
+
+## Stage 27 - Controlled Hermes Capture-run Trial
+
+Status: implemented, self-check pending.
+
+Scope:
+- Attempt a strictly gated Hermes capture-only run if and only if explicit capture-run environment variables are present.
+- Default to no-run fail-closed behavior with `DENY_CAPTURE_RUN`.
+- Generate `hermes_capture_run/reports/capture_run_report.md` and `hermes_capture_run/reports/capture_run_summary.json`.
+- Validate empty or supplied JSONL traces offline through the existing runtime capture prototype and `MockExecutor`.
+- Do not run Hermes by default, install dependencies, execute third-party commands, execute real tools, use network, modify Hermes source, or modify Reference Monitor / Capability Store / Proof Model safety semantics.
+
+Implemented:
+- Extended `run_hermes_runtime_capture_experiment.py` to write Stage 27 capture-run reports.
+- Hardened capture-run gating to require `ALLOW_HERMES_CAPTURE_RUN=1`, `HERMES_CAPTURE_COMMAND`, `HERMES_CAPTURE_TRACE_PATH`, `CAPPROOF_CAPTURE_ONLY=1`, `CAPPROOF_NO_REAL_TOOLS=1`, `NO_NETWORK=1`, and `HERMES_TEST_WORKSPACE`.
+- Added `tests/test_hermes_capture_run.py`.
+- Updated reproduction notes.
+
+Default no-run result:
+- Capture-run attempted: false.
+- Capture-run allowed: false.
+- Denial reason: explicit capture-run authorization is missing.
+- Events captured: 0.
+- Trace validation events: 0.
+- Enforcement wrapper readiness: no-go.
+
+Known risks:
+- No real Hermes runtime was run in the default Stage 27 path.
+- No real capture trace was collected unless the user explicitly authorizes a later capture-run.
+- Real Hermes integration and enforcement wrapper claims remain out of scope.

@@ -14,6 +14,7 @@ import hashlib
 import json
 import os
 from pathlib import Path
+import re
 import shlex
 import subprocess
 import tempfile
@@ -35,6 +36,12 @@ REPORT_PATH = REPORTS_DIR / "runtime_capture_report.md"
 PREFLIGHT_PATH = PREFLIGHT_DIR / "preflight_summary.json"
 TRACE_REPLAY_REPORT_PATH = REPORTS_DIR / "trace_replay_report.md"
 TRACE_REPLAY_SUMMARY_PATH = REPORTS_DIR / "trace_replay_summary.json"
+CAPTURE_RUN_DIR = ROOT / "hermes_capture_run"
+CAPTURE_RUN_TRACES_DIR = CAPTURE_RUN_DIR / "traces"
+CAPTURE_RUN_REPORTS_DIR = CAPTURE_RUN_DIR / "reports"
+CAPTURE_RUN_DEFAULT_TRACE_PATH = CAPTURE_RUN_TRACES_DIR / "captured_events.jsonl"
+CAPTURE_RUN_REPORT_PATH = CAPTURE_RUN_REPORTS_DIR / "capture_run_report.md"
+CAPTURE_RUN_SUMMARY_PATH = CAPTURE_RUN_REPORTS_DIR / "capture_run_summary.json"
 CAPTURE_TIMEOUT_SECONDS = 20
 
 HOOK_CANDIDATES = {
@@ -79,6 +86,13 @@ UNSAFE_COMMAND_FRAGMENTS = (
 )
 CAPTURE_ONLY_MARKERS = ("capture", "dry-run", "dry_run", "mock", "fixture", "no-real", "no_real")
 SECRET_MARKERS = ("TOKEN=", "SECRET=", "PASSWORD=", "PRIVATE_KEY=", "API_KEY=")
+EXTERNAL_URL_PATTERN = re.compile(r"https?://(?!localhost(?::|/|$)|127\.0\.0\.1(?::|/|$))[^\s'\"]+")
+SERVER_START_FRAGMENTS = ("uvicorn", "flask run", "python -m http.server")
+REQUIRED_CAPTURE_RUN_FLAGS = (
+    ("CAPPROOF_CAPTURE_ONLY", "1"),
+    ("CAPPROOF_NO_REAL_TOOLS", "1"),
+    ("NO_NETWORK", "1"),
+)
 
 
 @dataclass(frozen=True)
@@ -146,6 +160,8 @@ def main() -> int:
             payload = run_experiment(preflight_only=True)
         print(f"report: {REPORT_PATH}")
         print(f"summary: {SUMMARY_PATH}")
+        print(f"capture_run_report: {CAPTURE_RUN_REPORT_PATH}")
+        print(f"capture_run_summary: {CAPTURE_RUN_SUMMARY_PATH}")
         return 0
 
     summary = payload["summary"]
@@ -182,7 +198,7 @@ def run_experiment(
         run_attempted=False,
         state="not_run",
         reason="capture run not requested",
-        trace_path=str(_path(root, DEFAULT_TRACE_PATH)),
+        trace_path=str(_path(root, CAPTURE_RUN_DEFAULT_TRACE_PATH)),
     )
     trace_result = TraceValidationResult(trace_path=str(validate_trace_path or _path(root, DEFAULT_TRACE_PATH)))
 
@@ -279,7 +295,7 @@ def run_capture_run(
     command_runner: Callable[..., Any] | None = None,
 ) -> CaptureRunResult:
     env_map = dict(os.environ if env is None else env)
-    trace_path = _path(root, DEFAULT_TRACE_PATH)
+    trace_path = _resolve_capture_trace_path(root, env_map.get("HERMES_CAPTURE_TRACE_PATH", ""))
     if env_map.get("ALLOW_HERMES_CAPTURE_RUN") != "1":
         return CaptureRunResult(
             run_attempted=False,
@@ -293,6 +309,40 @@ def run_capture_run(
             run_attempted=False,
             state="DENY_CAPTURE_RUN",
             reason="HERMES_CAPTURE_COMMAND is required",
+            trace_path=str(trace_path),
+        )
+    if not env_map.get("HERMES_CAPTURE_TRACE_PATH"):
+        return CaptureRunResult(
+            run_attempted=False,
+            state="DENY_CAPTURE_RUN",
+            reason="HERMES_CAPTURE_TRACE_PATH is required",
+            command_hash=hash_command(command),
+            trace_path=str(trace_path),
+        )
+    for name, expected in REQUIRED_CAPTURE_RUN_FLAGS:
+        if env_map.get(name) != expected:
+            return CaptureRunResult(
+                run_attempted=False,
+                state="DENY_CAPTURE_RUN",
+                reason=f"{name}={expected} is required",
+                command_hash=hash_command(command),
+                trace_path=str(trace_path),
+            )
+    workspace = env_map.get("HERMES_TEST_WORKSPACE", "").strip()
+    if not workspace:
+        return CaptureRunResult(
+            run_attempted=False,
+            state="DENY_CAPTURE_RUN",
+            reason="HERMES_TEST_WORKSPACE is required",
+            command_hash=hash_command(command),
+            trace_path=str(trace_path),
+        )
+    if not Path(workspace).exists():
+        return CaptureRunResult(
+            run_attempted=False,
+            state="DENY_CAPTURE_RUN",
+            reason="HERMES_TEST_WORKSPACE must exist before capture-run",
+            command_hash=hash_command(command),
             trace_path=str(trace_path),
         )
     repo_path = Path(preflight.repo_path) if preflight.repo_path else None
@@ -314,10 +364,12 @@ def run_capture_run(
         )
 
     argv = shlex.split(command)
+    trace_path.parent.mkdir(parents=True, exist_ok=True)
     run_env = dict(env_map)
     run_env.update(
         {
             "CAPTURE_ONLY": "1",
+            "CAPPROOF_CAPTURE_ONLY": "1",
             "CAPPROOF_NO_REAL_TOOLS": "1",
             "NO_NETWORK": "1",
             "HERMES_CAPTURE_TRACE_PATH": str(trace_path),
@@ -354,6 +406,10 @@ def validate_capture_command(command: str) -> tuple[bool, str]:
     for fragment in UNSAFE_COMMAND_FRAGMENTS:
         if fragment in padded:
             return False, f"unsafe capture command fragment rejected: {fragment.strip()}"
+    if EXTERNAL_URL_PATTERN.search(command):
+        return False, "unsafe capture command external URL rejected"
+    if any(fragment in padded for fragment in SERVER_START_FRAGMENTS) and "mock" not in padded:
+        return False, "unsafe capture command server start rejected unless explicitly mock-only"
     if not any(marker in padded for marker in CAPTURE_ONLY_MARKERS):
         return False, "command must clearly indicate capture-only / dry-run / mock-tool mode"
     try:
@@ -422,9 +478,11 @@ def hook_completeness(results: list[dict[str, Any]]) -> dict[str, dict[str, Any]
         missing = sorted({field for result in hook_results for field in result["missing_fields"]})
         observed = bool(hook_results)
         complete = observed and not missing and all(result["validation_status"] == "valid" for result in hook_results)
+        pre_execution = observed and all(result["capture_mode"] == "pre_execution_gate" for result in hook_results)
         out[hook] = {
             "observed": "yes" if observed else "no",
             "complete_fields": "yes" if complete else ("partial" if observed else "unknown"),
+            "pre_execution": "yes" if pre_execution else ("no" if observed else "unknown"),
             "enforcement_ready": "partial" if complete else "no",
             "missing_fields": missing,
         }
@@ -463,6 +521,15 @@ def write_outputs(payload: dict[str, Any], *, root: Path = ROOT) -> None:
         encoding="utf-8",
     )
     _path(root, REPORT_PATH).write_text(render_report(payload), encoding="utf-8")
+    capture_run_summary = build_capture_run_summary(payload)
+    _path(root, CAPTURE_RUN_SUMMARY_PATH).write_text(
+        json.dumps(capture_run_summary, indent=2, sort_keys=True),
+        encoding="utf-8",
+    )
+    _path(root, CAPTURE_RUN_REPORT_PATH).write_text(
+        render_capture_run_report(payload, capture_run_summary),
+        encoding="utf-8",
+    )
 
 
 def render_report(payload: dict[str, Any]) -> str:
@@ -481,8 +548,10 @@ def render_report(payload: dict[str, Any]) -> str:
         "Default preflight does not run Hermes, install dependencies, execute third-party commands,",
         "execute real tools, use network, send messages/email, or modify Hermes source.",
         "",
-        "Capture-run remains denied unless `ALLOW_HERMES_CAPTURE_RUN=1` and `HERMES_CAPTURE_COMMAND`",
-        "are both set and the command passes capture-only safety checks. Only captured JSONL traces are",
+        "Capture-run remains denied unless `ALLOW_HERMES_CAPTURE_RUN=1`, `HERMES_CAPTURE_COMMAND`,",
+        "`HERMES_CAPTURE_TRACE_PATH`, `CAPPROOF_CAPTURE_ONLY=1`, `CAPPROOF_NO_REAL_TOOLS=1`,",
+        "`NO_NETWORK=1`, and `HERMES_TEST_WORKSPACE` are all set and the command passes",
+        "capture-only safety checks. Only captured JSONL traces are",
         "trusted for validation; natural-language logs are not authorization evidence.",
         "",
         "## Preflight Summary",
@@ -564,11 +633,148 @@ def default_hook_readiness(preflight: dict[str, Any]) -> dict[str, dict[str, Any
         hook: {
             "observed": "unknown" if preflight["repo_status"] == "available" else "no",
             "complete_fields": "unknown",
+            "pre_execution": "unknown",
             "enforcement_ready": "no",
             "missing_fields": [],
         }
         for hook in HOOK_CANDIDATES
     }
+
+
+def build_capture_run_summary(payload: dict[str, Any]) -> dict[str, Any]:
+    summary = payload["summary"]
+    preflight = summary["preflight"]
+    capture = summary["capture_run"]
+    trace = summary["trace_validation"]
+    hook_readiness = trace.get("hook_completeness") or default_hook_readiness(summary["preflight"])
+    run_allowed = bool(capture["run_attempted"])
+    state = "DENY_CAPTURE_RUN" if capture["state"] == "not_run" else capture["state"]
+    denial_reason = preflight["reason"] if capture["state"] == "not_run" else capture["reason"]
+    return {
+        "capture_run": {
+            "run_attempted": capture["run_attempted"],
+            "run_allowed": run_allowed,
+            "state": state,
+            "denial_reason": "" if run_allowed else denial_reason,
+            "command_hash": capture["command_hash"] or "n/a",
+            "timeout_seconds": capture["timeout_seconds"],
+            "trace_path": capture["trace_path"],
+            "events_captured": capture["events_captured"],
+        },
+        "safety_status": {
+            "no_real_email": True,
+            "no_real_external_network": True,
+            "no_real_shell_high_risk_execution": True,
+            "no_real_mcp_external_server": True,
+            "no_secrets_used": True,
+            "no_hermes_source_modification": True,
+            "not_enforcement_wrapper": True,
+        },
+        "trace_validation": {
+            "total_events": trace["total_events"],
+            "schema_valid_events": trace["schema_valid_events"],
+            "pre_execution_gate_events": trace["pre_execution_gate_events"],
+            "observer_only_events": trace["observer_only_events"],
+            "unsupported_events": trace["unsupported_events"],
+            "missing_field_events": trace["missing_field_events"],
+            "allowed": trace["allowed"],
+            "denied": trace["denied"],
+            "ask": trace["ask"],
+            "AdapterCoverageGap": trace["adapter_coverage_gap_count"],
+            "observer_only_blocked": trace["observer_only_blocked_count"],
+            "executor_called_on_deny": trace["executor_called_on_deny"],
+            "executor_called_on_ask": trace["executor_called_on_ask"],
+        },
+        "hook_readiness": hook_readiness,
+        "go_no_go": {
+            "enforcement_wrapper": "no-go",
+            "real_hermes_integration_claim": "no",
+            "real_hermes_integration": False,
+            "real_capture_trace_collected": bool(capture["events_captured"] and trace["schema_valid_events"]),
+            "more_runtime_samples_needed": True,
+        },
+    }
+
+
+def render_capture_run_report(payload: dict[str, Any], capture_run_summary: dict[str, Any]) -> str:
+    capture = capture_run_summary["capture_run"]
+    safety = capture_run_summary["safety_status"]
+    trace = capture_run_summary["trace_validation"]
+    hook_readiness = capture_run_summary["hook_readiness"]
+    go_no_go = capture_run_summary["go_no_go"]
+    lines = [
+        "# Hermes Capture-run Report",
+        "",
+        "## Stage Position",
+        "",
+        "Stage 27 is a controlled capture-only run attempt. It is not an enforcement wrapper,",
+        "does not claim that CapProof is integrated with or protects real Hermes, and does not",
+        "trust natural-language logs as authorization evidence. If explicit capture-run",
+        "authorization is absent, the run fails closed with `DENY_CAPTURE_RUN` and no Hermes",
+        "process is started.",
+        "",
+        "The default no-run report means `ALLOW_HERMES_CAPTURE_RUN=1` and",
+        "`HERMES_CAPTURE_COMMAND` were not both provided, so capture-run was not executed.",
+        "",
+        "## Capture-run Status",
+        "",
+        f"- Run attempted: {capture['run_attempted']}",
+        f"- Run allowed: {capture['run_allowed']}",
+        f"- State: {capture['state']}",
+        f"- Denial reason: {capture['denial_reason'] or 'n/a'}",
+        f"- Command hash: {capture['command_hash']}",
+        f"- Timeout seconds: {capture['timeout_seconds']}",
+        f"- Trace path: `{capture['trace_path']}`",
+        f"- Events captured: {capture['events_captured']}",
+        "",
+        "## Safety Status",
+        "",
+    ]
+    for key, value in safety.items():
+        lines.append(f"- {key}: {value}")
+    lines.extend(
+        [
+            "",
+            "## Trace Validation Summary",
+            "",
+            f"- Total events: {trace['total_events']}",
+            f"- Schema-valid events: {trace['schema_valid_events']}",
+            f"- Pre-execution-gate events: {trace['pre_execution_gate_events']}",
+            f"- Observer-only events: {trace['observer_only_events']}",
+            f"- Unsupported events: {trace['unsupported_events']}",
+            f"- Missing-field events: {trace['missing_field_events']}",
+            f"- Allowed: {trace['allowed']}",
+            f"- Denied: {trace['denied']}",
+            f"- Ask: {trace['ask']}",
+            f"- AdapterCoverageGap: {trace['AdapterCoverageGap']}",
+            f"- Executor called on deny: {trace['executor_called_on_deny']}",
+            f"- Executor called on ask: {trace['executor_called_on_ask']}",
+            "",
+            "## Hook Readiness",
+            "",
+            "| Hook | Observed | Complete fields | Pre-execution | Enforcement-ready | Missing fields |",
+            "| --- | --- | --- | --- | --- | --- |",
+        ]
+    )
+    for hook, data in hook_readiness.items():
+        missing = ", ".join(data.get("missing_fields", ())) or "none"
+        lines.append(
+            f"| {hook} | {data.get('observed', 'unknown')} | {data.get('complete_fields', 'unknown')} | "
+            f"{data.get('pre_execution', 'unknown')} | {data.get('enforcement_ready', 'no')} | {missing} |"
+        )
+    lines.extend(
+        [
+            "",
+            "## Go / No-Go",
+            "",
+            f"- Enforcement wrapper: {go_no_go['enforcement_wrapper']}.",
+            f"- Real Hermes integration claim: {go_no_go['real_hermes_integration_claim']}.",
+            f"- Real Hermes integration: {go_no_go['real_hermes_integration']}.",
+            f"- Real capture trace collected: {go_no_go['real_capture_trace_collected']}.",
+            f"- More runtime samples needed: {go_no_go['more_runtime_samples_needed']}.",
+        ]
+    )
+    return "\n".join(lines) + "\n"
 
 
 def count_jsonl_events(path: Path) -> int:
@@ -593,7 +799,15 @@ def _hook_to_runtime_name(hook: str) -> str:
 
 
 def _ensure_dirs(root: Path) -> None:
-    for path in (PREFLIGHT_DIR, TRACE_DIR, REPORTS_DIR, FIXTURE_DIR, PATCHES_DIR):
+    for path in (
+        PREFLIGHT_DIR,
+        TRACE_DIR,
+        REPORTS_DIR,
+        FIXTURE_DIR,
+        PATCHES_DIR,
+        CAPTURE_RUN_TRACES_DIR,
+        CAPTURE_RUN_REPORTS_DIR,
+    ):
         _path(root, path).mkdir(parents=True, exist_ok=True)
 
 
@@ -605,6 +819,15 @@ def _path(root: Path, path: Path) -> Path:
         if path.is_absolute():
             return path
         return root / path
+
+
+def _resolve_capture_trace_path(root: Path, env_value: str) -> Path:
+    if not env_value:
+        return _path(root, CAPTURE_RUN_DEFAULT_TRACE_PATH)
+    trace_path = Path(env_value)
+    if trace_path.is_absolute():
+        return trace_path
+    return root / trace_path
 
 
 if __name__ == "__main__":

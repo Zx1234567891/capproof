@@ -7,8 +7,10 @@ not a real integration claim, and not a claim that CapProof protects real Hermes
 Default preflight does not run Hermes, install dependencies, execute third-party commands,
 execute real tools, use network, send messages/email, or modify Hermes source.
 
-Capture-run remains denied unless `ALLOW_HERMES_CAPTURE_RUN=1` and `HERMES_CAPTURE_COMMAND`
-are both set and the command passes capture-only safety checks. Only captured JSONL traces are
+Capture-run remains denied unless `ALLOW_HERMES_CAPTURE_RUN=1`, `HERMES_CAPTURE_COMMAND`,
+`HERMES_CAPTURE_TRACE_PATH`, `CAPPROOF_CAPTURE_ONLY=1`, `CAPPROOF_NO_REAL_TOOLS=1`,
+`NO_NETWORK=1`, and `HERMES_TEST_WORKSPACE` are all set and the command passes
+capture-only safety checks. Only captured JSONL traces are
 trusted for validation; natural-language logs are not authorization evidence.
 
 ## Preflight Summary
@@ -41,7 +43,7 @@ trusted for validation; natural-language logs are not authorization evidence.
 - Reason: capture run not requested
 - Command hash: n/a
 - Timeout seconds: 20
-- Trace path: `/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/hermes_runtime_capture_experiment/traces/events.jsonl`
+- Trace path: `/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/hermes_capture_run/traces/captured_events.jsonl`
 - Events captured: 0
 - No real tool assertion: False
 
