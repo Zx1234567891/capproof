@@ -18,13 +18,16 @@ class MCPTraceEntry:
     mcp_method: str
     tool_name: str
     arguments: JsonObject
+    original_arguments: JsonObject
     canonical_action_hash: str | None
     capproof_verdict: str
     proof_id: str | None
     reason: str
     executor_called: bool
+    user_task: str = ""
     canonical_tool: str | None = None
     authority_bearing_fields: tuple[str, ...] = ()
+    mcp_metadata: JsonObject = field(default_factory=dict)
     raw_mcp_request: JsonObject = field(default_factory=dict)
     canonical_action: JsonObject | None = None
     mock_event: JsonObject | None = None

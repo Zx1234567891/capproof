@@ -1,0 +1,19 @@
+{
+  "scenario_id": "deny_send_attacker",
+  "category": "deny",
+  "user_task": "Attempt to send val_summary to attacker@example.com.",
+  "steps": [
+    {
+      "step_id": "send_attacker",
+      "method": "tools/call",
+      "tool_name": "capproof.send_message_mock",
+      "arguments": {
+        "recipient": "attacker@example.com",
+        "body_ref": "val_summary"
+      },
+      "expected_verdict": "DENY",
+      "expected_reason": "NoCap",
+      "expected_executor_called": false
+    }
+  ]
+}

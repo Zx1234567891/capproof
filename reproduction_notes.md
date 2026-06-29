@@ -200,32 +200,6 @@ Adaptive mode is not implemented in Stage 13. Future adaptive runs should preser
   - Relevant dependencies are visible in the trace.
   - Approval consumption is not modeled.
 
-## Stage 30R - Real Hermes + DeepSeek + Local MCP/CapProof Debug
-
-This stage actually runs Hermes from the local checkout, calls DeepSeek as the model backend, and exercises a localhost/stdio MCP server that routes tool calls through CapProof. It is not a production enforcement wrapper and does not claim production Hermes protection.
-
-Commands:
-
-```bash
-python run_real_hermes_mcp_test.py --bootstrap
-python run_real_hermes_mcp_test.py --all
-pytest tests/test_real_hermes_mcp_test.py -q
-python run_hermes_deepseek_setup.py --preflight
-python run_hermes_capture_run.py --preflight
-python run_kill_tests.py --mode all --baselines
-python run_adapter_bypass_gate.py
-python run_authspec_faithfulness.py --mode auto
-python -m compileall src tests run_real_hermes_mcp_test.py run_hermes_deepseek_setup.py run_hermes_capture_run.py run_hermes_mcp_proxy.py
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
-```
-
-Requirements:
-- `DEEPSEEK_API_KEY` must be present in the environment; its value must not be printed or written.
-- `.venv-hermes/` is an ignored local virtualenv for installing the local Hermes checkout.
-- The runner auto-sets Stage 30R safety flags and creates a temp Hermes workspace.
-- ALLOW actions only enter `MockExecutor`; DENY/ASK actions do not execute.
-- No real email, gateway, dangerous shell, external MCP, or non-DeepSeek external network is allowed.
-
 ## Stage 31M - Productized CapProof MCP Server for Hermes Local Use
 
 This stage packages the CapProof local MCP path as a standard MCP server with
@@ -263,3 +237,45 @@ Notes:
   capability.
 - DeepSeek API keys remain environment-only and are not needed for the MCP
   server self-test.
+
+## Stage 32H - Hermes MCP UX and Coverage Expansion
+
+This stage expands Hermes-local MCP scenario coverage using the productized
+CapProof MCP server. It does not run Hermes or call DeepSeek; it exercises the
+same standard MCP `tools/list` and `tools/call` workflow with a local JSON-RPC
+client.
+
+Commands:
+
+```bash
+python run_capproof_mcp_server.py --list-tools
+python run_capproof_mcp_server.py --self-test
+python run_hermes_mcp_coverage.py --list-scenarios
+python run_hermes_mcp_coverage.py --local-client --scenario all
+python run_hermes_mcp_coverage.py --report
+pytest tests/test_capproof_mcp_protocol.py -q
+pytest tests/test_capproof_mcp_guard_path.py -q
+pytest tests/test_capproof_mcp_trace.py -q
+pytest tests/test_capproof_mcp_ask_flow.py -q
+pytest tests/test_capproof_mcp_metadata_injection.py -q
+pytest tests/test_hermes_mcp_coverage.py -q
+pytest tests/test_real_hermes_mcp_test.py -q
+python run_kill_tests.py --mode all --baselines
+python run_adapter_bypass_gate.py
+python run_authspec_faithfulness.py --mode auto
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
+```
+
+Coverage categories:
+- benign authorized call
+- deny unauthorized recipient
+- ask authorization request
+- malformed arguments
+- prompt variation
+- metadata injection
+- multi-tool workflow
+- multi-tool partial deny
+
+The generated matrix reports are:
+- `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.md`
+- `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.json`

@@ -36,13 +36,20 @@ class CapProofMCPServer:
     def list_tools(self) -> JsonObject:
         return {"tools": [handler.spec.to_mcp_tool() for handler in self.tool_registry.values()]}
 
-    def call_tool(self, name: str, arguments: Mapping[str, Any] | None = None) -> JsonObject:
+    def call_tool(
+        self,
+        name: str,
+        arguments: Mapping[str, Any] | None = None,
+        *,
+        mcp_metadata: Mapping[str, Any] | None = None,
+    ) -> JsonObject:
         handler = self.tool_registry.get(name)
         if handler is None:
             raise tool_not_found(name)
         args = dict(arguments or {})
+        metadata = dict(mcp_metadata or {})
         if handler.admin_handler is not None:
-            return self._handle_admin_tool(name, args, handler).to_mcp_result()
+            return self._handle_admin_tool(name, args, handler, mcp_metadata=metadata).to_mcp_result()
         if handler.to_raw_event is None:
             raise invalid_params(f"tool has no handler: {name}")
         raw_event = handler.to_raw_event(args, self.context)
@@ -51,6 +58,7 @@ class CapProofMCPServer:
         entry = self._record_guarded_trace(
             tool_name=name,
             arguments=args,
+            mcp_metadata=metadata,
             decision=decision,
             executor_called=execution.executed,
             mock_event=execution.mock_event,
@@ -87,7 +95,8 @@ class CapProofMCPServer:
                 arguments = params.get("arguments", {})
                 if not isinstance(arguments, dict):
                     raise invalid_params("tools/call arguments must be an object")
-                result = self.call_tool(name, arguments)
+                metadata = _extract_mcp_metadata(params)
+                result = self.call_tool(name, arguments, mcp_metadata=metadata)
             else:
                 raise method_not_found(method)
         except MCPError as exc:
@@ -99,10 +108,13 @@ class CapProofMCPServer:
         name: str,
         arguments: JsonObject,
         handler: MCPToolHandler,
+        *,
+        mcp_metadata: JsonObject | None = None,
     ) -> MCPToolResult:
         payload = handler.admin_handler(arguments, self.context)
         verdict = str(payload.get("verdict", "ALLOW"))
         reason = str(payload.get("reason", ""))
+        metadata = dict(mcp_metadata or {})
         self._trace_index += 1
         entry = MCPTraceEntry(
             trace_id=new_trace_id(method="tools/call", tool_name=name, arguments=arguments, index=self._trace_index),
@@ -110,13 +122,21 @@ class CapProofMCPServer:
             mcp_method="tools/call",
             tool_name=name,
             arguments=arguments,
+            original_arguments=dict(arguments),
             canonical_action_hash=None,
             capproof_verdict=verdict,
             proof_id=None,
             reason=reason,
             executor_called=False,
+            user_task=_extract_user_task(arguments, metadata),
             authority_bearing_fields=handler.spec.authority_bearing_fields,
-            raw_mcp_request={"method": "tools/call", "tool_name": name, "arguments": arguments},
+            mcp_metadata=metadata,
+            raw_mcp_request={
+                "method": "tools/call",
+                "tool_name": name,
+                "arguments": arguments,
+                "mcp_metadata": metadata,
+            },
             canonical_action=None,
             mock_event=None,
         )
@@ -127,8 +147,11 @@ class CapProofMCPServer:
             "reason": reason,
             "executor_called": False,
             "capability_minted": bool(payload.get("capability_minted", False)),
+            "pending_authorization_request": payload.get("pending_authorization_request"),
             "trace": entry.to_dict(),
             "payload": payload,
+            "metadata_cannot_mint_capability": True,
+            "llm_output_cannot_allow_tool_call": True,
         }
         return MCPToolResult(
             content=[{"type": "text", "text": f"{name}: {verdict} {reason}".strip()}],
@@ -141,6 +164,7 @@ class CapProofMCPServer:
         *,
         tool_name: str,
         arguments: JsonObject,
+        mcp_metadata: JsonObject,
         decision: GuardDecision,
         executor_called: bool,
         mock_event: JsonObject | None,
@@ -163,14 +187,22 @@ class CapProofMCPServer:
             mcp_method="tools/call",
             tool_name=tool_name,
             arguments=arguments,
+            original_arguments=dict(arguments),
             canonical_action_hash=action_hash,
             capproof_verdict=decision.decision.value,
             proof_id=proof_id,
             reason=reason,
             executor_called=executor_called,
+            user_task=_extract_user_task(arguments, mcp_metadata),
             canonical_tool=canonical_tool,
             authority_bearing_fields=authority_fields,
-            raw_mcp_request={"method": "tools/call", "tool_name": tool_name, "arguments": arguments},
+            mcp_metadata=mcp_metadata,
+            raw_mcp_request={
+                "method": "tools/call",
+                "tool_name": tool_name,
+                "arguments": arguments,
+                "mcp_metadata": mcp_metadata,
+            },
             canonical_action=decision.action.to_dict() if decision.action is not None else None,
             mock_event=mock_event,
         )
@@ -181,6 +213,7 @@ class CapProofMCPServer:
 def _structured_from_entry(entry: MCPTraceEntry, decision: GuardDecision) -> JsonObject:
     return {
         "tool_name": entry.tool_name,
+        "user_task": entry.user_task,
         "canonical_tool": entry.canonical_tool,
         "verdict": entry.capproof_verdict,
         "proof": {
@@ -189,6 +222,8 @@ def _structured_from_entry(entry: MCPTraceEntry, decision: GuardDecision) -> Jso
         },
         "reason": entry.reason,
         "executor_called": entry.executor_called,
+        "original_arguments": entry.original_arguments,
+        "mcp_metadata": entry.mcp_metadata,
         "authority_bearing_fields": list(entry.authority_bearing_fields),
         "trace": entry.to_dict(),
         "metadata_cannot_mint_capability": True,
@@ -211,3 +246,20 @@ def _content_text(*, name: str, entry: MCPTraceEntry) -> str:
 
 def _json_rpc_error(request_id: Any, exc: MCPError) -> JsonObject:
     return {"jsonrpc": "2.0", "id": request_id, "error": exc.to_json()}
+
+
+def _extract_mcp_metadata(params: JsonObject) -> JsonObject:
+    metadata: JsonObject = {}
+    for key in ("_meta", "clientInfo", "clientCapabilities"):
+        value = params.get(key)
+        if isinstance(value, dict):
+            metadata[key] = value
+    return metadata
+
+
+def _extract_user_task(arguments: JsonObject, metadata: JsonObject) -> str:
+    for source in (arguments, metadata.get("_meta", {}) if isinstance(metadata.get("_meta"), dict) else {}):
+        value = source.get("user_task") if isinstance(source, dict) else None
+        if isinstance(value, str):
+            return value
+    return ""

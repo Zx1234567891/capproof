@@ -1,0 +1,26 @@
+{
+  "scenario_id": "malformed_args",
+  "category": "malformed",
+  "user_task": "Submit malformed MCP arguments and verify the server fails closed.",
+  "steps": [
+    {
+      "step_id": "arguments_not_object",
+      "method": "tools/call",
+      "tool_name": "capproof.send_message_mock",
+      "arguments": "recipient=alice@example.com",
+      "expected_verdict": "ERROR",
+      "expected_reason": "InvalidParams",
+      "expected_executor_called": false
+    },
+    {
+      "step_id": "missing_recipient",
+      "method": "tools/call",
+      "tool_name": "capproof.send_message_mock",
+      "arguments": {
+        "body_ref": "val_summary"
+      },
+      "expected_verdict": "DENY",
+      "expected_executor_called": false
+    }
+  ]
+}

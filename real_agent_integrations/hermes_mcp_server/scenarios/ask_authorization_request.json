@@ -1,0 +1,23 @@
+{
+  "scenario_id": "ask_authorization_request",
+  "category": "ask",
+  "user_task": "Ask for permission to send a future summary to bob@example.com.",
+  "steps": [
+    {
+      "step_id": "request_auth",
+      "method": "tools/call",
+      "tool_name": "capproof.request_authorization",
+      "arguments": {
+        "reason": "Need explicit user authorization before sending to bob@example.com",
+        "requested_tool": "capproof.send_message_mock",
+        "requested_scope": {
+          "recipient": "bob@example.com",
+          "body_ref": "val_summary"
+        }
+      },
+      "expected_verdict": "ASK",
+      "expected_reason": "AuthorizationRequested",
+      "expected_executor_called": false
+    }
+  ]
+}

@@ -1193,3 +1193,44 @@ Known boundaries:
 - This is a local MCP productization stage, not production-level protection.
 - Real Hermes can discover these tools via normal MCP `tools/list`, but production enforcement-wrapper claims remain out of scope.
 - DeepSeek remains model-backend-only and outside the CapProof safety TCB.
+
+## Stage 32H - Hermes MCP UX and Coverage Expansion
+
+Status: implemented, checkpoint pending.
+
+Scope:
+- Expand Hermes-local MCP scenario matrix over standard MCP `tools/list` and `tools/call`.
+- Exercise benign, deny, ask, malformed args, prompt variation, tool metadata injection, and multi-tool workflow cases.
+- Keep all authority-bearing calls on the canonicalizer -> `CapProofMiddleware.guard(...)` -> Reference Monitor -> executor gate path.
+- Keep DENY/ASK executor blocking.
+- Keep metadata, annotations, `_meta`, `clientInfo`, `clientCapabilities`, and Hermes/DeepSeek natural language non-authoritative.
+- Do not run Hermes or call DeepSeek.
+- Do not claim production-level Hermes protection.
+
+Implemented:
+- Added `run_hermes_mcp_coverage.py`.
+- Added `real_agent_integrations/hermes_mcp_server/scenarios/`.
+- Added `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.md`.
+- Added `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.json`.
+- Added `tests/test_hermes_mcp_coverage.py`.
+- Added `tests/test_capproof_mcp_ask_flow.py`.
+- Added `tests/test_capproof_mcp_metadata_injection.py`.
+- Strengthened MCP trace entries with:
+  - `user_task`
+  - `original_arguments`
+  - `mcp_metadata`
+  - standard workflow fields already present in Stage 31M.
+- Updated ASK flow so `capproof.request_authorization` creates a `pending_authorization_request`, does not mint capability, and does not execute an executor.
+
+Coverage matrix current result:
+- total scenarios: 8
+- total steps: 13
+- verdict counts: ALLOW 7, DENY 4, ASK 1, ERROR 1
+- failed steps: 0
+- executor_called_on_deny_ask: 0
+- metadata_injection_unexpected_allow: 0
+
+Known boundaries:
+- Stage 32H is local MCP scenario coverage, not a real Hermes run.
+- Stage 32H is not a production enforcement wrapper.
+- Stage 32H does not broaden CapProof authority semantics.
