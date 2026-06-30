@@ -1292,3 +1292,73 @@ Known boundaries:
 - It covers only the three standard MCP smoke scenarios listed above.
 - This stage does not claim sandboxed real execution.
 - This stage does not claim production-level Hermes protection.
+
+## Stage 33S - Sandboxed Real Execution for CapProof MCP
+
+Status: implemented, checkpoint pending.
+
+Scope:
+- Add a minimal sandboxed real executor for the standard CapProof MCP server ALLOW path.
+- Preserve CapProof core verifier / Reference Monitor / Capability Store / Proof Model semantics.
+- Keep sandbox as a post-ALLOW constraint, not an authorization root.
+- Support only workspace-local file read/write and allowlisted command-template execution.
+- Keep DENY/ASK executor blocking.
+- Do not support real email, external MCP, raw shell, arbitrary filesystem access, or arbitrary network access.
+- Do not claim OS-level network denial.
+- Do not claim production-level Hermes protection.
+
+Implemented:
+- Added `SANDBOXED_REAL_EXECUTION.md`.
+- Added `src/capproof/mcp/sandbox_policy.py`.
+- Added `src/capproof/mcp/sandbox.py`.
+- Added `src/capproof/mcp/sandbox_executors.py`.
+- Added `src/capproof/mcp/command_templates.py`.
+- Added explicit `executor_mode="sandbox"` support in `make_default_context(...)`.
+- Added `--sandboxed-real-execution` to `run_capproof_mcp_server.py`.
+- Added `run_capproof_sandbox_smoke.py`.
+- Added tests:
+  - `tests/test_capproof_mcp_sandbox_policy.py`
+  - `tests/test_capproof_mcp_sandbox_paths.py`
+  - `tests/test_capproof_mcp_sandbox_file_read.py`
+  - `tests/test_capproof_mcp_sandbox_file_write.py`
+  - `tests/test_capproof_mcp_sandbox_commands.py`
+  - `tests/test_capproof_mcp_sandbox_env.py`
+
+Sandbox policy:
+- Workspace root is canonicalized.
+- Resolved paths must stay under the workspace root.
+- Path traversal, absolute outside paths, and symlink escapes are denied/refused.
+- Secret-like paths such as `.env`, `.git`, `*.pem`, `*.key`, and private key names are denied/refused.
+- File read/write sizes are capped.
+- Writes use same-directory temporary files and atomic replace.
+- Command templates use `shell=False`, argv lists only, allowlisted template IDs, schema/policy-checked args, workspace cwd, env allowlist, required timeout, and capped stdout/stderr.
+- Raw shell strings and unknown templates are denied/refused.
+
+Stage 33S local smoke result:
+- total steps: 8
+- failed steps: 0
+- sandbox_executed_count: 3
+- sandbox_refused_count: 1
+- executor_called_on_deny_ask: 0
+- raw_shell_supported: false
+- production_level_protection_claim: false
+- os_level_network_denial_claim: false
+
+Validation:
+- `python run_capproof_mcp_server.py --list-tools`: passed.
+- `python run_capproof_mcp_server.py --self-test`: passed.
+- `python run_capproof_sandbox_smoke.py --preflight`: passed.
+- `python run_capproof_sandbox_smoke.py --local-client --scenario all`: passed.
+- `python run_capproof_sandbox_smoke.py --report`: passed.
+- Stage 33S sandbox test files: passed.
+- Existing MCP / Stage 32R tests requested for this stage: passed.
+- `python run_kill_tests.py --mode all --baselines`: 24/24 passed.
+- `python run_adapter_bypass_gate.py`: unexpected allow 0.
+- `python run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 467 passed.
+- `python -m compileall src tests run_capproof_sandbox_smoke.py`: passed.
+
+Known boundaries:
+- This is a minimal local sandbox executor, not production-level Hermes protection.
+- It does not claim OS-level network denial because no network namespace or equivalent isolation is implemented.
+- Real Hermes sandbox smoke remains separately gated and is not part of this checkpoint unless explicitly authorized later.

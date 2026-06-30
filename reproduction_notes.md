@@ -211,83 +211,22 @@ Commands:
 ```bash
 python run_capproof_mcp_server.py --list-tools
 python run_capproof_mcp_server.py --self-test
-python run_hermes_capproof_mcp_demo.py --generate --report
 pytest tests/test_capproof_mcp_protocol.py -q
 pytest tests/test_capproof_mcp_guard_path.py -q
 pytest tests/test_capproof_mcp_trace.py -q
-pytest tests/test_real_hermes_mcp_test.py -q
-python run_kill_tests.py --mode all --baselines
-python run_adapter_bypass_gate.py
-python run_authspec_faithfulness.py --mode auto
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
 ```
 
 Notes:
-- `run_capproof_mcp_server.py --stdio` starts the stdio MCP JSON-RPC server.
-- stdout is reserved for MCP JSON-RPC messages in stdio mode; diagnostics must go to stderr.
 - Exposed v1 tools are `capproof.echo_summary`, `capproof.send_message_mock`,
   `capproof.read_workspace_file`, `capproof.write_workspace_file`,
   `capproof.run_command_template`, `capproof.get_trace`, and
   `capproof.request_authorization`.
 - Authority-bearing `tools/call` requests enter canonicalizer ->
   `CapProofMiddleware.guard(...)` -> Reference Monitor -> executor gate.
-- ALLOW uses `MockExecutor` or no-side-effect local executor only.
-- DENY/ASK does not execute an executor.
 - MCP metadata, tool descriptions, annotations, and LLM output cannot mint
   capability.
-- DeepSeek API keys remain environment-only and are not needed for the MCP
-  server self-test.
 
-## Stage 32H - Hermes MCP UX and Coverage Expansion
-
-This stage expands Hermes-local MCP scenario coverage using the productized
-CapProof MCP server. It does not run Hermes or call DeepSeek; it exercises the
-same standard MCP `tools/list` and `tools/call` workflow with a local JSON-RPC
-client.
-
-Commands:
-
-```bash
-python run_capproof_mcp_server.py --list-tools
-python run_capproof_mcp_server.py --self-test
-python run_hermes_mcp_coverage.py --list-scenarios
-python run_hermes_mcp_coverage.py --local-client --scenario all
-python run_hermes_mcp_coverage.py --report
-pytest tests/test_capproof_mcp_protocol.py -q
-pytest tests/test_capproof_mcp_guard_path.py -q
-pytest tests/test_capproof_mcp_trace.py -q
-pytest tests/test_capproof_mcp_ask_flow.py -q
-pytest tests/test_capproof_mcp_metadata_injection.py -q
-pytest tests/test_hermes_mcp_coverage.py -q
-pytest tests/test_real_hermes_mcp_test.py -q
-python run_kill_tests.py --mode all --baselines
-python run_adapter_bypass_gate.py
-python run_authspec_faithfulness.py --mode auto
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
-```
-
-Coverage categories:
-- benign authorized call
-- deny unauthorized recipient
-- ask authorization request
-- malformed arguments
-- prompt variation
-- metadata injection
-- multi-tool workflow
-- multi-tool partial deny
-
-The generated matrix reports are:
-- `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.md`
-- `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.json`
-
-## Stage 32R - Real Hermes Standard MCP Smoke Gate and Authorized Smoke
-
-This stage validates the standard CapProof MCP server product layer for a real
-Hermes + DeepSeek smoke path. Default commands do not run Hermes or call
-DeepSeek. Real execution is only allowed with explicit opt-in environment and a
-safe Hermes command. The harness can use a user-provided `HERMES_RUN_COMMAND`,
-or auto-resolve `.venv-hermes/bin/hermes` when the isolated local Hermes venv is
-already present and the generated command passes safety validation.
+## Stage 32R - Authorized Real Hermes Standard MCP Smoke
 
 Default safe commands:
 
@@ -295,7 +234,6 @@ Default safe commands:
 python run_real_hermes_standard_mcp_smoke.py --preflight
 python run_real_hermes_standard_mcp_smoke.py --list-scenarios
 python run_real_hermes_standard_mcp_smoke.py --dry-run
-pytest tests/test_real_hermes_standard_mcp_smoke.py -q
 ```
 
 Explicit real smoke command shape:
@@ -310,19 +248,46 @@ python run_real_hermes_standard_mcp_smoke.py --all
 
 Notes:
 - `DEEPSEEK_API_KEY` must come only from the environment.
-- The key must not be written to config, reports, traces, logs, or commits.
-- `--dry-run` uses the standard CapProof MCP server and local JSON-RPC calls.
-- `--all` is the only mode that may attempt real Hermes + DeepSeek, and only
-  after safety validation passes.
-- Stage 32R.2 authorized real smoke used the standard CapProof MCP server, not
-  the old proxy.
 - Stage 32R.2 observed real Hermes standard MCP `tools/list` and `tools/call`.
-- Stage 32R.2 observed `benign_echo_summary` -> `ALLOW` with executor called,
-  `denied_attacker_recipient` -> `DENY NoCap` with executor not called, and
-  `ask_request_authorization` -> `ASK` with a pending request, no capability
+- `benign_echo_summary` -> `ALLOW` with executor called.
+- `denied_attacker_recipient` -> `DENY NoCap` with executor not called.
+- `ask_request_authorization` -> `ASK` with a pending request, no capability
   minted, and executor not called.
-- ALLOW enters MockExecutor/no-side-effect local executor only.
-- DENY/ASK does not execute executor.
-- ASK creates a pending authorization request and does not mint capability.
-- This stage is not sandboxed real execution.
-- This stage is not a production-level Hermes protection claim.
+- This stage is not sandboxed real execution and not a production-level Hermes
+  protection claim.
+
+## Stage 33S - Sandboxed Real Execution for CapProof MCP
+
+This stage adds a minimal sandboxed real executor for the standard CapProof MCP
+server after CapProof guard ALLOW. It does not change Reference Monitor /
+Capability Store / Proof Model semantics.
+
+Commands:
+
+```bash
+python run_capproof_mcp_server.py --list-tools
+python run_capproof_mcp_server.py --self-test
+python run_capproof_sandbox_smoke.py --preflight
+python run_capproof_sandbox_smoke.py --local-client --scenario all
+python run_capproof_sandbox_smoke.py --report
+pytest tests/test_capproof_mcp_sandbox_policy.py -q
+pytest tests/test_capproof_mcp_sandbox_paths.py -q
+pytest tests/test_capproof_mcp_sandbox_file_read.py -q
+pytest tests/test_capproof_mcp_sandbox_file_write.py -q
+pytest tests/test_capproof_mcp_sandbox_commands.py -q
+pytest tests/test_capproof_mcp_sandbox_env.py -q
+```
+
+Notes:
+- Supported real effects are workspace-only file read/write and allowlisted
+  command-template execution.
+- Path traversal, symlink escape, absolute outside paths, secret-like files,
+  raw shell strings, unknown command templates, and unapproved env are denied
+  or refused.
+- Writes are atomic.
+- Command templates use `shell=False`, argv lists, required timeout, capped
+  stdout/stderr, and allowlisted env only.
+- DENY/ASK executor_called remains false.
+- This stage does not support real email, external MCP, arbitrary filesystem
+  access, raw shell, or production-level Hermes protection.
+- This stage does not claim OS-level network denial.

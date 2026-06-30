@@ -16,6 +16,7 @@ from capproof.agent_adapter import (
 from capproof.canonicalizer import Canonicalizer
 from capproof.capability_store import InMemoryCapabilityStore, mint_capability
 from capproof.mcp.executors import MCPMockExecutor
+from capproof.mcp.sandbox_executors import SandboxedMCPExecutor
 from capproof.mcp.trace import TraceRecorder
 from capproof.monitor import MonitorState
 from capproof.provenance import ProvenanceRuntime
@@ -54,6 +55,7 @@ def make_default_context(
     trace_path: str | Path | None = None,
     task_id: str = DEFAULT_TASK_ID,
     agent_id: str = DEFAULT_AGENT_ID,
+    executor_mode: str = "mock",
 ) -> CapProofMCPContext:
     workspace_path = Path(workspace or tempfile.mkdtemp(prefix="capproof_mcp_workspace_")).resolve(
         strict=False
@@ -86,7 +88,12 @@ def make_default_context(
             )
         )
     )
-    executor = MCPMockExecutor(workspace_path)
+    if executor_mode == "sandbox":
+        executor = SandboxedMCPExecutor(workspace_path)
+    elif executor_mode == "mock":
+        executor = MCPMockExecutor(workspace_path)
+    else:
+        raise ValueError(f"unknown MCP executor mode: {executor_mode}")
     return CapProofMCPContext(
         workspace=workspace_path,
         trace_path=trace_file,

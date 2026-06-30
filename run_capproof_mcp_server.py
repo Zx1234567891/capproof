@@ -30,6 +30,11 @@ def main() -> int:
     parser.add_argument("--self-test", action="store_true", help="run local no-side-effect MCP tool self-test")
     parser.add_argument("--workspace", help="workspace for local mock executor")
     parser.add_argument("--trace-path", help="trace JSONL path")
+    parser.add_argument(
+        "--sandboxed-real-execution",
+        action="store_true",
+        help="use Stage 33S workspace-only sandbox executor for ALLOWed file/template tools",
+    )
     args = parser.parse_args()
 
     ensure_dirs()
@@ -37,7 +42,11 @@ def main() -> int:
     trace_path = Path(args.trace_path or os.environ.get("CAPPROOF_MCP_TRACE_PATH") or DEFAULT_TRACE_PATH)
     if args.self_test and trace_path.exists():
         trace_path.unlink()
-    context = make_default_context(workspace=workspace, trace_path=trace_path)
+    context = make_default_context(
+        workspace=workspace,
+        trace_path=trace_path,
+        executor_mode="sandbox" if args.sandboxed_real_execution else "mock",
+    )
     server = CapProofMCPServer(context=context)
     if args.stdio:
         return run_stdio_server(context=context)

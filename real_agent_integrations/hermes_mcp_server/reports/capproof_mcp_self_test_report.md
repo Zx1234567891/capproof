@@ -11,7 +11,7 @@
 
 ## Summary
 
-- workspace: `/tmp/capproof_mcp_5gs4qdtv`
+- workspace: `/tmp/capproof_mcp_43fxcquq`
 - trace path: `/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/hermes_mcp_server/traces/capproof_mcp_trace.jsonl`
 - tools count: 7
 - tools: capproof.echo_summary, capproof.send_message_mock, capproof.read_workspace_file, capproof.write_workspace_file, capproof.run_command_template, capproof.get_trace, capproof.request_authorization
