@@ -255,3 +255,43 @@ Stage 33R claims and boundaries:
 - Raw shell remains unsupported and denied.
 - No real email, external MCP, arbitrary filesystem access, or production wrapper is claimed.
 - No API key is written to files, reports, traces, logs, or commits.
+
+## Stage 34O - OpenCode/OpenClaw CapProof MCP Reuse Audit and Dry-Run Config
+
+Stage 34O validates CapProof MCP reuse for OpenCode/OpenClaw through static repo/runtime audit, config templates, command documentation, and a local JSON-RPC dry-run against the same standard CapProof MCP server. It does not run real OpenCode/OpenClaw and does not claim real OpenCode/OpenClaw integration.
+
+Commands:
+
+```bash
+python run_agent_mcp_client_audit.py --all
+python run_agent_mcp_client_audit.py --report
+python run_capproof_mcp_server.py --list-tools
+python run_capproof_mcp_server.py --self-test
+python run_capproof_sandbox_smoke.py --local-client --scenario all
+pytest tests/test_agent_mcp_client_audit.py -q
+pytest tests/test_opencode_mcp_config.py -q
+pytest tests/test_openclaw_mcp_config.py -q
+pytest tests/test_real_hermes_sandbox_mcp_smoke.py -q
+pytest tests/test_capproof_mcp_sandbox_policy.py -q
+pytest tests/test_capproof_mcp_sandbox_paths.py -q
+pytest tests/test_capproof_mcp_sandbox_file_read.py -q
+pytest tests/test_capproof_mcp_sandbox_file_write.py -q
+pytest tests/test_capproof_mcp_sandbox_commands.py -q
+pytest tests/test_capproof_mcp_sandbox_env.py -q
+python run_kill_tests.py --mode all --baselines
+python run_adapter_bypass_gate.py
+python run_authspec_faithfulness.py --mode auto
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
+python -m compileall src tests run_agent_mcp_client_audit.py
+```
+
+Stage 34O boundaries:
+
+- OpenCode/OpenClaw were not run.
+- No real OpenCode/OpenClaw `tools/list` or `tools/call` observation is claimed.
+- The generated configs reuse `run_capproof_mcp_server.py --stdio --sandboxed-real-execution`.
+- CapProof guard / Reference Monitor logic is not forked.
+- MCP metadata, OpenCode/OpenClaw tool metadata, plugin/skill metadata, and LLM output cannot mint capability.
+- DENY/ASK executor_called remains false in the local JSON-RPC dry-run.
+- No API key, token, or secret is written.
+- No production-level protection claim is made.

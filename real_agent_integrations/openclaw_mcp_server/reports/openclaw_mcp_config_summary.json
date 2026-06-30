@@ -1,0 +1,21 @@
+{
+  "client": "openclaw",
+  "files_scanned": 0,
+  "mcp_evidence": [],
+  "notes": [
+    "No real agent process was run.",
+    "No real agent tools/list or tools/call observation is claimed.",
+    "CapProof MCP config points to the shared standard server.",
+    "openclaw repo is missing; source-specific config schema still needs manual verification.",
+    "openclaw runtime command is not on PATH; runtime integration remains unverified."
+  ],
+  "observed_config_path": "",
+  "real_agent_run": false,
+  "repo_exists": false,
+  "repo_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/openclaw",
+  "runtime_available": false,
+  "runtime_command": "openclaw",
+  "status": "repo_missing",
+  "tools_call_observed_from_real_agent": false,
+  "tools_list_observed_from_real_agent": false
+}

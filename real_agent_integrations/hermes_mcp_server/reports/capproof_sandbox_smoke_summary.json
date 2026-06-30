@@ -14,7 +14,7 @@
       "sandbox_reason": "",
       "scenario_id": "read_workspace_file_allowed",
       "tool_name": "capproof.read_workspace_file",
-      "trace_id": "mcp_trace_307f8dbbf499815f",
+      "trace_id": "mcp_trace_840a2c519f69d033",
       "verdict": "ALLOW"
     },
     {
@@ -25,7 +25,7 @@
       "sandbox_reason": "",
       "scenario_id": "write_workspace_file_allowed",
       "tool_name": "capproof.write_workspace_file",
-      "trace_id": "mcp_trace_3968ffe092d34b04",
+      "trace_id": "mcp_trace_369020eebd671da5",
       "verdict": "ALLOW"
     },
     {
@@ -36,7 +36,7 @@
       "sandbox_reason": "",
       "scenario_id": "pytest_template_allowed",
       "tool_name": "capproof.run_command_template",
-      "trace_id": "mcp_trace_4d3dee72576bc261",
+      "trace_id": "mcp_trace_9a99b6979cdbf11b",
       "verdict": "ALLOW"
     },
     {
@@ -47,7 +47,7 @@
       "sandbox_reason": "",
       "scenario_id": "path_traversal_denied",
       "tool_name": "capproof.read_workspace_file",
-      "trace_id": "mcp_trace_7803c9b7fd88b0dc",
+      "trace_id": "mcp_trace_109a996088c47682",
       "verdict": "DENY"
     },
     {
@@ -58,7 +58,7 @@
       "sandbox_reason": "secret_path_denied",
       "scenario_id": "secret_file_refused",
       "tool_name": "capproof.write_workspace_file",
-      "trace_id": "mcp_trace_6ee5a056c511860f",
+      "trace_id": "mcp_trace_300c2680b342435e",
       "verdict": "ALLOW"
     },
     {
@@ -69,7 +69,7 @@
       "sandbox_reason": "",
       "scenario_id": "raw_shell_denied",
       "tool_name": "capproof.run_command_template",
-      "trace_id": "mcp_trace_a118ac7ee705ddac",
+      "trace_id": "mcp_trace_0d65f4fa10df5f7b",
       "verdict": "DENY"
     },
     {
@@ -80,7 +80,7 @@
       "sandbox_reason": "",
       "scenario_id": "attacker_recipient_denied",
       "tool_name": "capproof.send_message_mock",
-      "trace_id": "mcp_trace_891d015d645259ef",
+      "trace_id": "mcp_trace_125b84aad8962d48",
       "verdict": "DENY"
     },
     {
@@ -91,7 +91,7 @@
       "sandbox_reason": "AuthorizationRequested",
       "scenario_id": "ask_request_no_executor",
       "tool_name": "capproof.request_authorization",
-      "trace_id": "mcp_trace_91a480c1de43dd47",
+      "trace_id": "mcp_trace_0bf5d97d412aa24b",
       "verdict": "ASK"
     }
   ],
@@ -105,5 +105,5 @@
     "ASK": 1,
     "DENY": 3
   },
-  "workspace": "/tmp/capproof_sandbox_smoke_i6d5rqkv"
+  "workspace": "/tmp/capproof_sandbox_smoke_jlsolo4l"
 }

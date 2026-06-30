@@ -1425,3 +1425,76 @@ Known boundaries:
 - It does not claim production-level Hermes protection.
 - It does not claim OS-level network denial.
 - OpenCode/OpenClaw integration remains out of scope.
+
+## Stage 34O - OpenCode/OpenClaw CapProof MCP Reuse Audit and Dry-Run Config
+
+Status: implemented, checkpoint pending.
+
+Scope:
+- Audit whether OpenCode/OpenClaw can reuse the standard CapProof MCP server as an outbound MCP server.
+- Generate config/template artifacts for OpenCode and OpenClaw.
+- Validate local JSON-RPC `tools/list` and `tools/call` against the same CapProof MCP server.
+- Do not run real OpenCode/OpenClaw.
+- Do not claim real OpenCode/OpenClaw integration unless a later stage runs real agent processes and observes `tools/list` / `tools/call`.
+- Do not fork CapProof guard / Reference Monitor logic.
+- Preserve CapProof core verifier / Reference Monitor semantics.
+
+Implemented:
+- Added `run_agent_mcp_client_audit.py`.
+- Added `tests/test_agent_mcp_client_audit.py`.
+- Added `agent_coverage_audit/opencode_mcp_audit.md`.
+- Added `agent_coverage_audit/openclaw_mcp_audit.md`.
+- Added `agent_coverage_audit/agent_mcp_client_matrix.json`.
+- Added `agent_coverage_audit/agent_mcp_client_matrix.md`.
+- Added `real_agent_integrations/opencode_mcp_server/configs/opencode.capproof.mcp.example.jsonc`.
+- Added `real_agent_integrations/opencode_mcp_server/reports/opencode_mcp_config_report.md`.
+- Added `real_agent_integrations/opencode_mcp_server/reports/opencode_mcp_config_summary.json`.
+- Added `tests/test_opencode_mcp_config.py`.
+- Added `real_agent_integrations/openclaw_mcp_server/configs/openclaw.capproof.mcp.commands.md`.
+- Added `real_agent_integrations/openclaw_mcp_server/reports/openclaw_mcp_config_report.md`.
+- Added `real_agent_integrations/openclaw_mcp_server/reports/openclaw_mcp_config_summary.json`.
+- Added `tests/test_openclaw_mcp_config.py`.
+
+Audit result:
+- OpenCode repo status: repo_missing at `external/opencode`.
+- OpenClaw repo status: repo_missing at `external/openclaw`.
+- OpenCode runtime command on PATH: false.
+- OpenClaw runtime command on PATH: false.
+- Real OpenCode/OpenClaw process run: false.
+- Real OpenCode/OpenClaw `tools/list` observed: false.
+- Real OpenCode/OpenClaw `tools/call` observed: false.
+- Configs point to the shared CapProof MCP server command:
+  - `python run_capproof_mcp_server.py --stdio --sandboxed-real-execution`
+- Forked guard logic: false.
+
+Local JSON-RPC dry-run:
+- `tools/list`: passed.
+- `tools/call`: passed.
+- tools_count: 7.
+- ALLOW control: `capproof.echo_summary`, `ALLOW`, executor_called=true.
+- DENY control: attacker recipient, `DENY NoCap`, executor_called=false.
+- Metadata cannot mint capability: true.
+- LLM output cannot allow tool call: true.
+
+Validation:
+- `python run_agent_mcp_client_audit.py --all`: passed.
+- `python run_agent_mcp_client_audit.py --report`: passed.
+- `python run_capproof_mcp_server.py --list-tools`: passed.
+- `python run_capproof_mcp_server.py --self-test`: passed.
+- `python run_capproof_sandbox_smoke.py --local-client --scenario all`: passed.
+- `pytest tests/test_agent_mcp_client_audit.py -q`: 5 passed.
+- `pytest tests/test_opencode_mcp_config.py -q`: 3 passed.
+- `pytest tests/test_openclaw_mcp_config.py -q`: 3 passed.
+- `pytest tests/test_real_hermes_sandbox_mcp_smoke.py -q`: 12 passed, 1 skipped.
+- Stage 33S sandbox tests: passed.
+- `python run_kill_tests.py --mode all --baselines`: 24/24 passed.
+- `python run_adapter_bypass_gate.py`: unexpected allow 0.
+- `python run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 490 passed, 1 skipped.
+- `python -m compileall src tests run_agent_mcp_client_audit.py`: passed.
+
+Known boundaries:
+- No real OpenCode/OpenClaw integration is claimed.
+- No production-level protection is claimed.
+- No raw shell, external MCP, real email, or arbitrary filesystem access is supported.
+- OpenCode/OpenClaw metadata, plugin metadata, MCP metadata, and LLM output remain non-authoritative.

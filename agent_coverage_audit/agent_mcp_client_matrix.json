@@ -1,0 +1,83 @@
+{
+  "api_key_written": false,
+  "arbitrary_filesystem_access_supported": false,
+  "capproof_mcp_command": [
+    "python",
+    "run_capproof_mcp_server.py",
+    "--stdio",
+    "--sandboxed-real-execution"
+  ],
+  "external_mcp_claim": false,
+  "forked_guard_logic": false,
+  "local_json_rpc_dry_run": {
+    "allow_executor_called": true,
+    "allow_verdict": "ALLOW",
+    "deny_executor_called": false,
+    "deny_reason": "NoCap",
+    "deny_verdict": "DENY",
+    "llm_output_cannot_allow_tool_call": true,
+    "metadata_cannot_mint_capability": true,
+    "tools": [
+      "capproof.echo_summary",
+      "capproof.send_message_mock",
+      "capproof.read_workspace_file",
+      "capproof.write_workspace_file",
+      "capproof.run_command_template",
+      "capproof.get_trace",
+      "capproof.request_authorization"
+    ],
+    "tools_call_passed": true,
+    "tools_count": 7,
+    "tools_list_passed": true
+  },
+  "openclaw": {
+    "client": "openclaw",
+    "files_scanned": 0,
+    "mcp_evidence": [],
+    "notes": [
+      "No real agent process was run.",
+      "No real agent tools/list or tools/call observation is claimed.",
+      "CapProof MCP config points to the shared standard server.",
+      "openclaw repo is missing; source-specific config schema still needs manual verification.",
+      "openclaw runtime command is not on PATH; runtime integration remains unverified."
+    ],
+    "observed_config_path": "",
+    "real_agent_run": false,
+    "repo_exists": false,
+    "repo_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/openclaw",
+    "runtime_available": false,
+    "runtime_command": "openclaw",
+    "status": "repo_missing",
+    "tools_call_observed_from_real_agent": false,
+    "tools_list_observed_from_real_agent": false
+  },
+  "openclaw_command_template": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/openclaw_mcp_server/configs/openclaw.capproof.mcp.commands.md",
+  "opencode": {
+    "client": "opencode",
+    "files_scanned": 0,
+    "mcp_evidence": [],
+    "notes": [
+      "No real agent process was run.",
+      "No real agent tools/list or tools/call observation is claimed.",
+      "CapProof MCP config points to the shared standard server.",
+      "opencode repo is missing; source-specific config schema still needs manual verification.",
+      "opencode runtime command is not on PATH; runtime integration remains unverified."
+    ],
+    "observed_config_path": "",
+    "real_agent_run": false,
+    "repo_exists": false,
+    "repo_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/opencode",
+    "runtime_available": false,
+    "runtime_command": "opencode",
+    "status": "repo_missing",
+    "tools_call_observed_from_real_agent": false,
+    "tools_list_observed_from_real_agent": false
+  },
+  "opencode_config_template": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/configs/opencode.capproof.mcp.example.jsonc",
+  "production_level_protection_claim": false,
+  "raw_shell_supported": false,
+  "real_openclaw_integration_claim": false,
+  "real_opencode_integration_claim": false,
+  "stage": "34O",
+  "uses_shared_capproof_mcp_server": true
+}

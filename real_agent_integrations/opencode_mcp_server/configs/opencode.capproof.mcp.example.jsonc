@@ -1,0 +1,24 @@
+{
+  // Stage 34O example only. Do not write API keys here.
+  // This config reuses the standard CapProof MCP server; it does not fork guard logic.
+  "mcpServers": {
+    "capproof": {
+      "command": "python",
+      "args": [
+        "run_capproof_mcp_server.py",
+        "--stdio",
+        "--sandboxed-real-execution"
+      ],
+      "env": {
+        "CAPPROOF_MCP_TRACE_PATH": "real_agent_integrations/opencode_mcp_server/reports/opencode_capproof_mcp_trace.jsonl"
+      },
+      "disabled": false
+    }
+  },
+  "securityBoundary": {
+    "metadataCannotMintCapability": true,
+    "llmOutputCannotAllowToolCall": true,
+    "denyAskExecutorCalled": false,
+    "productionLevelProtectionClaim": false
+  }
+}
