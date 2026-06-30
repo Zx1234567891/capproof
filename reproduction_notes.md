@@ -280,12 +280,14 @@ The generated matrix reports are:
 - `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.md`
 - `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.json`
 
-## Stage 32R - Real Hermes Standard MCP Smoke Gate
+## Stage 32R - Real Hermes Standard MCP Smoke Gate and Authorized Smoke
 
 This stage validates the standard CapProof MCP server product layer for a real
 Hermes + DeepSeek smoke path. Default commands do not run Hermes or call
 DeepSeek. Real execution is only allowed with explicit opt-in environment and a
-safe `HERMES_RUN_COMMAND`.
+safe Hermes command. The harness can use a user-provided `HERMES_RUN_COMMAND`,
+or auto-resolve `.venv-hermes/bin/hermes` when the isolated local Hermes venv is
+already present and the generated command passes safety validation.
 
 Default safe commands:
 
@@ -303,7 +305,6 @@ ALLOW_HERMES_DEEPSEEK_RUN=1 \
 ALLOW_CAPROOF_MCP_REAL_HERMES=1 \
 ALLOW_CAPROOF_STANDARD_MCP_SMOKE=1 \
 DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" \
-HERMES_RUN_COMMAND="<safe Hermes command using standard CapProof MCP server>" \
 python run_real_hermes_standard_mcp_smoke.py --all
 ```
 
@@ -313,12 +314,15 @@ Notes:
 - `--dry-run` uses the standard CapProof MCP server and local JSON-RPC calls.
 - `--all` is the only mode that may attempt real Hermes + DeepSeek, and only
   after safety validation passes.
+- Stage 32R.2 authorized real smoke used the standard CapProof MCP server, not
+  the old proxy.
+- Stage 32R.2 observed real Hermes standard MCP `tools/list` and `tools/call`.
+- Stage 32R.2 observed `benign_echo_summary` -> `ALLOW` with executor called,
+  `denied_attacker_recipient` -> `DENY NoCap` with executor not called, and
+  `ask_request_authorization` -> `ASK` with a pending request, no capability
+  minted, and executor not called.
 - ALLOW enters MockExecutor/no-side-effect local executor only.
 - DENY/ASK does not execute executor.
 - ASK creates a pending authorization request and does not mint capability.
 - This stage is not sandboxed real execution.
 - This stage is not a production-level Hermes protection claim.
-
-Generated reports:
-- `real_agent_integrations/hermes_mcp_server/reports/real_hermes_standard_mcp_smoke_report.md`
-- `real_agent_integrations/hermes_mcp_server/reports/real_hermes_standard_mcp_smoke_summary.json`

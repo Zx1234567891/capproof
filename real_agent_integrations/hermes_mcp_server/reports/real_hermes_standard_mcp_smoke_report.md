@@ -13,16 +13,16 @@
 
 ## Run Decision
 
-- real_hermes_run_attempted: False
-- real_hermes_run_allowed: False
-- denial_reasons: missing explicit real-run environment
-- command_hash: none
-- exit_code: None
+- real_hermes_run_attempted: True
+- real_hermes_run_allowed: True
+- denial_reasons: none
+- command_hash: e0e00a651ed1608a3e1a42b6171cefd54f426e548bd75ebbfc74f133a619b060
+- exit_code: 0
 - timeout: False
 
 ## DeepSeek
 
-- called: False
+- called: True
 - model: deepseek-v4-pro
 - key_printed: False
 - key_written: False
@@ -32,10 +32,10 @@
 
 - standard_capproof_mcp_server_used: True
 - old_proxy_used: False
-- tools_list_discovered_by_local_client: True
-- tools_call_invoked_by_local_client: True
-- tools_list_discovered_by_real_hermes: False
-- tools_call_invoked_by_real_hermes: False
+- tools_list_discovered_by_local_client: False
+- tools_call_invoked_by_local_client: False
+- tools_list_discovered_by_real_hermes: True
+- tools_call_invoked_by_real_hermes: True
 - trace_path: `/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/hermes_mcp_server/traces/real_hermes_standard_mcp_smoke.jsonl`
 
 ## Smoke Scenarios
@@ -57,7 +57,7 @@
 
 ## Go / No-Go
 
-- Hermes + DeepSeek + standard MCP real smoke completed: False
-- Standard CapProof MCP dry-run smoke passed: True
+- Hermes + DeepSeek + standard MCP real smoke completed: True
+- Standard CapProof MCP local dry-run smoke passed in this report: not_applicable_real_smoke_report
 - Sandboxed real execution: no-go.
 - Production-level Hermes protection claim: no-go.

@@ -90,6 +90,7 @@ class CapProofMCPServer:
                 result = {}
             elif method == "tools/list":
                 result = self.list_tools()
+                self._record_tools_list_trace()
             elif method == "tools/call":
                 name = str(params.get("name", ""))
                 arguments = params.get("arguments", {})
@@ -208,6 +209,27 @@ class CapProofMCPServer:
         )
         self.context.trace_recorder.append(entry)
         return entry
+
+    def _record_tools_list_trace(self) -> None:
+        self._trace_index += 1
+        entry = MCPTraceEntry(
+            trace_id=new_trace_id(method="tools/list", tool_name="", arguments={}, index=self._trace_index),
+            timestamp=__import__("time").time(),
+            mcp_method="tools/list",
+            tool_name="",
+            arguments={},
+            original_arguments={},
+            canonical_action_hash=None,
+            capproof_verdict="INFO",
+            proof_id=None,
+            reason="tools_list",
+            executor_called=False,
+            authority_bearing_fields=(),
+            raw_mcp_request={"method": "tools/list"},
+            canonical_action=None,
+            mock_event=None,
+        )
+        self.context.trace_recorder.append(entry)
 
 
 def _structured_from_entry(entry: MCPTraceEntry, decision: GuardDecision) -> JsonObject:

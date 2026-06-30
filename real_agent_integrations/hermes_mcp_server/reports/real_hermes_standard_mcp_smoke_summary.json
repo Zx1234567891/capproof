@@ -77,21 +77,21 @@
     "user_task": "Ask Hermes to call capproof.echo_summary for val_summary.",
     "verdict": "ALLOW"
   },
-  "deepseek_called": false,
+  "deepseek_called": true,
   "deepseek_model": "deepseek-v4-pro",
-  "dry_run": true,
+  "dry_run": false,
   "external_mcp": false,
   "external_network_except_deepseek": false,
   "hermes_command": {
-    "allowed": false,
-    "attempted": false,
-    "command_hash": "",
-    "exit_code": null,
-    "failure_reason": "not run; explicit real Hermes smoke was not requested or not allowed",
+    "allowed": true,
+    "attempted": true,
+    "command_hash": "e0e00a651ed1608a3e1a42b6171cefd54f426e548bd75ebbfc74f133a619b060",
+    "exit_code": 0,
+    "failure_reason": "",
     "key_leak_detected": false,
-    "response_received": false,
+    "response_received": true,
     "stderr_bytes": 0,
-    "stdout_bytes": 0,
+    "stdout_bytes": 1087,
     "timed_out": false
   },
   "key_leak_detected": false,
@@ -101,38 +101,30 @@
   "preflight": {
     "base_url": "https://api.deepseek.com",
     "command_validation": {
-      "command_hash": "",
-      "command_present": false,
-      "denial_reasons": [
-        "missing explicit real-run environment"
-      ],
+      "command_hash": "e0e00a651ed1608a3e1a42b6171cefd54f426e548bd75ebbfc74f133a619b060",
+      "command_present": true,
+      "command_source": "auto_venv_hermes",
+      "denial_reasons": [],
       "denied_patterns": [],
       "key_present": true,
       "key_printed": false,
-      "missing_env": [
-        "ALLOW_HERMES_DEEPSEEK_RUN",
-        "ALLOW_CAPROOF_MCP_REAL_HERMES",
-        "ALLOW_CAPROOF_STANDARD_MCP_SMOKE",
-        "HERMES_RUN_COMMAND"
-      ],
-      "run_allowed": false
+      "missing_env": [],
+      "run_allowed": true
     },
-    "denial_reasons": [
-      "missing explicit real-run environment"
-    ],
+    "denial_reasons": [],
     "hermes_repo_exists": true,
     "hermes_repo_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/external/hermes-agent",
     "key_present": true,
     "key_printed": false,
     "model": "deepseek-v4-pro",
-    "run_allowed": false,
+    "run_allowed": true,
     "standard_mcp_config_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/hermes_mcp_server/configs/real_hermes_standard_mcp_smoke_config.json",
     "trace_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/hermes_mcp_server/traces/real_hermes_standard_mcp_smoke.jsonl"
   },
   "production_level_protection_claim": false,
   "real_email": false,
-  "real_hermes_run_allowed": false,
-  "real_hermes_run_attempted": false,
+  "real_hermes_run_allowed": true,
+  "real_hermes_run_attempted": true,
   "real_shell": false,
   "sandboxed_real_execution": false,
   "scenarios": [
@@ -217,8 +209,8 @@
   ],
   "stage": "32R",
   "standard_capproof_mcp_server_used": true,
-  "tools_call_invoked_by_local_client": true,
-  "tools_call_invoked_by_real_hermes": false,
-  "tools_list_discovered_by_local_client": true,
-  "tools_list_discovered_by_real_hermes": false
+  "tools_call_invoked_by_local_client": false,
+  "tools_call_invoked_by_real_hermes": true,
+  "tools_list_discovered_by_local_client": false,
+  "tools_list_discovered_by_real_hermes": true
 }
