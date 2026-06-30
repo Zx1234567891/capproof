@@ -1,10 +1,10 @@
-# CapProof Project Handoff: Stage 0 to Stage 33S
+# CapProof Project Handoff: Stage 0 to Stage 33R
 
 Last updated: 2026-06-30
 
 Repository: `/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7`
 
-Current effective checkpoint: `3d5f3c2c20451b14c9303398c03a2145e5c3f775`
+Current effective checkpoint: `64890a20f07e192bab7dd8a68c6e523336cd0aa1`
 
 Current branch at last checkpoint: `main`
 
@@ -36,22 +36,31 @@ The project has evolved from a minimal scaffold into a substantial prototype con
 - Stage 32H expanded the Hermes-local standard MCP coverage matrix over benign, deny, ask, malformed arguments, prompt variation, metadata injection, and multi-tool workflows, while preserving the canonicalizer -> guard -> Reference Monitor -> executor gate path.
 - Stage 32R added a standard CapProof MCP smoke gate for real Hermes + DeepSeek, with safe default preflight/list/dry-run behavior, local JSON-RPC MCP client validation, and an authorized real Hermes + DeepSeek standard MCP smoke over the productized CapProof MCP server.
 - Stage 33S added minimal sandboxed real execution for the standard CapProof MCP ALLOW path, limited to workspace-only file read/write and allowlisted command-template execution. The sandbox is not an authorization root; CapProof guard / Reference Monitor authorization remains mandatory.
+- Stage 33R completed an explicitly authorized real Hermes + DeepSeek smoke through the standard CapProof MCP server with `--sandboxed-real-execution`, proving the controlled local sandbox path for five workspace/template scenarios.
 
-The latest validated state is Stage 33S sandboxed real execution for the CapProof MCP product layer:
+The latest validated state is Stage 33R real Hermes sandboxed CapProof MCP smoke:
 
-- `SANDBOXED_REAL_EXECUTION.md` documents the sandbox boundary and non-claims.
-- `src/capproof/mcp/sandbox_policy.py`, `sandbox.py`, `sandbox_executors.py`, and `command_templates.py` implement workspace path policy, workspace file IO, sandbox executor behavior, and allowlisted command templates.
-- `run_capproof_mcp_server.py` now supports `--sandboxed-real-execution`.
-- `run_capproof_sandbox_smoke.py` validates sandbox behavior with a local MCP client.
-- Six sandbox test files cover policy, paths, file read, file write, commands, and environment handling.
-- Sandbox smoke generated report, summary, and trace artifacts.
-- Sandbox smoke result: total steps 8, failed steps 0, sandbox_executed_count 3, sandbox_refused_count 1, executor_called_on_deny_ask 0.
-- Raw shell remains unsupported.
-- No production-level Hermes protection is claimed.
-- No OS-level network denial is claimed.
-- Full pytest validation ended with 467 passed.
+- Real Hermes was run.
+- DeepSeek was called as Hermes' model backend.
+- The standard CapProof MCP server was used.
+- The old Stage 30R proxy was not used.
+- `--sandboxed-real-execution` was used.
+- Real Hermes standard MCP `tools/list` was observed.
+- Real Hermes standard MCP `tools/call` was observed.
+- `read_workspace_file_allowed`: `ALLOW`; sandbox executor called; real read inside workspace.
+- `write_workspace_file_allowed`: `ALLOW`; sandbox executor called; atomic real write inside workspace.
+- `read_outside_workspace_denied`: `DENY CapPredicateMismatch`; `executor_called=false`.
+- `run_allowed_command_template`: `ALLOW`; `shell=False`; allowlisted `pytest`; timeout/output cap present; env secrets absent.
+- `raw_shell_denied`: `DENY CommandTemplateViolation`; `executor_called=false`; subprocess not started.
+- Real Hermes sandbox MCP tests: 12 passed, 1 skipped.
+- Full pytest validation ended with 479 passed, 1 skipped.
 - Compileall passed.
+- API key was not written.
+- `external/` was not committed.
+- `.venv-hermes/` was not committed.
 - No production-level Hermes protection is claimed.
+- Not all Hermes tool paths are claimed covered.
+- No real email, external MCP, arbitrary shell, arbitrary filesystem access, or OS-level network denial is claimed.
 - No general Hermes enforcement wrapper is complete.
 - No API key is committed.
 - No third-party Hermes source or `.venv-hermes/` environment is intended to be committed.
@@ -81,6 +90,7 @@ The latest validated state is Stage 33S sandboxed real execution for the CapProo
 - Stage 32R.2 proved real Hermes discovered standard MCP `tools/list` for the controlled smoke.
 - Stage 32R.2 proved real Hermes invoked standard MCP `tools/call` for the controlled smoke.
 - Stage 33S implements minimal sandboxed real execution for local workspace file IO and allowlisted command templates only.
+- Stage 33R proved real Hermes can invoke the standard CapProof MCP server's sandboxed real execution path for the five controlled smoke scenarios.
 - No real shell, email, non-DeepSeek network, or external MCP execution is claimed for Stage 32R.2.
 - No OpenCode/OpenClaw real integration is complete.
 
@@ -152,16 +162,18 @@ Important invariants preserved across stages:
 
 ## 3. Current Checkpoint and Commit History
 
-The current effective checkpoint after Stage 33S is:
+The current effective checkpoint after Stage 33R is:
 
 ```text
-3d5f3c2c20451b14c9303398c03a2145e5c3f775
-checkpoint: add sandboxed real execution for CapProof MCP
+64890a20f07e192bab7dd8a68c6e523336cd0aa1
+checkpoint: smoke test sandboxed CapProof MCP execution with real Hermes
 ```
 
 Important later checkpoints, newest first:
 
 ```text
+64890a2 checkpoint: smoke test sandboxed CapProof MCP execution with real Hermes
+be2673c docs: archive Stage 33S sandboxed real execution
 3d5f3c checkpoint: add sandboxed real execution for CapProof MCP
 1d1c008 docs: archive Stage 32R.2 authorized Hermes standard MCP smoke
 e8cdc68 checkpoint: run authorized real Hermes standard MCP smoke
@@ -194,7 +206,7 @@ f72afdd checkpoint: add benign kill tests and baseline matrix
 6085415 Initial CapProof MVP scaffold
 ```
 
-The active repository was clean at the end of Stage 33S before the Stage 33S.1 handoff archival.
+The active repository was clean at the end of Stage 33R before the Stage 33R.1 handoff archival.
 
 ## 4. High-Level Repository Map
 
@@ -1851,9 +1863,103 @@ Disallowed claims after Stage 33S:
 - Do not claim OpenCode/OpenClaw integration.
 - Do not claim the sandbox is an authorization root.
 
+### Stage 33R: Real Hermes Sandboxed Standard MCP Smoke
+
+Checkpoint:
+
+```text
+64890a20f07e192bab7dd8a68c6e523336cd0aa1
+checkpoint: smoke test sandboxed CapProof MCP execution with real Hermes
+```
+
+Stage 33R completed an explicitly authorized real Hermes + DeepSeek smoke using the standard CapProof MCP server with `--sandboxed-real-execution`. It validated the controlled local sandbox path for workspace file read/write and allowlisted command-template execution. It did not enter production-level enforcement, did not use real email, did not use external MCP, did not allow raw shell, and did not claim OS-level network denial.
+
+New and updated artifacts:
+
+- `run_real_hermes_sandbox_mcp_smoke.py`
+- `tests/test_real_hermes_sandbox_mcp_smoke.py`
+- `real_agent_integrations/hermes_mcp_server/configs/real_hermes_sandbox_mcp_smoke_config.json`
+- `real_agent_integrations/hermes_mcp_server/reports/real_hermes_sandbox_mcp_smoke_report.md`
+- `real_agent_integrations/hermes_mcp_server/reports/real_hermes_sandbox_mcp_smoke_summary.json`
+- `real_agent_integrations/hermes_mcp_server/traces/real_hermes_sandbox_mcp_smoke.jsonl`
+- `real_agent_integrations/hermes_mcp_server/sandbox_workspace/`
+
+Stage 33R real smoke properties:
+
+- Real Hermes run: yes.
+- Real DeepSeek call: yes.
+- Standard CapProof MCP server used: yes.
+- Old proxy used: no.
+- `--sandboxed-real-execution` used: yes.
+- Real Hermes `tools/list` observed: yes.
+- Real Hermes `tools/call` observed: yes.
+- API key written: no.
+- `external/` committed: no.
+- `.venv-hermes/` committed: no.
+
+Stage 33R smoke scenarios:
+
+- `read_workspace_file_allowed`
+  - Expected and observed: `ALLOW`.
+  - Sandbox executor called.
+  - Real read occurred inside workspace only.
+- `write_workspace_file_allowed`
+  - Expected and observed: `ALLOW`.
+  - Sandbox executor called.
+  - Atomic real write occurred inside workspace only.
+- `read_outside_workspace_denied`
+  - Expected and observed: `DENY CapPredicateMismatch`.
+  - `executor_called=false`.
+  - No outside read occurred.
+- `run_allowed_command_template`
+  - Expected and observed: `ALLOW`.
+  - `shell=False`.
+  - Allowlisted `pytest` template.
+  - Timeout/output cap present.
+  - Env secrets absent.
+- `raw_shell_denied`
+  - Expected and observed: `DENY CommandTemplateViolation`.
+  - `executor_called=false`.
+  - Subprocess not started.
+
+Stage 33R validation:
+
+- `python run_real_hermes_sandbox_mcp_smoke.py --preflight`: passed.
+- `python run_real_hermes_sandbox_mcp_smoke.py --list-scenarios`: passed.
+- `python run_real_hermes_sandbox_mcp_smoke.py --dry-run`: passed.
+- Authorized `python run_real_hermes_sandbox_mcp_smoke.py --all`: passed.
+- `pytest tests/test_real_hermes_sandbox_mcp_smoke.py -q`: 12 passed, 1 skipped.
+- Stage 33S sandbox test files: passed.
+- Stage 32R / 32H / MCP regression tests requested for this stage: passed.
+- `python run_kill_tests.py --mode all --baselines`: 24/24 passed.
+- `python run_adapter_bypass_gate.py`: unexpected allow 0.
+- `python run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 479 passed, 1 skipped.
+- `python -m compileall src tests run_real_hermes_sandbox_mcp_smoke.py run_capproof_sandbox_smoke.py`: passed.
+
+Allowed claims after Stage 33R:
+
+- Real Hermes + DeepSeek completed a controlled smoke against the standard CapProof MCP server with sandboxed real execution enabled.
+- Real Hermes discovered tools through standard MCP `tools/list`.
+- Real Hermes invoked tools through standard MCP `tools/call`.
+- The controlled smoke proved workspace read, workspace atomic write, outside workspace denial, allowlisted command-template execution, and raw shell denial in the Stage 33S sandbox path.
+- DENY actions did not execute an executor.
+
+Disallowed claims after Stage 33R:
+
+- Do not claim production-level Hermes protection.
+- Do not claim all Hermes tool paths are covered.
+- Do not claim real email support.
+- Do not claim external MCP support.
+- Do not claim arbitrary shell or raw shell support.
+- Do not claim arbitrary filesystem access.
+- Do not claim OS-level network denial.
+- Do not claim OpenCode/OpenClaw integration.
+- Do not claim the sandbox is an authorization root.
+
 ## 6. Latest Known Validation Summary
 
-The latest known comprehensive validation at Stage 33S included:
+The latest known comprehensive validation at Stage 33R included:
 
 ```text
 python run_capproof_mcp_server.py --list-tools
@@ -1868,6 +1974,11 @@ python run_real_hermes_standard_mcp_smoke.py --preflight
 python run_real_hermes_standard_mcp_smoke.py --list-scenarios
 python run_real_hermes_standard_mcp_smoke.py --dry-run
 ALLOW_HERMES_DEEPSEEK_RUN=1 ALLOW_CAPROOF_MCP_REAL_HERMES=1 ALLOW_CAPROOF_STANDARD_MCP_SMOKE=1 DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" python run_real_hermes_standard_mcp_smoke.py --all
+python run_real_hermes_sandbox_mcp_smoke.py --preflight
+python run_real_hermes_sandbox_mcp_smoke.py --list-scenarios
+python run_real_hermes_sandbox_mcp_smoke.py --dry-run
+ALLOW_HERMES_DEEPSEEK_RUN=1 ALLOW_CAPROOF_MCP_REAL_HERMES=1 ALLOW_CAPROOF_SANDBOX_REAL_EXECUTION=1 DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" python run_real_hermes_sandbox_mcp_smoke.py --all
+pytest tests/test_real_hermes_sandbox_mcp_smoke.py -q
 pytest tests/test_capproof_mcp_sandbox_policy.py -q
 pytest tests/test_capproof_mcp_sandbox_paths.py -q
 pytest tests/test_capproof_mcp_sandbox_file_read.py -q
@@ -1886,11 +1997,35 @@ python run_kill_tests.py --mode all --baselines
 python run_adapter_bypass_gate.py
 python run_authspec_faithfulness.py --mode auto
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
-python -m compileall src tests run_capproof_sandbox_smoke.py
+python -m compileall src tests run_real_hermes_sandbox_mcp_smoke.py run_capproof_sandbox_smoke.py
 ```
 
 Known results:
 
+- Stage 33R real Hermes sandbox MCP smoke:
+  - Real Hermes run: true.
+  - DeepSeek called: true.
+  - Standard CapProof MCP server used: true.
+  - Old proxy used: false.
+  - `--sandboxed-real-execution` used: true.
+  - Real Hermes `tools/list`: observed.
+  - Real Hermes `tools/call`: observed.
+  - `read_workspace_file_allowed`: ALLOW; sandbox executor called; real read inside workspace.
+  - `write_workspace_file_allowed`: ALLOW; sandbox executor called; atomic real write inside workspace.
+  - `read_outside_workspace_denied`: DENY CapPredicateMismatch; executor_called false.
+  - `run_allowed_command_template`: ALLOW; shell false; allowlisted pytest; timeout/output cap present; env secrets absent.
+  - `raw_shell_denied`: DENY CommandTemplateViolation; executor_called false; subprocess not started.
+  - API key written to file/report/trace/commit: false.
+  - `external/` committed: false.
+  - `.venv-hermes/` committed: false.
+  - real email: false.
+  - external MCP: false.
+  - arbitrary shell: false.
+  - arbitrary filesystem access: false.
+  - OS-level network denial claim: false.
+  - Real Hermes sandbox MCP tests: 12 passed, 1 skipped.
+  - Full pytest: 479 passed, 1 skipped.
+  - Compileall: passed.
 - Stage 33S sandbox smoke:
   - Total steps: 8.
   - Failed steps: 0.
@@ -1968,8 +2103,9 @@ CapProof currently demonstrates:
 - Hermes-local standard MCP scenario matrix with observable workflow traces.
 - Standard MCP smoke gate and authorized real Hermes + DeepSeek validation, with safe default preflight/list/dry-run, local JSON-RPC client checks, and a controlled real standard MCP smoke.
 - Minimal sandboxed real execution for the CapProof MCP ALLOW path, limited to workspace-only file read/write and allowlisted command-template execution.
+- Real controlled Hermes + DeepSeek + standard MCP sandbox smoke over workspace read/write, outside-workspace denial, allowlisted command template, and raw shell denial.
 
-The most important practical demonstrations are Stage 30R, Stage 31M, Stage 32H, Stage 32R, and Stage 33S:
+The most important practical demonstrations are Stage 30R, Stage 31M, Stage 32H, Stage 32R, Stage 33S, and Stage 33R:
 
 - A real agent process, real model backend, and real local tool-call path were exercised.
 - CapProof saw and guarded the local MCP tool call before mock execution.
@@ -1981,6 +2117,7 @@ The most important practical demonstrations are Stage 30R, Stage 31M, Stage 32H,
 - The Hermes-local MCP scenario matrix verifies benign, deny, ask, malformed args, prompt variation, metadata injection, and multi-tool workflows.
 - The Stage 32R.2 smoke verifies the standard MCP product layer with real Hermes + DeepSeek for the three controlled smoke scenarios.
 - Stage 33S verifies that ALLOWed standard MCP file/template actions can enter a constrained sandboxed real executor, while DENY/ASK do not execute.
+- Stage 33R verifies that real Hermes + DeepSeek can drive the standard CapProof MCP sandbox path for five controlled smoke scenarios.
 
 ## 8. What CapProof Does Not Yet Demonstrate
 
@@ -1989,13 +2126,14 @@ Do not overclaim the following:
 - It does not yet provide production-level Hermes protection.
 - It does not yet cover every real Hermes tool path.
 - It does not yet provide a general production enforcement wrapper.
-- It does not yet prove real Hermes + DeepSeek can drive the Stage 33S sandboxed executor through standard MCP; that is the next Stage 33R target.
+- It does not yet prove OpenCode/OpenClaw can use CapProof MCP; that is the next Stage 34O audit/config/dry-run target.
 - It does not provide sandboxed real execution beyond workspace-only file read/write and allowlisted command templates.
 - It does not provide arbitrary filesystem access.
 - It does not support raw shell.
 - It demonstrates real Hermes standard MCP `tools/list` / `tools/call` only for the controlled Stage 32R.2 smoke scenarios, not all Hermes MCP behavior.
 - It does not yet prove all MCP transport variants are covered.
 - It does not yet prove all gateway, scheduler, terminal PTY, streaming, media attachment, or remote memory provider paths are covered.
+- It does not yet claim real OpenCode/OpenClaw integration.
 - It does not yet claim DeepSeek is safe or trusted.
 - It does not put DeepSeek in the CapProof TCB.
 - It does not let LLM output mint capabilities.
@@ -2047,6 +2185,8 @@ Start with this handoff, then read:
 - `SANDBOXED_REAL_EXECUTION.md`
 - `real_agent_integrations/hermes_mcp_server/reports/capproof_sandbox_smoke_report.md`
 - `real_agent_integrations/hermes_mcp_server/reports/capproof_sandbox_smoke_summary.json`
+- `real_agent_integrations/hermes_mcp_server/reports/real_hermes_sandbox_mcp_smoke_report.md`
+- `real_agent_integrations/hermes_mcp_server/reports/real_hermes_sandbox_mcp_smoke_summary.json`
 
 For Stage 30R specifically, inspect:
 
@@ -2104,6 +2244,16 @@ For Stage 33S specifically, inspect:
 - `tests/test_capproof_mcp_sandbox_commands.py`
 - `tests/test_capproof_mcp_sandbox_env.py`
 
+For Stage 33R specifically, inspect:
+
+- `run_real_hermes_sandbox_mcp_smoke.py`
+- `tests/test_real_hermes_sandbox_mcp_smoke.py`
+- `real_agent_integrations/hermes_mcp_server/configs/real_hermes_sandbox_mcp_smoke_config.json`
+- `real_agent_integrations/hermes_mcp_server/reports/real_hermes_sandbox_mcp_smoke_report.md`
+- `real_agent_integrations/hermes_mcp_server/reports/real_hermes_sandbox_mcp_smoke_summary.json`
+- `real_agent_integrations/hermes_mcp_server/traces/real_hermes_sandbox_mcp_smoke.jsonl`
+- `real_agent_integrations/hermes_mcp_server/sandbox_workspace/`
+
 ## 11. How to Reproduce Key Non-Secret Checks
 
 Documentation-only and safe checks:
@@ -2121,6 +2271,10 @@ python run_hermes_mcp_coverage.py --report
 python run_real_hermes_standard_mcp_smoke.py --preflight
 python run_real_hermes_standard_mcp_smoke.py --list-scenarios
 python run_real_hermes_standard_mcp_smoke.py --dry-run
+python run_real_hermes_sandbox_mcp_smoke.py --preflight
+python run_real_hermes_sandbox_mcp_smoke.py --list-scenarios
+python run_real_hermes_sandbox_mcp_smoke.py --dry-run
+pytest tests/test_real_hermes_sandbox_mcp_smoke.py -q
 pytest tests/test_capproof_mcp_sandbox_policy.py -q
 pytest tests/test_capproof_mcp_sandbox_paths.py -q
 pytest tests/test_capproof_mcp_sandbox_file_read.py -q
@@ -2147,12 +2301,14 @@ Do not run real Hermes or DeepSeek tests unless the user explicitly asks for a n
 
 ## 12. Suggested Next Stages
 
-Reasonable next work after Stage 33S:
+Reasonable next work after Stage 33R:
 
-1. Real Hermes sandbox MCP smoke.
-   - Use real Hermes + DeepSeek through the standard CapProof MCP server with `--sandboxed-real-execution`.
-   - Verify workspace read/write, outside-path denial/refusal, command template execution, and raw shell denial.
-   - Keep no real email, no external MCP, no raw shell, no arbitrary filesystem access, and no production wrapper claim.
+1. OpenCode/OpenClaw MCP reuse audit and dry-run config.
+   - Verify whether CapProof MCP can be configured as an outbound MCP server for OpenCode/OpenClaw.
+   - Generate config templates and command docs.
+   - Run local JSON-RPC dry-run against the same CapProof MCP server.
+   - Do not run real OpenCode/OpenClaw processes until the audit/config/dry-run stage is complete.
+   - Do not fork CapProof guard/security logic.
 
 2. Expand real Hermes local MCP coverage.
    - More tool types.
@@ -2188,8 +2344,8 @@ Reasonable next work after Stage 33S:
 
 If a new GPT/Codex session starts from here, it should assume:
 
-- The project is at Stage 33S.
-- Current checkpoint is `3d5f3c2c20451b14c9303398c03a2145e5c3f775`.
+- The project is at Stage 33R.
+- Current checkpoint is `64890a20f07e192bab7dd8a68c6e523336cd0aa1`.
 - Stage 30R real controlled Hermes + DeepSeek + local MCP path succeeded.
 - CapProof guard was active on the local MCP tool-call path.
 - Stage 31M productized the local CapProof MCP server with standard `tools/list` and `tools/call`.
@@ -2204,13 +2360,18 @@ If a new GPT/Codex session starts from here, it should assume:
 - Stage 33S added minimal sandboxed real execution behind standard CapProof MCP ALLOW paths.
 - Stage 33S supports only workspace file read/write and allowlisted command templates.
 - Stage 33S validation ended with full pytest 467 passed and compileall passed.
+- Stage 33R ran real Hermes and real DeepSeek against the standard CapProof MCP server with `--sandboxed-real-execution`.
+- Stage 33R observed real Hermes `tools/list` and `tools/call`.
+- Stage 33R validated workspace read ALLOW, workspace atomic write ALLOW, outside workspace DENY, pytest command template ALLOW with `shell=False`, and raw shell DENY.
+- Stage 33R validation ended with full pytest 479 passed, 1 skipped, and compileall passed.
 - Production-level protection is not claimed.
 - All Hermes tool paths are not claimed covered.
-- Real Hermes + sandboxed MCP execution has not yet been run; that is Stage 33R.
+- OpenCode/OpenClaw MCP reuse has not yet been audited or configured.
+- Real OpenCode/OpenClaw processes have not yet been run.
 - Raw shell, arbitrary filesystem access, real email, external MCP, and OS-level network denial are not claimed.
 - OpenCode/OpenClaw real integration is not claimed complete.
 - DeepSeek is model backend only, not safety TCB.
 - API keys must stay out of files and commits.
 - The repo should not include `external/` third-party source or `.venv-hermes/`.
-- The next approved direction after this checkpoint is Stage 33R real Hermes sandbox MCP smoke.
+- The next approved direction after this checkpoint is Stage 34O OpenCode/OpenClaw MCP reuse audit + dry-run config.
 - Future work should preserve Reference Monitor / Capability Store / Proof Model safety semantics unless the user explicitly asks for a carefully reviewed semantic change.
