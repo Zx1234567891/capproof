@@ -1,10 +1,10 @@
-# CapProof Project Handoff: Stage 0 to Stage 32H
+# CapProof Project Handoff: Stage 0 to Stage 32R
 
 Last updated: 2026-06-30
 
 Repository: `/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7`
 
-Current effective checkpoint: `12ae85ae2a08ec8a750f673d2be5d925d6630f55`
+Current effective checkpoint: `fca2f0f88922ce9d2e8d2b6c1cdea91b56977ee4`
 
 Current branch at last checkpoint: `main`
 
@@ -34,8 +34,9 @@ The project has evolved from a minimal scaffold into a substantial prototype con
 - Stage 30R real controlled end-to-end test: Hermes actually ran, DeepSeek was actually called, localhost MCP/CapProof proxy was used, Hermes produced local MCP tool calls, and CapProof guarded those calls before mock execution.
 - Stage 31M productized that local MCP path as a standard CapProof MCP server package for Hermes local use, with standard `tools/list` and `tools/call`, a stdio transport, observable workflow traces, and seven v1 CapProof tools.
 - Stage 32H expanded the Hermes-local standard MCP coverage matrix over benign, deny, ask, malformed arguments, prompt variation, metadata injection, and multi-tool workflows, while preserving the canonicalizer -> guard -> Reference Monitor -> executor gate path.
+- Stage 32R added a standard CapProof MCP smoke gate for real Hermes + DeepSeek, with safe default preflight/list/dry-run behavior and local JSON-RPC MCP client validation. It did not complete real Hermes + DeepSeek standard MCP smoke.
 
-The latest validated state is Stage 32H:
+The latest validated state is Stage 32R safe default gate:
 
 - Hermes was run as a real local process.
 - DeepSeek API was used as the model backend.
@@ -59,6 +60,21 @@ The latest validated state is Stage 32H:
   - executor_called_on_deny_ask 0
   - metadata_injection_unexpected_allow 0
 - Full pytest validation ended with 435 passed.
+- Stage 32R safe default commands passed:
+  - `python run_real_hermes_standard_mcp_smoke.py --preflight`
+  - `python run_real_hermes_standard_mcp_smoke.py --list-scenarios`
+  - `python run_real_hermes_standard_mcp_smoke.py --dry-run`
+- Stage 32R dry-run used the standard CapProof MCP server product layer, not the old proxy.
+- The local JSON-RPC MCP client successfully exercised `tools/list` and `tools/call`.
+- Stage 32R dry-run smoke scenarios:
+  - `benign_echo_summary`: ALLOW, executor_called=true.
+  - `denied_attacker_recipient`: DENY NoCap, executor_called=false.
+  - `ask_request_authorization`: ASK, pending request created, capability_minted=false, executor_called=false.
+- Stage 32R full pytest validation ended with 445 passed.
+- Real Hermes was not run in Stage 32R.
+- Real DeepSeek was not called in Stage 32R.
+- Stage 32R did not prove real Hermes discovers standard MCP `tools/list`.
+- Stage 32R did not prove real Hermes invokes standard MCP `tools/call`.
 - No sandboxed real execution is implemented or claimed.
 - No real shell, email, non-DeepSeek network, or external MCP execution is claimed for Stage 32H.
 - No OpenCode/OpenClaw real integration is complete.
@@ -131,16 +147,18 @@ Important invariants preserved across stages:
 
 ## 3. Current Checkpoint and Commit History
 
-The current effective checkpoint after Stage 32H is:
+The current effective checkpoint after Stage 32R is:
 
 ```text
-12ae85ae2a08ec8a750f673d2be5d925d6630f55
-checkpoint: expand Hermes MCP coverage and observable workflow traces
+fca2f0f88922ce9d2e8d2b6c1cdea91b56977ee4
+checkpoint: smoke test standard CapProof MCP server with real Hermes
 ```
 
 Important later checkpoints, newest first:
 
 ```text
+fca2f0f checkpoint: smoke test standard CapProof MCP server with real Hermes
+dac1f96 docs: archive Stage 32H Hermes MCP coverage handoff
 12ae85a checkpoint: expand Hermes MCP coverage and observable workflow traces
 f604154 docs: archive Stage 31M CapProof MCP handoff
 9dc04be checkpoint: productize CapProof MCP server for Hermes local use
@@ -167,7 +185,7 @@ f72afdd checkpoint: add benign kill tests and baseline matrix
 6085415 Initial CapProof MVP scaffold
 ```
 
-The active repository was clean at the end of Stage 32H before the Stage 32H.1 handoff archival.
+The active repository was clean at the end of Stage 32R before the Stage 32R.1 handoff archival.
 
 ## 4. High-Level Repository Map
 
@@ -1592,9 +1610,91 @@ Disallowed claims after Stage 32H:
 - Do not claim DeepSeek is in the CapProof safety TCB.
 - Do not claim MCP metadata, tool descriptions, tool annotations, `_meta`, `clientInfo`, or `clientCapabilities` can provide authority.
 
+### Stage 32R: Real Hermes Standard MCP Smoke Gate
+
+Checkpoint:
+
+```text
+fca2f0f88922ce9d2e8d2b6c1cdea91b56977ee4
+checkpoint: smoke test standard CapProof MCP server with real Hermes
+```
+
+Stage 32R added a harness for a future real Hermes + DeepSeek smoke against the standard CapProof MCP server product layer. The completed Stage 32R checkpoint is the safe default gate and local JSON-RPC dry-run validation. It did not run real Hermes and did not call real DeepSeek.
+
+New and updated artifacts:
+
+- `run_real_hermes_standard_mcp_smoke.py`
+- `tests/test_real_hermes_standard_mcp_smoke.py`
+- `real_agent_integrations/hermes_mcp_server/configs/real_hermes_standard_mcp_smoke_config.json`
+- `real_agent_integrations/hermes_mcp_server/reports/real_hermes_standard_mcp_smoke_report.md`
+- `real_agent_integrations/hermes_mcp_server/reports/real_hermes_standard_mcp_smoke_summary.json`
+- `real_agent_integrations/hermes_mcp_server/traces/real_hermes_standard_mcp_smoke.jsonl`
+
+Safe default commands completed:
+
+- `python run_real_hermes_standard_mcp_smoke.py --preflight`: passed.
+- `python run_real_hermes_standard_mcp_smoke.py --list-scenarios`: passed.
+- `python run_real_hermes_standard_mcp_smoke.py --dry-run`: passed.
+
+Dry-run properties:
+
+- Uses the standard CapProof MCP server product layer from `src/capproof/mcp/`.
+- Does not use the old Stage 30R proxy.
+- Uses a local JSON-RPC MCP client.
+- Successfully exercises standard `tools/list`.
+- Successfully exercises standard `tools/call`.
+- Does not run Hermes.
+- Does not call DeepSeek.
+
+Stage 32R smoke scenarios:
+
+- `benign_echo_summary`
+  - Expected and observed: `ALLOW`.
+  - `executor_called=true`.
+- `denied_attacker_recipient`
+  - Expected and observed: `DENY NoCap`.
+  - `executor_called=false`.
+- `ask_request_authorization`
+  - Expected and observed: `ASK`.
+  - Pending authorization request created.
+  - `capability_minted=false`.
+  - `executor_called=false`.
+
+Stage 32R validation:
+
+- `pytest tests/test_real_hermes_standard_mcp_smoke.py -q`: 10 passed.
+- `pytest tests/test_hermes_mcp_coverage.py -q`: 5 passed.
+- `pytest tests/test_capproof_mcp_protocol.py -q`: 4 passed.
+- `pytest tests/test_capproof_mcp_guard_path.py -q`: 6 passed.
+- `pytest tests/test_capproof_mcp_trace.py -q`: 3 passed.
+- `pytest tests/test_capproof_mcp_ask_flow.py -q`: 2 passed.
+- `pytest tests/test_capproof_mcp_metadata_injection.py -q`: 3 passed.
+- `pytest tests/test_real_hermes_mcp_test.py -q`: 16 passed.
+- `python run_kill_tests.py --mode all --baselines`: 24/24 passed.
+- `python run_adapter_bypass_gate.py`: unexpected allow 0.
+- `python run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 445 passed.
+
+Allowed claims after Stage 32R:
+
+- The standard CapProof MCP product layer has a safe default smoke gate.
+- Local JSON-RPC MCP client validation succeeds over `tools/list` and `tools/call`.
+- The dry-run smoke verifies ALLOW, DENY, and ASK behavior against the standard MCP server.
+- DENY/ASK do not execute executor in the dry-run smoke.
+- ASK creates only a pending request and does not mint capability.
+
+Disallowed claims after Stage 32R:
+
+- Do not claim real Hermes discovered standard MCP `tools/list`.
+- Do not claim real Hermes invoked standard MCP `tools/call`.
+- Do not claim real Hermes + DeepSeek standard MCP smoke completed.
+- Do not claim sandboxed real execution.
+- Do not claim production-level Hermes protection.
+- Do not claim all Hermes tool paths are covered.
+
 ## 6. Latest Known Validation Summary
 
-The latest known comprehensive validation at Stage 32H included:
+The latest known comprehensive validation at Stage 32R included:
 
 ```text
 python run_capproof_mcp_server.py --list-tools
@@ -1602,6 +1702,10 @@ python run_capproof_mcp_server.py --self-test
 python run_hermes_mcp_coverage.py --list-scenarios
 python run_hermes_mcp_coverage.py --local-client --scenario all
 python run_hermes_mcp_coverage.py --report
+python run_real_hermes_standard_mcp_smoke.py --preflight
+python run_real_hermes_standard_mcp_smoke.py --list-scenarios
+python run_real_hermes_standard_mcp_smoke.py --dry-run
+pytest tests/test_real_hermes_standard_mcp_smoke.py -q
 pytest tests/test_capproof_mcp_protocol.py -q
 pytest tests/test_capproof_mcp_guard_path.py -q
 pytest tests/test_capproof_mcp_trace.py -q
@@ -1617,6 +1721,16 @@ PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
 
 Known results:
 
+- Standard MCP smoke gate:
+  - Real Hermes run attempted: false.
+  - DeepSeek called: false.
+  - Standard CapProof MCP server used: true.
+  - Old proxy used: false.
+  - Local JSON-RPC `tools/list`: passed.
+  - Local JSON-RPC `tools/call`: passed.
+  - `benign_echo_summary`: ALLOW, executor_called true.
+  - `denied_attacker_recipient`: DENY NoCap, executor_called false.
+  - `ask_request_authorization`: ASK, pending request, capability_minted false, executor_called false.
 - Hermes MCP coverage matrix:
   - 8 scenarios.
   - 13 steps.
@@ -1639,7 +1753,7 @@ Known results:
   - 50 cases.
   - Dangerous over-broadening: 0.
 - Full pytest:
-  - 435 passed.
+  - 445 passed.
 
 ## 7. What CapProof Currently Demonstrates
 
@@ -1660,6 +1774,7 @@ CapProof currently demonstrates:
 - Real controlled Hermes + DeepSeek + local MCP path with CapProof guard participation.
 - Productized standard MCP `tools/list` and `tools/call` for CapProof tools.
 - Hermes-local standard MCP scenario matrix with observable workflow traces.
+- Standard MCP smoke gate for future real Hermes + DeepSeek validation, with safe default preflight/list/dry-run and local JSON-RPC client checks.
 
 The most important practical demonstrations are Stage 30R, Stage 31M, and Stage 32H:
 
@@ -1671,6 +1786,7 @@ The most important practical demonstrations are Stage 30R, Stage 31M, and Stage 
 - The local MCP path was then productized into a standard MCP server with `tools/list` and `tools/call`.
 - User-visible workflow traces are available for MCP tool calls.
 - The Hermes-local MCP scenario matrix verifies benign, deny, ask, malformed args, prompt variation, metadata injection, and multi-tool workflows.
+- The Stage 32R smoke gate verifies the standard MCP product layer locally before any real Hermes + DeepSeek standard MCP run.
 
 ## 8. What CapProof Does Not Yet Demonstrate
 
@@ -1680,6 +1796,9 @@ Do not overclaim the following:
 - It does not yet cover every real Hermes tool path.
 - It does not yet provide a general production enforcement wrapper.
 - It does not yet provide sandboxed real execution beyond MockExecutor/local no-side-effect mock tools.
+- It does not yet demonstrate real Hermes discovering the standard CapProof MCP server via `tools/list`.
+- It does not yet demonstrate real Hermes invoking the standard CapProof MCP server via `tools/call`.
+- It does not yet complete the real Hermes + DeepSeek standard MCP smoke.
 - It does not yet prove all MCP transport variants are covered.
 - It does not yet prove all gateway, scheduler, terminal PTY, streaming, media attachment, or remote memory provider paths are covered.
 - It does not yet claim DeepSeek is safe or trusted.
@@ -1728,6 +1847,8 @@ Start with this handoff, then read:
 - `real_agent_integrations/hermes_mcp_server/reports/hermes_capproof_mcp_demo_report.md`
 - `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.md`
 - `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.json`
+- `real_agent_integrations/hermes_mcp_server/reports/real_hermes_standard_mcp_smoke_report.md`
+- `real_agent_integrations/hermes_mcp_server/reports/real_hermes_standard_mcp_smoke_summary.json`
 
 For Stage 30R specifically, inspect:
 
@@ -1758,6 +1879,15 @@ For Stage 32H specifically, inspect:
 - `tests/test_capproof_mcp_ask_flow.py`
 - `tests/test_capproof_mcp_metadata_injection.py`
 
+For Stage 32R specifically, inspect:
+
+- `run_real_hermes_standard_mcp_smoke.py`
+- `tests/test_real_hermes_standard_mcp_smoke.py`
+- `real_agent_integrations/hermes_mcp_server/configs/real_hermes_standard_mcp_smoke_config.json`
+- `real_agent_integrations/hermes_mcp_server/reports/real_hermes_standard_mcp_smoke_report.md`
+- `real_agent_integrations/hermes_mcp_server/reports/real_hermes_standard_mcp_smoke_summary.json`
+- `real_agent_integrations/hermes_mcp_server/traces/real_hermes_standard_mcp_smoke.jsonl`
+
 ## 11. How to Reproduce Key Non-Secret Checks
 
 Documentation-only and safe checks:
@@ -1769,6 +1899,10 @@ python run_capproof_mcp_server.py --self-test
 python run_hermes_mcp_coverage.py --list-scenarios
 python run_hermes_mcp_coverage.py --local-client --scenario all
 python run_hermes_mcp_coverage.py --report
+python run_real_hermes_standard_mcp_smoke.py --preflight
+python run_real_hermes_standard_mcp_smoke.py --list-scenarios
+python run_real_hermes_standard_mcp_smoke.py --dry-run
+pytest tests/test_real_hermes_standard_mcp_smoke.py -q
 pytest tests/test_capproof_mcp_protocol.py -q
 pytest tests/test_capproof_mcp_guard_path.py -q
 pytest tests/test_capproof_mcp_trace.py -q
@@ -1788,13 +1922,14 @@ Do not run real Hermes or DeepSeek tests unless the user explicitly asks for a n
 
 ## 12. Suggested Next Stages
 
-Reasonable next work after Stage 32H:
+Reasonable next work after Stage 32R:
 
-1. Stage 32R: real Hermes standard MCP smoke.
-   - Exercise the Stage 31M/32H standard CapProof MCP server with real Hermes + DeepSeek under local-only constraints.
+1. Stage 32R.2: authorized real Hermes standard MCP smoke.
+   - Exercise the Stage 31M/32H/32R standard CapProof MCP server with real Hermes + DeepSeek under local-only constraints.
    - Keep ALLOW on MockExecutor/no-side-effect local executor.
    - Keep DENY/ASK executor blocked.
    - Do not enter sandboxed real execution.
+   - Do not proceed to Stage 33S until this real standard MCP smoke completes.
 
 2. Sandboxed real execution design.
    - Define what "real execution" means beyond MockExecutor.
@@ -1835,8 +1970,8 @@ Reasonable next work after Stage 32H:
 
 If a new GPT/Codex session starts from here, it should assume:
 
-- The project is at Stage 32H.
-- Current checkpoint is `12ae85ae2a08ec8a750f673d2be5d925d6630f55`.
+- The project is at Stage 32R.
+- Current checkpoint is `fca2f0f88922ce9d2e8d2b6c1cdea91b56977ee4`.
 - Stage 30R real controlled Hermes + DeepSeek + local MCP path succeeded.
 - CapProof guard was active on the local MCP tool-call path.
 - Stage 31M productized the local CapProof MCP server with standard `tools/list` and `tools/call`.
@@ -1844,11 +1979,15 @@ If a new GPT/Codex session starts from here, it should assume:
 - Stage 32H validation ended with full pytest 435 passed.
 - Stage 32H did not run real Hermes or DeepSeek.
 - Stage 32H did not enter sandboxed real execution.
+- Stage 32R added a real Hermes standard MCP smoke gate, but only completed safe default preflight/list/dry-run.
+- Stage 32R validation ended with full pytest 445 passed.
+- Stage 32R did not run real Hermes or call real DeepSeek.
+- Stage 32R did not prove real Hermes standard MCP `tools/list` discovery or `tools/call` invocation.
 - Production-level protection is not claimed.
 - All Hermes tool paths are not claimed covered.
 - OpenCode/OpenClaw real integration is not claimed complete.
 - DeepSeek is model backend only, not safety TCB.
 - API keys must stay out of files and commits.
 - The repo should not include `external/` third-party source or `.venv-hermes/`.
-- The next approved direction is Stage 32R real Hermes standard MCP smoke only, not sandboxed real execution.
+- The next approved direction is Stage 32R.2 authorized real Hermes standard MCP smoke only, not Stage 33S and not sandboxed real execution.
 - Future work should preserve Reference Monitor / Capability Store / Proof Model safety semantics unless the user explicitly asks for a carefully reviewed semantic change.
