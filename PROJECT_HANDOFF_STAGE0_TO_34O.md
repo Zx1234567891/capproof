@@ -1,10 +1,10 @@
-# CapProof Project Handoff: Stage 0 to Stage 33R
+# CapProof Project Handoff: Stage 0 to Stage 34O
 
 Last updated: 2026-06-30
 
 Repository: `/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7`
 
-Current effective checkpoint: `64890a20f07e192bab7dd8a68c6e523336cd0aa1`
+Current effective checkpoint: `4a1c0ef40eeb153f69814b041963068beb9445fa`
 
 Current branch at last checkpoint: `main`
 
@@ -37,8 +37,36 @@ The project has evolved from a minimal scaffold into a substantial prototype con
 - Stage 32R added a standard CapProof MCP smoke gate for real Hermes + DeepSeek, with safe default preflight/list/dry-run behavior, local JSON-RPC MCP client validation, and an authorized real Hermes + DeepSeek standard MCP smoke over the productized CapProof MCP server.
 - Stage 33S added minimal sandboxed real execution for the standard CapProof MCP ALLOW path, limited to workspace-only file read/write and allowlisted command-template execution. The sandbox is not an authorization root; CapProof guard / Reference Monitor authorization remains mandatory.
 - Stage 33R completed an explicitly authorized real Hermes + DeepSeek smoke through the standard CapProof MCP server with `--sandboxed-real-execution`, proving the controlled local sandbox path for five workspace/template scenarios.
+- Stage 34O added OpenCode/OpenClaw MCP reuse audit/config/dry-run artifacts. It generated reusable MCP config material for OpenCode and OpenClaw, recorded that both runtimes are currently unavailable locally, reused the same standard CapProof MCP server command, and verified local JSON-RPC `tools/list` / `tools/call` without running real OpenCode/OpenClaw.
 
-The latest validated state is Stage 33R real Hermes sandboxed CapProof MCP smoke:
+The latest validated state is Stage 34O OpenCode/OpenClaw CapProof MCP reuse audit:
+
+- Stage 34O commit: `4a1c0ef40eeb153f69814b041963068beb9445fa` (`checkpoint: add OpenCode and OpenClaw CapProof MCP reuse configs`).
+- OpenCode repo/runtime: `repo_missing` / runtime unavailable.
+- OpenClaw repo/runtime: `repo_missing` / runtime unavailable.
+- OpenCode MCP config template generated at `real_agent_integrations/opencode_mcp_server/configs/opencode.capproof.mcp.example.jsonc`.
+- OpenClaw MCP config commands generated at `real_agent_integrations/openclaw_mcp_server/configs/openclaw.capproof.mcp.commands.md`.
+- Both client templates reuse the same standard CapProof MCP server:
+  - `python run_capproof_mcp_server.py --stdio --sandboxed-real-execution`
+- CapProof guard/security logic was not forked.
+- Local JSON-RPC MCP dry-run passed:
+  - `tools/list`: passed, 7 tools.
+  - ALLOW path: `ALLOW`, `executor_called=true`.
+  - DENY path: `DENY NoCap`, `executor_called=false`.
+  - metadata / LLM output cannot mint capability.
+- No real OpenCode integration is claimed.
+- No real OpenClaw integration is claimed.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 490 passed, 1 skipped.
+- Kill tests: 24/24.
+- Adapter bypass unexpected allow: 0.
+- AuthSpec dangerous over-broadening: 0.
+- Compileall passed.
+- API key was not written.
+- `external/` was not committed.
+- `.venv-hermes/` was not committed.
+- No production-level overclaim is made.
+
+The most recent real Hermes sandboxed CapProof MCP smoke remains Stage 33R:
 
 - Real Hermes was run.
 - DeepSeek was called as Hermes' model backend.
@@ -2344,8 +2372,8 @@ Reasonable next work after Stage 33R:
 
 If a new GPT/Codex session starts from here, it should assume:
 
-- The project is at Stage 33R.
-- Current checkpoint is `64890a20f07e192bab7dd8a68c6e523336cd0aa1`.
+- The project is at Stage 34O.
+- Current checkpoint is `4a1c0ef40eeb153f69814b041963068beb9445fa`.
 - Stage 30R real controlled Hermes + DeepSeek + local MCP path succeeded.
 - CapProof guard was active on the local MCP tool-call path.
 - Stage 31M productized the local CapProof MCP server with standard `tools/list` and `tools/call`.
@@ -2366,12 +2394,16 @@ If a new GPT/Codex session starts from here, it should assume:
 - Stage 33R validation ended with full pytest 479 passed, 1 skipped, and compileall passed.
 - Production-level protection is not claimed.
 - All Hermes tool paths are not claimed covered.
-- OpenCode/OpenClaw MCP reuse has not yet been audited or configured.
+- Stage 34O audited OpenCode/OpenClaw MCP reuse readiness and generated config/command templates.
+- Stage 34O recorded OpenCode repo/runtime as `repo_missing` / runtime unavailable.
+- Stage 34O recorded OpenClaw repo/runtime as `repo_missing` / runtime unavailable.
+- Stage 34O local JSON-RPC dry-run over the standard CapProof MCP server passed `tools/list` and `tools/call`.
+- Stage 34O validation ended with full pytest 490 passed, 1 skipped, and compileall passed.
 - Real OpenCode/OpenClaw processes have not yet been run.
 - Raw shell, arbitrary filesystem access, real email, external MCP, and OS-level network denial are not claimed.
 - OpenCode/OpenClaw real integration is not claimed complete.
 - DeepSeek is model backend only, not safety TCB.
 - API keys must stay out of files and commits.
 - The repo should not include `external/` third-party source or `.venv-hermes/`.
-- The next approved direction after this checkpoint is Stage 34O OpenCode/OpenClaw MCP reuse audit + dry-run config.
+- The next approved direction after this checkpoint is Stage 34R-G OpenCode/OpenClaw runtime gate.
 - Future work should preserve Reference Monitor / Capability Store / Proof Model safety semantics unless the user explicitly asks for a carefully reviewed semantic change.
