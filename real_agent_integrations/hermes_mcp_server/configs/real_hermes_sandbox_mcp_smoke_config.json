@@ -1,0 +1,18 @@
+{
+  "api_key_written": false,
+  "args": [
+    "run_capproof_mcp_server.py",
+    "--stdio",
+    "--sandboxed-real-execution"
+  ],
+  "command": "python",
+  "deepseek_key_source": "DEEPSEEK_API_KEY",
+  "old_proxy_used": false,
+  "os_level_network_denial_claim": false,
+  "production_level_protection_claim": false,
+  "server_name": "capproof-sandbox-mcp",
+  "stage": "33R",
+  "trace_path_env": "CAPPROOF_MCP_TRACE_PATH",
+  "transport": "stdio",
+  "workspace": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/hermes_mcp_server/sandbox_workspace"
+}
