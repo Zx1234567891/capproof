@@ -200,62 +200,6 @@ Adaptive mode is not implemented in Stage 13. Future adaptive runs should preser
   - Relevant dependencies are visible in the trace.
   - Approval consumption is not modeled.
 
-## Stage 33R - Real Hermes Sandboxed Standard MCP Smoke
-
-Stage 33R validates real Hermes + DeepSeek against the standard CapProof MCP server with `--sandboxed-real-execution`. This is still a controlled local smoke, not production-level Hermes protection and not an OS-level network-denial claim.
-
-Default safe commands:
-
-```bash
-python run_real_hermes_sandbox_mcp_smoke.py --preflight
-python run_real_hermes_sandbox_mcp_smoke.py --list-scenarios
-python run_real_hermes_sandbox_mcp_smoke.py --dry-run
-```
-
-Authorized real Hermes + DeepSeek command:
-
-```bash
-ALLOW_HERMES_DEEPSEEK_RUN=1 \
-ALLOW_CAPROOF_MCP_REAL_HERMES=1 \
-ALLOW_CAPROOF_SANDBOX_REAL_EXECUTION=1 \
-DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" \
-python run_real_hermes_sandbox_mcp_smoke.py --all
-```
-
-Stage 33R validation commands:
-
-```bash
-pytest tests/test_real_hermes_sandbox_mcp_smoke.py -q
-pytest tests/test_capproof_mcp_sandbox_policy.py -q
-pytest tests/test_capproof_mcp_sandbox_paths.py -q
-pytest tests/test_capproof_mcp_sandbox_file_read.py -q
-pytest tests/test_capproof_mcp_sandbox_file_write.py -q
-pytest tests/test_capproof_mcp_sandbox_commands.py -q
-pytest tests/test_capproof_mcp_sandbox_env.py -q
-pytest tests/test_real_hermes_standard_mcp_smoke.py -q
-pytest tests/test_hermes_mcp_coverage.py -q
-pytest tests/test_capproof_mcp_protocol.py -q
-pytest tests/test_capproof_mcp_guard_path.py -q
-pytest tests/test_capproof_mcp_trace.py -q
-pytest tests/test_capproof_mcp_ask_flow.py -q
-pytest tests/test_capproof_mcp_metadata_injection.py -q
-python run_kill_tests.py --mode all --baselines
-python run_adapter_bypass_gate.py
-python run_authspec_faithfulness.py --mode auto
-PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
-python -m compileall src tests run_real_hermes_sandbox_mcp_smoke.py run_capproof_sandbox_smoke.py
-```
-
-Stage 33R claims and boundaries:
-
-- Real Hermes and DeepSeek were used only in the explicitly authorized `--all` run.
-- The MCP server was the standard CapProof MCP server with `--sandboxed-real-execution`, not the old proxy.
-- ALLOWed sandbox effects are limited to workspace file read/write and allowlisted command templates.
-- DENY/ASK do not execute an executor.
-- Raw shell remains unsupported and denied.
-- No real email, external MCP, arbitrary filesystem access, or production wrapper is claimed.
-- No API key is written to files, reports, traces, logs, or commits.
-
 ## Stage 34O - OpenCode/OpenClaw CapProof MCP Reuse Audit and Dry-Run Config
 
 Stage 34O validates CapProof MCP reuse for OpenCode/OpenClaw through static repo/runtime audit, config templates, command documentation, and a local JSON-RPC dry-run against the same standard CapProof MCP server. It does not run real OpenCode/OpenClaw and does not claim real OpenCode/OpenClaw integration.
@@ -271,13 +215,6 @@ python run_capproof_sandbox_smoke.py --local-client --scenario all
 pytest tests/test_agent_mcp_client_audit.py -q
 pytest tests/test_opencode_mcp_config.py -q
 pytest tests/test_openclaw_mcp_config.py -q
-pytest tests/test_real_hermes_sandbox_mcp_smoke.py -q
-pytest tests/test_capproof_mcp_sandbox_policy.py -q
-pytest tests/test_capproof_mcp_sandbox_paths.py -q
-pytest tests/test_capproof_mcp_sandbox_file_read.py -q
-pytest tests/test_capproof_mcp_sandbox_file_write.py -q
-pytest tests/test_capproof_mcp_sandbox_commands.py -q
-pytest tests/test_capproof_mcp_sandbox_env.py -q
 python run_kill_tests.py --mode all --baselines
 python run_adapter_bypass_gate.py
 python run_authspec_faithfulness.py --mode auto
@@ -292,6 +229,37 @@ Stage 34O boundaries:
 - The generated configs reuse `run_capproof_mcp_server.py --stdio --sandboxed-real-execution`.
 - CapProof guard / Reference Monitor logic is not forked.
 - MCP metadata, OpenCode/OpenClaw tool metadata, plugin/skill metadata, and LLM output cannot mint capability.
-- DENY/ASK executor_called remains false in the local JSON-RPC dry-run.
 - No API key, token, or secret is written.
+- No production-level protection claim is made.
+
+## Stage 34R-G - OpenCode/OpenClaw Runtime Gate
+
+Stage 34R-G detects local OpenCode/OpenClaw runtime availability and records whether a later real smoke would be eligible. It does not install dependencies, does not run a real OpenCode/OpenClaw agent session, and does not claim real OpenCode/OpenClaw integration.
+
+Commands:
+
+```bash
+python run_agent_runtime_gate.py --all
+python run_agent_runtime_gate.py --report
+pytest tests/test_agent_runtime_gate.py -q
+pytest tests/test_agent_mcp_client_audit.py -q
+pytest tests/test_opencode_mcp_config.py -q
+pytest tests/test_openclaw_mcp_config.py -q
+python run_capproof_mcp_server.py --list-tools
+python run_capproof_sandbox_smoke.py --local-client --scenario all
+python run_kill_tests.py --mode all --baselines
+python run_adapter_bypass_gate.py
+python run_authspec_faithfulness.py --mode auto
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
+python -m compileall src tests run_agent_runtime_gate.py run_agent_mcp_client_audit.py
+```
+
+Stage 34R-G boundaries:
+
+- Real OpenCode/OpenClaw smoke is not run in this stage.
+- Runtime missing means `runtime_missing` / `real_smoke_eligible=false`.
+- Runtime present only means metadata readiness; it is not a real integration claim.
+- The same CapProof MCP server command remains the intended integration point.
+- No API key, token, or secret is written.
+- No `external/`, `.venv-hermes/`, or `node_modules/` content should be committed.
 - No production-level protection claim is made.

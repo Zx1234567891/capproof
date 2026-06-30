@@ -1138,7 +1138,7 @@ Known risks:
 
 ## Stage 31M - CapProof MCP Server Productization for Hermes
 
-Status: implemented, checkpoint pending.
+Status: implemented.
 
 Scope:
 - Productize the Stage 30R local MCP proxy into a package under `src/capproof/mcp/`.
@@ -1498,3 +1498,76 @@ Known boundaries:
 - No production-level protection is claimed.
 - No raw shell, external MCP, real email, or arbitrary filesystem access is supported.
 - OpenCode/OpenClaw metadata, plugin metadata, MCP metadata, and LLM output remain non-authoritative.
+
+## Stage 34R-G - OpenCode/OpenClaw Runtime Gate
+
+Status: implemented.
+
+Scope:
+- Detect whether local OpenCode/OpenClaw runtime commands are available.
+- Record runtime metadata readiness for a later explicitly authorized real smoke.
+- Do not install OpenCode/OpenClaw or third-party dependencies.
+- Do not run a real OpenCode/OpenClaw agent process.
+- Do not observe or claim real OpenCode/OpenClaw `tools/list` / `tools/call`.
+- Reuse the same standard CapProof MCP server command:
+  - `python run_capproof_mcp_server.py --stdio --sandboxed-real-execution`
+- Do not fork CapProof guard / Reference Monitor logic.
+
+Implemented:
+- Added `run_agent_runtime_gate.py`.
+- Added `tests/test_agent_runtime_gate.py`.
+- Added `agent_coverage_audit/agent_runtime_gate_report.md`.
+- Added `agent_coverage_audit/agent_runtime_gate_summary.json`.
+
+Runtime gate fields:
+- OpenCode:
+  - command exists.
+  - version detected.
+  - config path detected.
+  - CapProof MCP config load support, if metadata suggests it.
+  - real smoke eligible true/false with reason.
+- OpenClaw:
+  - command exists.
+  - version detected.
+  - `mcp status` availability.
+  - `mcp doctor/probe` availability.
+  - `mcp tools` availability.
+  - real smoke eligible true/false with reason.
+
+Runtime gate result:
+- OpenCode runtime_present: false.
+- OpenCode real_smoke_eligible: false.
+- OpenCode reason: `runtime_missing: opencode command is not on PATH`.
+- OpenClaw runtime_present: false.
+- OpenClaw real_smoke_eligible: false.
+- OpenClaw reason: `runtime_missing: openclaw command is not on PATH`.
+- Real OpenCode/OpenClaw agent process run: false.
+- Real OpenCode/OpenClaw `tools/list` observed: false.
+- Real OpenCode/OpenClaw `tools/call` observed: false.
+- Real OpenCode integration claim: false.
+- Real OpenClaw integration claim: false.
+- Uses shared CapProof MCP server: true.
+- Forked guard logic: false.
+
+Validation:
+- `python run_agent_runtime_gate.py --all`: passed.
+- `python run_agent_runtime_gate.py --report`: passed.
+- `pytest tests/test_agent_runtime_gate.py -q`: 6 passed.
+- `pytest tests/test_agent_mcp_client_audit.py -q`: 5 passed.
+- `pytest tests/test_opencode_mcp_config.py -q`: 3 passed.
+- `pytest tests/test_openclaw_mcp_config.py -q`: 3 passed.
+- `python run_capproof_mcp_server.py --list-tools`: passed.
+- `python run_capproof_sandbox_smoke.py --local-client --scenario all`: passed.
+- `python run_kill_tests.py --mode all --baselines`: 24/24 passed.
+- `python run_adapter_bypass_gate.py`: unexpected allow 0.
+- `python run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 496 passed, 1 skipped.
+- `python -m compileall src tests run_agent_runtime_gate.py run_agent_mcp_client_audit.py`: passed.
+
+Known boundaries:
+- Runtime gate metadata probes are not real agent smoke tests.
+- A runtime-present result does not prove real integration.
+- A runtime-missing result must not be upgraded into a real integration claim.
+- OpenCode/OpenClaw metadata cannot mint capability.
+- API keys must not be written.
+- `external/`, `.venv-hermes/`, and `node_modules/` must not be committed.
