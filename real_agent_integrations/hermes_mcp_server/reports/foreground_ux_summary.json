@@ -1,0 +1,40 @@
+{
+  "checks": {
+    "api_key_not_found_in_tracked_files_reports_traces": true,
+    "capproof_guard_gates_tools": true,
+    "capproof_mcp_server_command_exists": true,
+    "capproof_mcp_stdio_recorder_exists": true,
+    "deepseek_api_key_present": true,
+    "deepseek_api_key_value_redacted": true,
+    "deepseek_not_safety_tcb": true,
+    "external_venv_node_modules_not_tracked": true,
+    "live_log_directory_writable": true,
+    "mcp_stdio_stderr_nonempty": false,
+    "mcp_stdio_stdout_lines": 2,
+    "mcp_stdio_stdout_pollution_check_passes": true,
+    "production_level_protection_claim": false,
+    "run_capproof_mcp_server_import_ok": true,
+    "sandbox_workspace_exists": true,
+    "secret_scan_matches": 0,
+    "tools": [
+      "capproof.echo_summary",
+      "capproof.send_message_mock",
+      "capproof.read_workspace_file",
+      "capproof.write_workspace_file",
+      "capproof.run_command_template",
+      "capproof.get_trace",
+      "capproof.request_authorization"
+    ],
+    "tools_count": 7,
+    "tools_list_ok": true,
+    "trace_directory_writable": true
+  },
+  "live_log_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/hermes_mcp_server/reports/foreground_hermes_mcp_live.log",
+  "mcp_mode": "stdio",
+  "mcp_server_command": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/run_capproof_mcp_server.py",
+  "passed": true,
+  "sandbox_workspace": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/hermes_mcp_server/sandbox_workspace",
+  "sandboxed_real_execution": true,
+  "stage": "35UX",
+  "trace_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/hermes_mcp_server/traces/foreground_hermes_mcp_trace.jsonl"
+}

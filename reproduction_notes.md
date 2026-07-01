@@ -254,3 +254,64 @@ Stage 34H boundaries:
 - stdout remains reserved for MCP JSON-RPC; human logs go to stderr/live log/trace.
 - DENY/ASK executor_called must remain false.
 - No real email, external MCP, raw shell, arbitrary filesystem access, production wrapper, or OS-level network-denial claim is made.
+
+## Stage 35UX - Foreground Hermes CapProof MCP UX
+
+Stage 35UX adds local-only UX helpers for foreground Hermes users. Doctor and
+trace viewer commands do not run Hermes or call DeepSeek by default.
+
+Normal foreground use:
+
+```bash
+export DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY"
+hermes
+```
+
+`hermes` defaults to Hermes TUI with the standard CapProof MCP server attached.
+Use classic foreground CLI mode when terminal paste behavior is preferred:
+
+```bash
+hermes --classic
+```
+
+UX commands:
+
+```bash
+hermes --doctor
+hermes --where-trace
+hermes --capproof-status
+hermes --list-tasks
+python run_capproof_mcp_doctor.py --all
+python run_capproof_trace_viewer.py --latest --last 20
+python run_capproof_trace_viewer.py --latest --format json --last 5
+python run_capproof_trace_viewer.py --latest --filter-verdict DENY
+```
+
+Interactive trace following:
+
+```bash
+hermes --trace-follow
+```
+
+Stop trace following with Ctrl-C.
+
+Stage 35UX validation commands:
+
+```bash
+pytest tests/test_capproof_trace_viewer.py -q
+pytest tests/test_capproof_mcp_doctor.py -q
+pytest tests/test_hermes_wrapper_ux.py -q
+pytest tests/test_real_hermes_foreground_mcp_demo.py -q
+pytest tests/test_real_hermes_sandbox_mcp_smoke.py -q
+pytest tests/test_capproof_mcp_sandbox_policy.py -q
+pytest tests/test_capproof_mcp_sandbox_paths.py -q
+pytest tests/test_capproof_mcp_sandbox_file_read.py -q
+pytest tests/test_capproof_mcp_sandbox_file_write.py -q
+pytest tests/test_capproof_mcp_sandbox_commands.py -q
+pytest tests/test_capproof_mcp_sandbox_env.py -q
+python run_kill_tests.py --mode all --baselines
+python run_adapter_bypass_gate.py
+python run_authspec_faithfulness.py --mode auto
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
+python -m compileall src tests run_capproof_trace_viewer.py run_capproof_mcp_doctor.py run_hermes_capproof_foreground.py
+```

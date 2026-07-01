@@ -1637,3 +1637,79 @@ Known boundaries:
 - All Hermes tool paths are not claimed covered.
 - No real email, external MCP, raw shell, arbitrary filesystem access, or OS-level network denial is claimed.
 - DeepSeek remains model-backend-only and outside the CapProof safety TCB.
+
+## Foreground Hermes One-Command Entrypoint
+
+Status: implemented.
+
+Purpose:
+- Provide a practical single-command frontend for the Stage 34H foreground Hermes + CapProof MCP workflow.
+- Avoid making users manually export the four fixed safety gate variables.
+- Keep `DEEPSEEK_API_KEY` as an environment-only secret; the wrapper does not write or print it.
+
+Entrypoint:
+- `python run_hermes_capproof_foreground.py`
+- `hermes`, via local wrapper `~/.local/bin/hermes -> bin/hermes`
+
+Behavior:
+- Default mode launches real Hermes in TUI mode with inherited terminal stdin/stdout/stderr.
+- `--classic` launches Hermes' classic foreground CLI for users who prefer normal terminal paste behavior.
+- The old report-oriented multi-task harness is available as `python run_hermes_capproof_foreground.py --workflow-demo`.
+- Automatically sets:
+  - `ALLOW_HERMES_DEEPSEEK_RUN=1`
+  - `ALLOW_CAPROOF_MCP_REAL_HERMES=1`
+  - `ALLOW_CAPROOF_SANDBOX_REAL_EXECUTION=1`
+  - `ALLOW_CAPROOF_HERMES_FOREGROUND_DEMO=1`
+- Requires `DEEPSEEK_API_KEY` to already exist in the shell.
+- Delegates to `run_real_hermes_foreground_mcp_demo.py` and the standard CapProof MCP stdio recorder.
+- Prints only a short user-facing summary and artifact paths.
+
+Validation:
+- `pytest tests/test_hermes_capproof_foreground_entrypoint.py -q`: passed.
+- `python run_hermes_capproof_foreground.py --dry-run`: passed.
+- `python run_hermes_capproof_foreground.py --preflight`: passed when `DEEPSEEK_API_KEY` is present.
+- `hermes --list-tasks`: passed from outside the repository root.
+- Default interactive path is covered by subprocess passthrough tests; it does not capture Hermes stdout/stderr.
+
+Known boundaries:
+- This wrapper simplifies invocation; it does not change CapProof guard / Reference Monitor semantics.
+- It does not store the DeepSeek key.
+- It does not broaden Hermes production-level protection claims.
+
+## Stage 35UX Hermes Foreground CapProof MCP UX
+
+Status: implemented.
+
+Purpose:
+- Make the foreground Hermes + CapProof MCP workflow user-visible without changing CapProof core verifier or Reference Monitor semantics.
+- Add local-only doctor checks, trace path discovery, concise status, and a redaction-safe trace viewer.
+
+Commands:
+- `hermes --doctor`
+- `hermes --where-trace`
+- `hermes --trace-follow`
+- `hermes --capproof-status`
+- `python run_capproof_mcp_doctor.py --all`
+- `python run_capproof_trace_viewer.py --latest --last 20`
+
+UX behavior:
+- `hermes` still launches real Hermes TUI with CapProof MCP attached.
+- Startup banner is written to stderr and states MCP attachment, stdio mode, sandboxed real execution, exposed tool count, trace path, live log path, and safety boundary.
+- MCP stdio stdout remains reserved for JSON-RPC.
+- Doctor and trace viewer do not run Hermes or call DeepSeek by default.
+- Trace viewer pretty output includes timestamp, user task, MCP method, tool name, verdict, reason, proof id, executor status, sandbox status, and canonical action hash.
+
+Validation:
+- `python run_capproof_mcp_doctor.py --all`: passed.
+- `python run_capproof_trace_viewer.py --latest --last 20`: passed.
+- `python run_capproof_trace_viewer.py --latest --format json --last 5`: passed.
+- `python run_capproof_trace_viewer.py --latest --filter-verdict DENY`: passed.
+- `hermes --doctor`: passed.
+- `hermes --where-trace`: passed.
+- `hermes --capproof-status`: passed.
+
+Known boundaries:
+- Stage 35UX does not claim production-level Hermes protection.
+- It does not claim all Hermes tool paths are covered.
+- It does not add real email, external MCP, raw shell, arbitrary filesystem access, or OS-level network denial.
+- DeepSeek remains outside the CapProof safety TCB.
