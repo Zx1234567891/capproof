@@ -2508,12 +2508,96 @@ Reasonable next work after Stage 35UX:
    - A no-secret artifact mode.
    - Explicit claims/non-claims file.
 
-## 15. Final State for New GPT Session
+## 15. Stage 36ASK - Trusted Pending Authorization UX
+
+Checkpoint:
+
+`2b263d6eb70c93f64c9a4029ab6791b4ddf0892d`
+`checkpoint: add trusted CapProof ASK authorization UX`
+
+Stage 36ASK completed the MCP-layer trusted authorization queue for
+`capproof.request_authorization`.
+
+Implemented:
+
+- `src/capproof/mcp/authorization_queue.py`
+- `src/capproof/mcp/authorization_store.py`
+- `src/capproof/mcp/authorization_receipts.py`
+- `run_capproof_auth_queue.py`
+- `tests/test_capproof_auth_queue.py`
+- `tests/test_capproof_mcp_ask_approval_flow.py`
+- `tests/test_capproof_mcp_ask_scope_amplification.py`
+- `tests/test_capproof_mcp_ask_replay.py`
+- `real_agent_integrations/hermes_mcp_server/reports/ask_flow_report.md`
+- `real_agent_integrations/hermes_mcp_server/reports/ask_flow_summary.json`
+- `real_agent_integrations/hermes_mcp_server/traces/ask_flow_trace.jsonl`
+
+Authorization semantics:
+
+- `capproof.request_authorization` only creates a pending request.
+- ASK returns `verdict=ASK`, `executor_called=false`, and `capability_minted=false`.
+- Pending requests include request id, requested action/scope, user task, original arguments, canonical action hash, requester, created/expiry times, status, trace id, and proof attempt id.
+- Only the trusted local CLI can approve, deny, or expire a request.
+- Trusted approve verifies the request exists, is pending, is unexpired, and that the approved scope does not exceed or alter the requested scope.
+- Trusted approve mints only scoped capabilities and emits a redaction-safe approval receipt.
+- Deny and expire never mint capability.
+- Replay approval is rejected.
+- Scope amplification is rejected for recipient/path/template/value/action changes.
+- Hermes/DeepSeek natural language cannot approve.
+- MCP metadata, tool descriptions, annotations, `_meta`, clientInfo, and clientCapabilities cannot approve.
+- ASK does not automatically become ALLOW.
+- DENY/ASK executor-called invariants are preserved.
+- `real_agent_integrations/hermes_mcp_server/auth_queue/` is local mutable state and is ignored.
+
+Validation:
+
+- `python run_capproof_auth_queue.py doctor`: passed.
+- `python run_capproof_auth_queue.py list`: passed.
+- Stage 36ASK tests: passed.
+- `pytest tests/test_capproof_auth_queue.py -q`: passed.
+- `pytest tests/test_capproof_mcp_ask_approval_flow.py -q`: passed.
+- `pytest tests/test_capproof_mcp_ask_scope_amplification.py -q`: passed.
+- `pytest tests/test_capproof_mcp_ask_replay.py -q`: passed.
+- `pytest tests/test_capproof_mcp_metadata_injection.py -q`: passed.
+- `pytest tests/test_capproof_trace_viewer.py -q`: passed.
+- `pytest tests/test_capproof_mcp_doctor.py -q`: passed.
+- `pytest tests/test_hermes_wrapper_ux.py -q`: passed.
+- `pytest tests/test_real_hermes_foreground_mcp_demo.py -q`: passed.
+- `pytest tests/test_real_hermes_sandbox_mcp_smoke.py -q`: passed.
+- `python run_kill_tests.py --mode all --baselines`: 24/24 passed.
+- `python run_adapter_bypass_gate.py`: unexpected allow 0.
+- `python run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 539 passed, 2 skipped.
+- `compileall`: passed.
+
+Stage 36ASK safety status:
+
+- API key written: no.
+- `external/` submitted: no.
+- `.venv-hermes/` submitted: no.
+- `node_modules/` submitted: no.
+- local `auth_queue/` submitted: no.
+- CapProof core verifier semantics changed: no.
+- Reference Monitor semantics changed: no.
+- Capability Store core semantics changed: no.
+
+Stage 36ASK non-claims:
+
+- No production-level Hermes protection.
+- No all-Hermes-tool-paths-covered claim.
+- No real email.
+- No external MCP.
+- No arbitrary shell.
+- No arbitrary filesystem access.
+- No OS-level network-denial claim.
+- No OpenCode/OpenClaw real integration yet.
+
+## 16. Final State for New GPT Session
 
 If a new GPT/Codex session starts from here, it should assume:
 
-- The project is at Stage 35UX.
-- Current checkpoint is `5c4e9f53a9738a48fc6f0c95985359f621222295`.
+- The project is at Stage 36ASK.
+- Current checkpoint is `2b263d6eb70c93f64c9a4029ab6791b4ddf0892d`.
 - Stage 30R real controlled Hermes + DeepSeek + local MCP path succeeded.
 - CapProof guard was active on the local MCP tool-call path.
 - Stage 31M productized the local CapProof MCP server with standard `tools/list` and `tools/call`.
@@ -2552,11 +2636,17 @@ If a new GPT/Codex session starts from here, it should assume:
 - Stage 35UX preserved MCP stdio stdout cleanliness by writing the startup banner to stderr.
 - Stage 35UX trace viewer supports pretty/json/latest/follow/verdict filter/tool filter/last N/malformed JSONL count/redaction.
 - Stage 35UX validation ended with full pytest 526 passed, 2 skipped, and compileall passed.
+- Stage 36ASK implemented trusted pending authorization UX for `capproof.request_authorization`.
+- Stage 36ASK added a durable MCP-layer authorization queue, redaction-safe receipts, and `run_capproof_auth_queue.py`.
+- Stage 36ASK proved ASK creates pending requests only, with no capability minting and no executor call.
+- Stage 36ASK proved only trusted local CLI approval can mint scoped capability.
+- Stage 36ASK proved scope amplification, replay approval, expired approvals, LLM claimed approval, and MCP `_meta` approval are rejected.
+- Stage 36ASK validation ended with full pytest 539 passed, 2 skipped, and compileall passed.
 - Real OpenCode/OpenClaw processes have not yet been run.
 - Raw shell, arbitrary filesystem access, real email, external MCP, and OS-level network denial are not claimed.
 - OpenCode/OpenClaw real integration is not claimed complete.
 - DeepSeek is model backend only, not safety TCB.
 - API keys must stay out of files and commits.
 - The repo should not include `external/` third-party source or `.venv-hermes/`.
-- The next approved direction after this checkpoint is Stage 36ASK trusted pending authorization UX.
+- The next approved direction after this checkpoint is Stage 36R real Hermes foreground ASK approval rerun smoke.
 - Future work should preserve Reference Monitor / Capability Store / Proof Model safety semantics unless the user explicitly asks for a carefully reviewed semantic change.
