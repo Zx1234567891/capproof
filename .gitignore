@@ -15,3 +15,4 @@ dist/
 build/
 *.egg-info/
 external/
+real_agent_integrations/hermes_mcp_server/auth_queue/

@@ -1,0 +1,42 @@
+{
+  "approval_receipt_generated": true,
+  "ask_auto_mints_capability": false,
+  "ask_capability_minted": false,
+  "ask_executor_called": false,
+  "audit_trace_path": "/tmp/pytest-of-xiaowu/pytest-439/test_trusted_cli_approval_crea0/ask_trace.jsonl",
+  "deny_mints_capability": false,
+  "executor_called_on_ask": false,
+  "expire_mints_capability": false,
+  "llm_output_can_approve": false,
+  "mcp_metadata_can_approve": false,
+  "pending_path": "/tmp/pytest-of-xiaowu/pytest-439/test_trusted_cli_approval_crea0/auth_queue/pending_authorizations.jsonl",
+  "pending_request_fields": [
+    "request_id",
+    "requested_action",
+    "requested_scope",
+    "user_task",
+    "tool_name",
+    "original_arguments",
+    "canonical_action_hash",
+    "requested_by_agent",
+    "created_at",
+    "expires_at",
+    "status",
+    "trace_id",
+    "proof_attempt_id"
+  ],
+  "queue_dir": "/tmp/pytest-of-xiaowu/pytest-439/test_trusted_cli_approval_crea0/auth_queue",
+  "receipt_count": 1,
+  "receipts_path": "/tmp/pytest-of-xiaowu/pytest-439/test_trusted_cli_approval_crea0/auth_queue/authorization_receipts.jsonl",
+  "replay_approve_rejected": true,
+  "request_count": 1,
+  "scope_amplification_rejected": true,
+  "status_counts": {
+    "approved": 1,
+    "denied": 0,
+    "expired": 0,
+    "pending": 0
+  },
+  "trusted_approve_can_mint_scoped_capability": true,
+  "trusted_local_cli_required": true
+}

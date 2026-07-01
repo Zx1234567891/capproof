@@ -315,3 +315,51 @@ python run_authspec_faithfulness.py --mode auto
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
 python -m compileall src tests run_capproof_trace_viewer.py run_capproof_mcp_doctor.py run_hermes_capproof_foreground.py
 ```
+
+## Stage 36ASK - Trusted Pending Authorization UX
+
+Stage 36ASK upgrades `capproof.request_authorization` into a persistent,
+auditable ASK queue. ASK still never mints capability and never executes an
+executor. Only the trusted local CLI can approve, deny, or expire a pending
+request.
+
+Queue commands:
+
+```bash
+python run_capproof_auth_queue.py doctor
+python run_capproof_auth_queue.py list
+python run_capproof_auth_queue.py show AUTHREQ_ID
+python run_capproof_auth_queue.py approve AUTHREQ_ID --scope-file approved_scope.json
+python run_capproof_auth_queue.py deny AUTHREQ_ID --reason "..."
+python run_capproof_auth_queue.py audit AUTHREQ_ID
+python run_capproof_auth_queue.py expire AUTHREQ_ID
+```
+
+Stage 36ASK validation commands:
+
+```bash
+pytest tests/test_capproof_auth_queue.py -q
+pytest tests/test_capproof_mcp_ask_approval_flow.py -q
+pytest tests/test_capproof_mcp_ask_scope_amplification.py -q
+pytest tests/test_capproof_mcp_ask_replay.py -q
+pytest tests/test_capproof_mcp_metadata_injection.py -q
+pytest tests/test_capproof_trace_viewer.py -q
+pytest tests/test_capproof_mcp_doctor.py -q
+pytest tests/test_hermes_wrapper_ux.py -q
+pytest tests/test_real_hermes_foreground_mcp_demo.py -q
+pytest tests/test_real_hermes_sandbox_mcp_smoke.py -q
+python run_kill_tests.py --mode all --baselines
+python run_adapter_bypass_gate.py
+python run_authspec_faithfulness.py --mode auto
+PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
+python -m compileall src tests run_capproof_auth_queue.py run_capproof_trace_viewer.py run_capproof_mcp_doctor.py
+```
+
+Stage 36ASK boundaries:
+
+- Hermes, DeepSeek, MCP metadata, tool descriptions, annotations, `_meta`, clientInfo, and clientCapabilities cannot approve.
+- Approval scope amplification is rejected.
+- Replay approval is rejected.
+- Deny and expire do not mint capability.
+- Approval receipts and queue records are redaction-safe.
+- CapProof core verifier and Reference Monitor semantics are unchanged.

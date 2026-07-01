@@ -1713,3 +1713,37 @@ Known boundaries:
 - It does not claim all Hermes tool paths are covered.
 - It does not add real email, external MCP, raw shell, arbitrary filesystem access, or OS-level network denial.
 - DeepSeek remains outside the CapProof safety TCB.
+
+## Stage 36ASK Trusted Pending Authorization UX
+
+Status: implemented.
+
+Purpose:
+- Turn `capproof.request_authorization` into a persistent, auditable ASK queue.
+- Keep ASK as a non-executing, non-minting verdict.
+- Allow only a trusted local CLI to approve, deny, or expire pending requests.
+
+Implemented:
+- Added `src/capproof/mcp/authorization_queue.py`.
+- Added `src/capproof/mcp/authorization_store.py`.
+- Added `src/capproof/mcp/authorization_receipts.py`.
+- Added `run_capproof_auth_queue.py`.
+- Added ASK flow report, summary, and trace artifacts under `real_agent_integrations/hermes_mcp_server/`.
+- Added tests for queue CLI, approval flow, scope amplification rejection, replay rejection, and expiry.
+
+ASK semantics:
+- `capproof.request_authorization` creates a pending request only.
+- Pending requests include request id, requested action/scope, user task, original arguments, canonical action hash, requester, timestamps, status, trace id, and proof attempt id.
+- ASK returns `executor_called=false` and `capability_minted=false`.
+- Trusted approve validates that the request exists, is pending, is unexpired, and that approved scope does not exceed requested scope.
+- Approval mints only scoped capability through the existing capability store and emits a redaction-safe receipt.
+- Deny and expire never mint capability.
+- Replay approval is rejected.
+
+Security boundaries:
+- Hermes, DeepSeek natural language, MCP metadata, tool descriptions, annotations, `_meta`, clientInfo, and clientCapabilities cannot approve.
+- Approval scope cannot widen recipient, path, command template, endpoint, value reference, or action kind.
+- CapProof core verifier and Reference Monitor semantics are unchanged.
+- DENY/ASK executor-called invariants are preserved.
+- API keys are not written.
+- `real_agent_integrations/hermes_mcp_server/auth_queue/` is ignored as local mutable authorization state.

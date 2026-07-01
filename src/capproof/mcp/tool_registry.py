@@ -5,6 +5,7 @@ from __future__ import annotations
 from collections.abc import Mapping
 from typing import Any
 
+from capproof.mcp.authorization_queue import create_authorization_request_payload
 from capproof.mcp.context import CapProofMCPContext
 from capproof.mcp.schemas import MCPToolHandler, MCPToolSpec
 from capproof.serialization import JsonObject
@@ -204,12 +205,14 @@ def _request_authorization() -> MCPToolHandler:
                     "reason": {"type": "string"},
                     "requested_tool": {"type": "string"},
                     "requested_scope": {"type": "object"},
+                    "user_task": {"type": "string"},
+                    "expires_in_seconds": {"type": "integer", "minimum": 1},
                 },
                 "additionalProperties": False,
             },
             authority_bearing_fields=("requested_scope",),
         ),
-        admin_handler=lambda args, _ctx: _authorization_request_payload(args),
+        admin_handler=lambda args, ctx: create_authorization_request_payload(args, ctx),
     )
 
 
@@ -231,20 +234,3 @@ def _raw_event(ctx: CapProofMCPContext, *, tool: str, trace_suffix: str, input_a
 
 def _compact(value: Mapping[str, Any]) -> JsonObject:
     return {key: item for key, item in value.items() if item is not None}
-
-
-def _authorization_request_payload(args: Mapping[str, Any]) -> JsonObject:
-    request = {
-        "request_id": "pending_auth_request",
-        "reason": str(args.get("reason", "")),
-        "requested_tool": str(args.get("requested_tool", "")),
-        "requested_scope": args.get("requested_scope", {}),
-        "status": "pending",
-    }
-    return {
-        "verdict": "ASK",
-        "reason": "AuthorizationRequested",
-        "capability_minted": False,
-        "pending_authorization_request": request,
-        "request": request,
-    }

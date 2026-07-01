@@ -83,7 +83,9 @@ def test_allowlisted_command_template_allows_only_mock_executor(tmp_path: Path) 
     assert server.context.executor.real_shell_executed is False
 
 
-def test_request_authorization_does_not_mint_capability(tmp_path: Path) -> None:
+def test_request_authorization_does_not_mint_capability(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("CAPPROOF_AUTH_QUEUE_DIR", str(tmp_path / "auth_queue"))
+    monkeypatch.setenv("CAPPROOF_ASK_TRACE_PATH", str(tmp_path / "ask_flow_trace.jsonl"))
     server = make_server(tmp_path)
     before = len(list_capabilities(server.context.monitor_state.capability_store))
 

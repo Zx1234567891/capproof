@@ -6,6 +6,7 @@ from dataclasses import asdict
 from typing import Any, Mapping
 
 from capproof.agent_adapter import GuardDecision
+from capproof.mcp.authorization_store import mint_approved_capabilities
 from capproof.mcp.context import CapProofMCPContext, make_default_context
 from capproof.mcp.errors import MCPError, invalid_params, invalid_request, method_not_found, tool_not_found
 from capproof.mcp.schemas import MCPToolHandler, MCPToolResult
@@ -52,6 +53,13 @@ class CapProofMCPServer:
             return self._handle_admin_tool(name, args, handler, mcp_metadata=metadata).to_mcp_result()
         if handler.to_raw_event is None:
             raise invalid_params(f"tool has no handler: {name}")
+        mint_approved_capabilities(
+            self.context.authorization_store,
+            self.context.monitor_state,
+            workspace=self.context.workspace,
+            task_id=self.context.task_id,
+            agent_id=self.context.agent_id,
+        )
         raw_event = handler.to_raw_event(args, self.context)
         decision = self.context.middleware.guard(raw_event, self.context.runtime_state)
         execution = self.context.guarded_executor.execute_if_allowed(decision)
@@ -124,9 +132,13 @@ class CapProofMCPServer:
             tool_name=name,
             arguments=arguments,
             original_arguments=dict(arguments),
-            canonical_action_hash=None,
+            canonical_action_hash=str(payload["canonical_action_hash"])
+            if payload.get("canonical_action_hash")
+            else None,
             capproof_verdict=verdict,
-            proof_id=None,
+            proof_id=str(payload["proof_id"] if payload.get("proof_id") else payload.get("proof_attempt_id"))
+            if payload.get("proof_id") or payload.get("proof_attempt_id")
+            else None,
             reason=reason,
             executor_called=False,
             user_task=_extract_user_task(arguments, metadata),
@@ -147,6 +159,8 @@ class CapProofMCPServer:
             "verdict": verdict,
             "reason": reason,
             "executor_called": False,
+            "request_id": payload.get("request_id"),
+            "proof_attempt_id": payload.get("proof_attempt_id"),
             "capability_minted": bool(payload.get("capability_minted", False)),
             "pending_authorization_request": payload.get("pending_authorization_request"),
             "trace": entry.to_dict(),

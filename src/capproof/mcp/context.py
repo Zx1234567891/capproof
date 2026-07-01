@@ -15,6 +15,7 @@ from capproof.agent_adapter import (
 )
 from capproof.canonicalizer import Canonicalizer
 from capproof.capability_store import InMemoryCapabilityStore, mint_capability
+from capproof.mcp.authorization_store import AuthorizationStore, mint_approved_capabilities
 from capproof.mcp.executors import MCPMockExecutor
 from capproof.mcp.sandbox_executors import SandboxedMCPExecutor
 from capproof.mcp.trace import TraceRecorder
@@ -47,6 +48,7 @@ class CapProofMCPContext:
     guarded_executor: GuardedExecutor
     executor: MCPMockExecutor
     trace_recorder: TraceRecorder
+    authorization_store: AuthorizationStore
 
 
 def make_default_context(
@@ -77,7 +79,15 @@ def make_default_context(
         content="summary",
         provenance_root="USER",
     )
+    authorization_store = AuthorizationStore.from_env_or_default()
     _mint_default_capabilities(monitor_state, workspace_path=workspace_path, task_id=task_id, agent_id=agent_id)
+    mint_approved_capabilities(
+        authorization_store,
+        monitor_state,
+        workspace=workspace_path,
+        task_id=task_id,
+        agent_id=agent_id,
+    )
     middleware = CapProofMiddleware(
         AgentAdapterRegistry(
             (
@@ -109,6 +119,7 @@ def make_default_context(
         guarded_executor=GuardedExecutor(executor),
         executor=executor,
         trace_recorder=TraceRecorder(trace_file),
+        authorization_store=authorization_store,
     )
 
 

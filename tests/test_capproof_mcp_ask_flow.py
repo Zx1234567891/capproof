@@ -5,7 +5,9 @@ from capproof.mcp.context import make_default_context
 from capproof.mcp.server import CapProofMCPServer
 
 
-def test_request_authorization_returns_ask_without_minting_capability(tmp_path: Path) -> None:
+def test_request_authorization_returns_ask_without_minting_capability(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("CAPPROOF_AUTH_QUEUE_DIR", str(tmp_path / "auth_queue"))
+    monkeypatch.setenv("CAPPROOF_ASK_TRACE_PATH", str(tmp_path / "ask_flow_trace.jsonl"))
     context = make_default_context(workspace=tmp_path / "workspace", trace_path=tmp_path / "trace.jsonl")
     server = CapProofMCPServer(context=context)
     before = len(list_capabilities(context.monitor_state.capability_store))
@@ -31,7 +33,9 @@ def test_request_authorization_returns_ask_without_minting_capability(tmp_path: 
     assert before == after
 
 
-def test_request_authorization_trace_is_user_visible(tmp_path: Path) -> None:
+def test_request_authorization_trace_is_user_visible(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("CAPPROOF_AUTH_QUEUE_DIR", str(tmp_path / "auth_queue"))
+    monkeypatch.setenv("CAPPROOF_ASK_TRACE_PATH", str(tmp_path / "ask_flow_trace.jsonl"))
     context = make_default_context(workspace=tmp_path / "workspace", trace_path=tmp_path / "trace.jsonl")
     server = CapProofMCPServer(context=context)
 
