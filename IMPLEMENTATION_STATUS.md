@@ -1747,3 +1747,57 @@ Security boundaries:
 - DENY/ASK executor-called invariants are preserved.
 - API keys are not written.
 - `real_agent_integrations/hermes_mcp_server/auth_queue/` is ignored as local mutable authorization state.
+
+## Stage 36R Real Hermes Foreground ASK Approval Rerun Smoke
+
+Status: implemented and validated.
+
+Purpose:
+- Validate the complete ASK authorization loop in a real Hermes foreground workflow.
+- Prove that ASK creates a pending request without execution or capability minting.
+- Prove that only trusted local CLI approval can mint the exact scoped capability.
+- Prove that rerunning the same foreground task changes from ASK to ALLOW only after trusted approval.
+
+Implemented:
+- Added `run_real_hermes_foreground_ask_flow.py`.
+- Added `tests/test_real_hermes_foreground_ask_flow.py`.
+- Added foreground ASK report, summary, live log, and JSONL trace artifacts.
+- Added safe example approval scopes under `real_agent_integrations/hermes_mcp_server/auth_queue_examples/`.
+
+Observed foreground result:
+- Real Hermes foreground run: yes.
+- Real DeepSeek call: yes.
+- Standard CapProof MCP server: yes.
+- tools/list observed: yes.
+- tools/call observed: yes.
+- First run verdict: ASK.
+- Pending request created: yes.
+- Before approval `executor_called=false`: yes.
+- Before approval `capability_minted=false`: yes.
+- Trusted approve exact scope minted scoped capability: yes.
+- Approval receipt generated: yes.
+- Foreground rerun verdict: ALLOW.
+- Rerun `executor_called=true`: yes.
+- Hermes/DeepSeek natural language claimed approval rejected: yes.
+- MCP `_meta` approval rejected: yes.
+- Scope amplification rejected: yes.
+
+Validation:
+- `python run_real_hermes_foreground_ask_flow.py --preflight`: passed.
+- `python run_real_hermes_foreground_ask_flow.py --list-scenarios`: passed.
+- `python run_real_hermes_foreground_ask_flow.py --dry-run`: passed.
+- Authorized `python run_real_hermes_foreground_ask_flow.py --all --foreground`: passed.
+- `pytest tests/test_real_hermes_foreground_ask_flow.py -q`: 9 passed, 1 skipped.
+- Full `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 548 passed, 3 skipped.
+- Kill tests: 24/24.
+- Adapter bypass unexpected allow: 0.
+- AuthSpec dangerous over-broadening: 0.
+- Compileall: passed.
+
+Security boundaries:
+- No real email was used.
+- No external MCP was used.
+- No API key was written to code, reports, traces, or committed files.
+- Runtime local auth queue state is ignored and not committed.
+- CapProof core verifier and Reference Monitor semantics are unchanged.
+- No production-level Hermes protection, all-tool-path coverage, or OS-level network denial claim is made.
