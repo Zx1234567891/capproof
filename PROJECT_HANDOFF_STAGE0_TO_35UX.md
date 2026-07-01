@@ -2378,15 +2378,101 @@ Stage 34H non-claims:
 - No OS-level network-denial claim.
 - No OpenCode/OpenClaw real integration yet.
 
-## 13. Suggested Next Stages
+## 13. Stage 35UX Foreground Hermes CapProof MCP UX
 
-Reasonable next work after Stage 34H:
+Checkpoint:
 
-1. Foreground Hermes UX polish.
-   - Add `hermes --doctor`, `hermes --where-trace`, `hermes --trace-follow`, and `hermes --capproof-status`.
-   - Show a short startup banner before Hermes takes over the terminal.
-   - Add a readable trace viewer for verdict/proof/executor status.
-   - Keep MCP stdio stdout reserved for JSON-RPC.
+- `5c4e9f53a9738a48fc6f0c95985359f621222295`
+- `checkpoint: polish Hermes CapProof MCP foreground UX`
+
+Stage 35UX added a user-facing foreground UX layer around the existing
+standard CapProof MCP server. It did not change CapProof core verifier or
+Reference Monitor semantics and did not broaden safety claims.
+
+User commands now available:
+
+- `hermes --doctor`
+- `hermes --where-trace`
+- `hermes --trace-follow`
+- `hermes --capproof-status`
+- `hermes --list-tasks`
+- `hermes --classic`
+- `hermes`
+
+Foreground behavior:
+
+- `hermes` defaults to launching Hermes TUI.
+- `hermes --classic` launches Hermes' classic foreground CLI.
+- The startup banner writes to stderr, not MCP stdio stdout.
+- The banner reports:
+  - CapProof MCP attached.
+  - MCP mode: stdio.
+  - sandboxed-real-execution status.
+  - exposed tools: 7.
+  - trace file path.
+  - live log path.
+  - safety boundary: DeepSeek is not the safety TCB; CapProof guard gates tools.
+
+New files:
+
+- `bin/hermes`
+- `run_hermes_capproof_foreground.py`
+- `run_capproof_trace_viewer.py`
+- `run_capproof_mcp_doctor.py`
+- `tests/test_capproof_trace_viewer.py`
+- `tests/test_capproof_mcp_doctor.py`
+- `tests/test_hermes_wrapper_ux.py`
+- `docs/HERMES_CAPROOF_MCP_QUICKSTART.md`
+- `real_agent_integrations/hermes_mcp_server/reports/foreground_ux_report.md`
+- `real_agent_integrations/hermes_mcp_server/reports/foreground_ux_summary.json`
+
+Trace viewer support:
+
+- `--format pretty/json`.
+- `--latest`.
+- `--follow`.
+- `--filter-verdict`.
+- `--filter-tool`.
+- `--last N`.
+- malformed JSONL count.
+- redaction-safe output.
+
+Validation recorded for Stage 35UX:
+
+- `python run_capproof_mcp_doctor.py --all`: passed.
+- trace viewer latest/pretty/json/filter: passed.
+- `hermes --doctor`: passed.
+- `hermes --where-trace`: passed.
+- `hermes --capproof-status`: passed.
+- Stage 35UX tests: 9 passed.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 526 passed, 2 skipped.
+- kill tests: 24/24.
+- adapter bypass unexpected allow: 0.
+- AuthSpec dangerous over-broadening: 0.
+- `compileall`: passed.
+- API key written: no.
+- `external/`, `.venv-hermes/`, and `node_modules/` submitted: no.
+
+Stage 35UX non-claims:
+
+- No production-level Hermes protection.
+- No all-Hermes-tool-paths-covered claim.
+- No real email.
+- No external MCP.
+- No arbitrary shell.
+- No arbitrary filesystem access.
+- No OS-level network-denial claim.
+- No OpenCode/OpenClaw real integration yet.
+
+## 14. Suggested Next Stages
+
+Reasonable next work after Stage 35UX:
+
+1. Trusted pending authorization UX.
+   - Convert `capproof.request_authorization` from a simple pending object into a durable MCP-layer queue.
+   - Keep ASK from minting capability automatically.
+   - Allow only a trusted local CLI to approve a pending request into a scoped capability.
+   - Reject scope amplification, replay, expired requests, metadata approval claims, and LLM natural-language approval claims.
 
 2. Expand real Hermes local MCP coverage.
    - More tool types.
@@ -2422,12 +2508,12 @@ Reasonable next work after Stage 34H:
    - A no-secret artifact mode.
    - Explicit claims/non-claims file.
 
-## 14. Final State for New GPT Session
+## 15. Final State for New GPT Session
 
 If a new GPT/Codex session starts from here, it should assume:
 
-- The project is at Stage 34H.
-- Current checkpoint is `39cc18102a272316d92d1ae669297cd21a93eb2c`.
+- The project is at Stage 35UX.
+- Current checkpoint is `5c4e9f53a9738a48fc6f0c95985359f621222295`.
 - Stage 30R real controlled Hermes + DeepSeek + local MCP path succeeded.
 - CapProof guard was active on the local MCP tool-call path.
 - Stage 31M productized the local CapProof MCP server with standard `tools/list` and `tools/call`.
@@ -2461,11 +2547,16 @@ If a new GPT/Codex session starts from here, it should assume:
 - Stage 34H validated `ALLOW` for workspace read/write and allowlisted command template, with executor called.
 - Stage 34H validated `DENY` for outside workspace read, raw shell, and attacker recipient, with executor not called.
 - Stage 34H validation ended with full pytest 508 passed, 2 skipped, and compileall passed.
+- Stage 35UX added foreground UX helpers: `hermes --doctor`, `hermes --where-trace`, `hermes --trace-follow`, `hermes --capproof-status`, `hermes --list-tasks`, and `hermes --classic`.
+- Stage 35UX added `run_capproof_trace_viewer.py`, `run_capproof_mcp_doctor.py`, `docs/HERMES_CAPROOF_MCP_QUICKSTART.md`, and foreground UX report/summary.
+- Stage 35UX preserved MCP stdio stdout cleanliness by writing the startup banner to stderr.
+- Stage 35UX trace viewer supports pretty/json/latest/follow/verdict filter/tool filter/last N/malformed JSONL count/redaction.
+- Stage 35UX validation ended with full pytest 526 passed, 2 skipped, and compileall passed.
 - Real OpenCode/OpenClaw processes have not yet been run.
 - Raw shell, arbitrary filesystem access, real email, external MCP, and OS-level network denial are not claimed.
 - OpenCode/OpenClaw real integration is not claimed complete.
 - DeepSeek is model backend only, not safety TCB.
 - API keys must stay out of files and commits.
 - The repo should not include `external/` third-party source or `.venv-hermes/`.
-- The next approved direction after this checkpoint is Stage 35UX foreground Hermes CapProof MCP UX polish and trace viewer.
+- The next approved direction after this checkpoint is Stage 36ASK trusted pending authorization UX.
 - Future work should preserve Reference Monitor / Capability Store / Proof Model safety semantics unless the user explicitly asks for a carefully reviewed semantic change.
