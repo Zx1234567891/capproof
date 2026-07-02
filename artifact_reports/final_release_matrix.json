@@ -1,0 +1,21 @@
+{
+  "aggregate_agent_parity_passed": true,
+  "all_agents_deepseek": true,
+  "all_key_source_env": true,
+  "checksums_generated": true,
+  "claims_consistent_with_evidence": true,
+  "cleanroom_passed": true,
+  "core_verifier_modified": false,
+  "evaluator_passed": true,
+  "final_release_passed": true,
+  "forbidden_tracked_paths_count": 0,
+  "fresh_run": true,
+  "hermes_parity": true,
+  "key_written": false,
+  "openclaw_parity": true,
+  "opencode_parity": true,
+  "production_level_overclaim": false,
+  "real_key_scan": "REAL_KEY_NOT_FOUND",
+  "redaction_safe": true,
+  "reference_monitor_semantics_changed": false
+}

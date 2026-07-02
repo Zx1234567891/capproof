@@ -1,6 +1,6 @@
 # Real Agent Parity Evaluator Matrix
 
-- evaluator_passed: True
+- evaluator_passed: False
 
 | agent | real_agent_process_ran | agent_binary | agent_version | deepseek_real_call | deepseek_key_source | deepseek_key_written | standard_capproof_mcp_server_used | tools_list_observed | tools_call_observed | allow_read_write_command_observed | deny_outside_path_raw_shell_attacker_observed | ask_pending_request_created | trusted_approval_executed | approval_receipt_generated | rerun_allow_observed | llm_metadata_approval_rejected | executor_called_on_deny_ask | trace_live_log_report_generated | parity_passed | reason |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |

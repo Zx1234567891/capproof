@@ -73,6 +73,6 @@
       "trusted_approval_executed": true
     }
   ],
-  "evaluator_passed": true,
+  "evaluator_passed": false,
   "stage": "42EVAL"
 }

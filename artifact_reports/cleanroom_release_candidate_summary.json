@@ -22,7 +22,7 @@
   },
   "evaluator_command": {
     "command": "/home/xiaowu/anaconda3/bin/python run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report",
-    "duration_seconds": 255.586,
+    "duration_seconds": 254.88,
     "returncode": 0,
     "stderr_tail": "",
     "stdout_tail": "evaluator_mode=fresh_run\nfresh_run=True\nevaluator_passed=True\naggregate_agent_parity_passed=True\nsummary=/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/artifact_reports/real_agent_parity_evaluator_summary.json\nreport=/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/artifact_reports/real_agent_parity_evaluator_report.md\n",
@@ -72,7 +72,7 @@
   "runtime_bootstrap": {
     "command": {
       "command": "/home/xiaowu/anaconda3/bin/python run_agent_runtime_bootstrap.py --bootstrap all --verify --report --install-prefix /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes --source-root /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external",
-      "duration_seconds": 15.584,
+      "duration_seconds": 15.63,
       "returncode": 0,
       "stderr_tail": "",
       "stdout_tail": "status=passed\nruntime_bootstrap_passed=True\nopencode.runtime_present=True\nopencode.version_detected=1.17.13\nopencode.real_smoke_eligible=True\nopencode.reason=ok\nopenclaw.runtime_present=True\nopenclaw.version_detected=OpenClaw 2026.6.11 (e085fa1)\nopenclaw.real_smoke_eligible=True\nopenclaw.reason=ok\n",
@@ -266,7 +266,7 @@
       "third_party_source_committed": false
     }
   },
-  "source_commit": "e90d71c7d5d7ed54a649c109ea239c1a32951d13",
+  "source_commit": "941b95974cfa7c0001f5b0a9cd51028c5d1020c0",
   "source_ref": "HEAD",
   "stage": "43RC",
   "status": "passed",

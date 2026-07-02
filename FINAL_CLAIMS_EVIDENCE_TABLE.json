@@ -1,0 +1,202 @@
+{
+  "claims": [
+    {
+      "claim": "Hermes local CapProof MCP parity",
+      "commit": "b881d996afe58dfc65ce7e00e7e321c51c108651",
+      "evidence_file": "artifact_reports/real_environment_validation_summary.json",
+      "evidence_stage": "Stage 38REAL",
+      "notes": "Controlled local Hermes MCP path.",
+      "status": "proven",
+      "test_command": "python run_real_environment_validation.py --all --require-real --fail-if-gate-missing --report"
+    },
+    {
+      "claim": "OpenCode local CapProof MCP parity",
+      "commit": "b949d71bc7d5ac3fe29be7a75d104c3338a71b72",
+      "evidence_file": "real_agent_integrations/opencode_mcp_server/reports/real_opencode_deepseek_parity_summary.json",
+      "evidence_stage": "Stage 40O-D",
+      "notes": "Controlled local OpenCode MCP path.",
+      "status": "proven",
+      "test_command": "python run_real_opencode_deepseek_mcp_parity.py --all --require-real --report"
+    },
+    {
+      "claim": "OpenClaw local CapProof MCP parity",
+      "commit": "7d967ebe053e0a7b9e199e7540dbc30547c33411",
+      "evidence_file": "real_agent_integrations/openclaw_mcp_server/reports/real_openclaw_deepseek_parity_summary.json",
+      "evidence_stage": "Stage 40C-D",
+      "notes": "Controlled local OpenClaw MCP path.",
+      "status": "proven",
+      "test_command": "python run_real_openclaw_deepseek_mcp_parity.py --all --require-real --report"
+    },
+    {
+      "claim": "All three use DeepSeek via DEEPSEEK_API_KEY",
+      "commit": "0ab6e29",
+      "evidence_file": "artifact_reports/cleanroom_release_candidate_summary.json",
+      "evidence_stage": "Stage 43RC",
+      "notes": "DeepSeek is not safety TCB.",
+      "status": "proven",
+      "test_command": "python run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
+    },
+    {
+      "claim": "All three use same standard CapProof MCP server",
+      "commit": "47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c",
+      "evidence_file": "artifact_reports/agent_parity_matrix.json",
+      "evidence_stage": "Stage 41AP",
+      "notes": "Same productized stdio MCP server path.",
+      "status": "proven",
+      "test_command": "python run_agent_parity_matrix.py --report"
+    },
+    {
+      "claim": "tools/list and tools/call observed for all three",
+      "commit": "0ab6e29",
+      "evidence_file": "artifact_reports/cleanroom_release_candidate_summary.json",
+      "evidence_stage": "Stage 43RC",
+      "notes": "Observed in tested local path.",
+      "status": "proven",
+      "test_command": "python run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
+    },
+    {
+      "claim": "sandboxed local read/write/template subset",
+      "commit": "0ab6e29",
+      "evidence_file": "artifact_reports/cleanroom_release_candidate_summary.json",
+      "evidence_stage": "Stage 43RC",
+      "notes": "No arbitrary filesystem access.",
+      "status": "proven",
+      "test_command": "python run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
+    },
+    {
+      "claim": "DENY/ASK executor gate",
+      "commit": "0ab6e29",
+      "evidence_file": "artifact_reports/cleanroom_release_candidate_summary.json",
+      "evidence_stage": "Stage 43RC",
+      "notes": "DENY/ASK executor remains off.",
+      "status": "proven",
+      "test_command": "python run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
+    },
+    {
+      "claim": "trusted ASK approve rerun",
+      "commit": "0ab6e29",
+      "evidence_file": "artifact_reports/cleanroom_release_candidate_summary.json",
+      "evidence_stage": "Stage 43RC",
+      "notes": "Trusted local CLI only.",
+      "status": "proven",
+      "test_command": "python run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
+    },
+    {
+      "claim": "LLM/MCP metadata cannot mint capability in tested paths",
+      "commit": "d80e92e",
+      "evidence_file": "artifact_reports/final_claims_evidence_index.json",
+      "evidence_stage": "Stage 42EVAL",
+      "notes": "Tested metadata/natural-language rejection.",
+      "status": "proven",
+      "test_command": "python run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
+    },
+    {
+      "claim": "clean-room fresh-run reproduction passed",
+      "commit": "0ab6e29",
+      "evidence_file": "artifact_reports/cleanroom_release_candidate_summary.json",
+      "evidence_stage": "Stage 43RC",
+      "notes": "Release candidate reproduced from clean worktree.",
+      "status": "proven",
+      "test_command": "python run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
+    },
+    {
+      "claim": "production-level protection",
+      "commit": "final release commit",
+      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_stage": "Stage 44FINAL",
+      "notes": "Explicit non-claim.",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_final_non_claims.py -q"
+    },
+    {
+      "claim": "all built-in tool paths covered",
+      "commit": "final release commit",
+      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_stage": "Stage 44FINAL",
+      "notes": "Explicit non-claim.",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_final_non_claims.py -q"
+    },
+    {
+      "claim": "all MCP clients covered",
+      "commit": "final release commit",
+      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_stage": "Stage 44FINAL",
+      "notes": "Explicit non-claim.",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_final_non_claims.py -q"
+    },
+    {
+      "claim": "external MCP protection",
+      "commit": "final release commit",
+      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_stage": "Stage 44FINAL",
+      "notes": "Explicit non-claim.",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_final_non_claims.py -q"
+    },
+    {
+      "claim": "real email",
+      "commit": "final release commit",
+      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_stage": "Stage 44FINAL",
+      "notes": "Explicit non-claim.",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_final_non_claims.py -q"
+    },
+    {
+      "claim": "raw shell support",
+      "commit": "final release commit",
+      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_stage": "Stage 44FINAL",
+      "notes": "Explicit non-claim.",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_final_non_claims.py -q"
+    },
+    {
+      "claim": "arbitrary filesystem access",
+      "commit": "final release commit",
+      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_stage": "Stage 44FINAL",
+      "notes": "Explicit non-claim.",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_final_non_claims.py -q"
+    },
+    {
+      "claim": "OS-level network denial",
+      "commit": "final release commit",
+      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_stage": "Stage 44FINAL",
+      "notes": "Explicit non-claim.",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_final_non_claims.py -q"
+    },
+    {
+      "claim": "DeepSeek as safety TCB",
+      "commit": "final release commit",
+      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_stage": "Stage 44FINAL",
+      "notes": "Explicit non-claim.",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_final_non_claims.py -q"
+    },
+    {
+      "claim": "LLM output authorization",
+      "commit": "final release commit",
+      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_stage": "Stage 44FINAL",
+      "notes": "Explicit non-claim.",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_final_non_claims.py -q"
+    },
+    {
+      "claim": "MCP _meta authorization",
+      "commit": "final release commit",
+      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_stage": "Stage 44FINAL",
+      "notes": "Explicit non-claim.",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_final_non_claims.py -q"
+    }
+  ]
+}

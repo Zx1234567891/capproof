@@ -9,7 +9,7 @@
 | stage | 43RC |
 | cleanroom_passed | True |
 | cleanroom_mode | fresh-run |
-| source_commit | e90d71c7d5d7ed54a649c109ea239c1a32951d13 |
+| source_commit | 941b95974cfa7c0001f5b0a9cd51028c5d1020c0 |
 | evaluator_passed | True |
 | aggregate_agent_parity_passed | True |
 | all_agents_deepseek | True |

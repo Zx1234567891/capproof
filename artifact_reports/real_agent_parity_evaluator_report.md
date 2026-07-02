@@ -9,9 +9,9 @@
 
 ## Summary
 
-- evaluator_mode: fresh_run
-- fresh_run: True
-- evaluator_passed: True
+- evaluator_mode: preflight
+- fresh_run: False
+- evaluator_passed: False
 - aggregate_agent_parity_passed: True
 - real_environment_policy_active: True
 - dry_run_preflight_counts_as_completion: False
@@ -30,10 +30,7 @@
 
 ## Commands
 
-- hermes: rc=0 command=`/home/xiaowu/anaconda3/bin/python run_real_environment_validation.py --all --require-real --fail-if-gate-missing --report`
-- opencode: rc=0 command=`/home/xiaowu/anaconda3/bin/python run_real_opencode_deepseek_mcp_parity.py --all --require-real --report`
-- openclaw: rc=0 command=`/home/xiaowu/anaconda3/bin/python run_real_openclaw_deepseek_mcp_parity.py --all --require-real --report`
-- agent_parity_matrix: rc=0 command=`/home/xiaowu/anaconda3/bin/python run_agent_parity_matrix.py --report`
+- no real commands executed
 
 ## Non-Claims
 

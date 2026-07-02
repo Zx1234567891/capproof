@@ -11,7 +11,7 @@
 
 - cleanroom_mode: fresh-run
 - cleanroom_passed: True
-- source_commit: e90d71c7d5d7ed54a649c109ea239c1a32951d13
+- source_commit: 941b95974cfa7c0001f5b0a9cd51028c5d1020c0
 - cleanroom_git_status_before: clean
 - cleanroom_git_status_after: clean
 - evaluator_passed: True
