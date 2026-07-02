@@ -1,0 +1,37 @@
+[
+  {
+    "evidence": "REAL_ENVIRONMENT_VALIDATION.md active",
+    "item": "real_environment_policy_active",
+    "passed": true
+  },
+  {
+    "evidence": "preflight cannot mark runtime_bootstrap_passed",
+    "item": "preflight_not_completion",
+    "passed": true
+  },
+  {
+    "evidence": "ok",
+    "item": "opencode_bootstrap",
+    "passed": true
+  },
+  {
+    "evidence": "ok",
+    "item": "openclaw_bootstrap",
+    "passed": true
+  },
+  {
+    "evidence": "Stage 40RB does not run agent smoke",
+    "item": "no_integration_claim",
+    "passed": true
+  },
+  {
+    "evidence": "local ignored prefix only",
+    "item": "no_system_install",
+    "passed": true
+  },
+  {
+    "evidence": "no API key stored in bootstrap artifacts",
+    "item": "secret_hygiene",
+    "passed": true
+  }
+]

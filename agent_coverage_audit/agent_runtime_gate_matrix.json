@@ -15,7 +15,7 @@
     "passed": true
   },
   {
-    "evidence": "blocked_runtime_missing",
+    "evidence": "ok",
     "item": "opencode_runtime_gate",
     "passed": true
   },
@@ -25,7 +25,7 @@
     "passed": true
   },
   {
-    "evidence": "blocked_runtime_missing",
+    "evidence": "ok",
     "item": "openclaw_runtime_gate",
     "passed": true
   },

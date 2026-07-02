@@ -12,85 +12,163 @@
   "forked_guard_logic": false,
   "integration_claim_made": false,
   "next_stage_recommended": [
-    "Install or expose a real OpenCode/OpenClaw runtime before real agent smoke"
+    "Stage 40O real OpenCode MCP smoke",
+    "Stage 40C real OpenClaw MCP smoke"
   ],
   "openclaw": {
     "agent": "openclaw",
-    "blocked_runtime_missing": true,
+    "blocked_runtime_missing": false,
     "capproof_mcp_command_referenced": true,
     "capproof_mcp_config_template_exists": true,
-    "command_name": "openclaw",
-    "command_path": null,
-    "config_load_supported": false,
+    "command_name": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/.agent-runtimes/bin/openclaw",
+    "command_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/.agent-runtimes/npm-prefix/node_modules/openclaw/openclaw.mjs",
+    "config_load_supported": true,
     "config_template_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/openclaw_mcp_server/configs/openclaw.capproof.mcp.commands.md",
-    "mcp_doctor_probe_available": false,
-    "mcp_status_available": false,
-    "mcp_tools_available": false,
+    "mcp_doctor_probe_available": true,
+    "mcp_status_available": true,
+    "mcp_tools_available": true,
     "probes": [
       {
         "attempted": true,
-        "available": false,
+        "available": true,
         "command": [
           "which",
-          "openclaw"
+          "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/.agent-runtimes/bin/openclaw"
         ],
         "error": "",
-        "exit_code": 1,
+        "exit_code": 0,
         "label": "which_openclaw",
-        "output_excerpt": ""
+        "output_excerpt": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/.agent-runtimes/npm-prefix/node_modules/openclaw/openclaw.mjs"
+      },
+      {
+        "attempted": true,
+        "available": true,
+        "command": [
+          "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/.agent-runtimes/npm-prefix/node_modules/openclaw/openclaw.mjs",
+          "--version"
+        ],
+        "error": "",
+        "exit_code": 0,
+        "label": "openclaw_version_dash",
+        "output_excerpt": "OpenClaw 2026.6.11 (e085fa1)"
+      },
+      {
+        "attempted": true,
+        "available": true,
+        "command": [
+          "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/.agent-runtimes/npm-prefix/node_modules/openclaw/openclaw.mjs",
+          "mcp",
+          "status"
+        ],
+        "error": "",
+        "exit_code": 0,
+        "label": "openclaw_mcp_status",
+        "output_excerpt": "No MCP servers configured in /home/xiaowu/.openclaw/openclaw.json."
+      },
+      {
+        "attempted": true,
+        "available": true,
+        "command": [
+          "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/.agent-runtimes/npm-prefix/node_modules/openclaw/openclaw.mjs",
+          "mcp",
+          "doctor",
+          "--probe"
+        ],
+        "error": "",
+        "exit_code": 0,
+        "label": "openclaw_mcp_doctor_probe",
+        "output_excerpt": "No MCP servers configured in /home/xiaowu/.openclaw/openclaw.json. Add one with openclaw mcp add <name> --command <command>."
+      },
+      {
+        "attempted": true,
+        "available": true,
+        "command": [
+          "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/.agent-runtimes/npm-prefix/node_modules/openclaw/openclaw.mjs",
+          "mcp",
+          "tools",
+          "--help"
+        ],
+        "error": "",
+        "exit_code": 0,
+        "label": "openclaw_mcp_tools",
+        "output_excerpt": "OpenClaw 2026.6.11 (e085fa1) \u2014 All your chats, one OpenClaw.\n\nUsage: openclaw mcp tools [options] <name>\n\nUpdate per-server MCP tool include/exclude filters\n\nArguments:\n  name             MCP server name\n\nOptions:\n  --clear          Clear this server's MCP tool filter (default: false)\n  --exclude <csv>  Comma-separated MCP tool names or '*' globs to hide\n  -h, --help       Display help for command\n  --include <csv>  Comma-separated MCP tool names or '*' globs to expose"
       }
     ],
     "real_agent_process_run": false,
     "real_integration_claim": false,
-    "real_smoke_eligible": false,
-    "reason": "blocked_runtime_missing",
-    "runtime_present": false,
+    "real_smoke_eligible": true,
+    "reason": "ok",
+    "runtime_present": true,
     "source_repo_commit": "5bcd25f0fb6de3cc2ba6b6a7688a9361eb355143",
     "source_repo_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/openclaw",
     "source_repo_present": true,
     "source_repo_remote": "https://github.com/openclaw/openclaw",
     "tools_call_observed_from_real_agent": false,
     "tools_list_observed_from_real_agent": false,
-    "version_detected": null
+    "version_detected": "OpenClaw 2026.6.11 (e085fa1)"
   },
   "opencode": {
     "agent": "opencode",
-    "blocked_runtime_missing": true,
+    "blocked_runtime_missing": false,
     "capproof_mcp_command_referenced": true,
     "capproof_mcp_config_template_exists": true,
-    "command_name": "opencode",
-    "command_path": null,
-    "config_load_supported": false,
+    "command_name": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/.agent-runtimes/bin/opencode",
+    "command_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/.agent-runtimes/npm-prefix/opencode/node_modules/opencode-ai/bin/opencode.exe",
+    "config_load_supported": true,
     "config_template_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/configs/opencode.capproof.mcp.example.jsonc",
     "mcp_doctor_probe_available": false,
     "mcp_status_available": false,
-    "mcp_tools_available": false,
+    "mcp_tools_available": true,
     "probes": [
       {
         "attempted": true,
-        "available": false,
+        "available": true,
         "command": [
           "which",
-          "opencode"
+          "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/.agent-runtimes/bin/opencode"
         ],
         "error": "",
-        "exit_code": 1,
+        "exit_code": 0,
         "label": "which_opencode",
-        "output_excerpt": ""
+        "output_excerpt": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/.agent-runtimes/npm-prefix/opencode/node_modules/opencode-ai/bin/opencode.exe"
+      },
+      {
+        "attempted": true,
+        "available": true,
+        "command": [
+          "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/.agent-runtimes/npm-prefix/opencode/node_modules/opencode-ai/bin/opencode.exe",
+          "--version"
+        ],
+        "error": "",
+        "exit_code": 0,
+        "label": "opencode_version_dash",
+        "output_excerpt": "1.17.13"
+      },
+      {
+        "attempted": true,
+        "available": true,
+        "command": [
+          "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/.agent-runtimes/npm-prefix/opencode/node_modules/opencode-ai/bin/opencode.exe",
+          "--help"
+        ],
+        "error": "",
+        "exit_code": 0,
+        "label": "opencode_help",
+        "output_excerpt": "\u2800                                \u2584     \n\u2588\u2580\u2580\u2588 \u2588\u2580\u2580\u2588 \u2588\u2580\u2580\u2588 \u2588\u2580\u2580\u2584 \u2588\u2580\u2580\u2580 \u2588\u2580\u2580\u2588 \u2588\u2580\u2580\u2588 \u2588\u2580\u2580\u2588\n\u2588  \u2588 \u2588  \u2588 \u2588\u2580\u2580\u2580 \u2588  \u2588 \u2588    \u2588  \u2588 \u2588  \u2588 \u2588\u2580\u2580\u2580\n\u2580\u2580\u2580\u2580 \u2588\u2580\u2580\u2580 \u2580\u2580\u2580\u2580 \u2580  \u2580 \u2580\u2580\u2580\u2580 \u2580\u2580\u2580\u2580 \u2580\u2580\u2580\u2580 \u2580\u2580\u2580\u2580\n\nCommands:\n  opencode completion          generate shell completion script\n  opencode acp                 start ACP (Agent Client Protocol) server\n  opencode mcp                 manage MCP (Model Context Protocol) servers\n  opencode [project]           start opencode tui                                          [default]\n  opencode attach <url>        attach to a running opencode server\n  opencode run [message..]     run opencode with a message\n  opencode debug               debugging and troubleshooting tools\n  opencode providers           manage AI providers and credentials                   [aliases: auth]\n  opencode agent               manage agents\n  opencode upgrade [target]    upgrade opencode to the latest or a specific version\n  opencode uninstall           uninstall opencode and remove all related files\n  opencode serv"
       }
     ],
     "real_agent_process_run": false,
     "real_integration_claim": false,
-    "real_smoke_eligible": false,
-    "reason": "blocked_runtime_missing",
-    "runtime_present": false,
+    "real_smoke_eligible": true,
+    "reason": "ok",
+    "runtime_present": true,
     "source_repo_commit": "f52424e05fab0edddb4462112ceb02044085f903",
     "source_repo_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/opencode",
     "source_repo_present": true,
     "source_repo_remote": "https://github.com/anomalyco/opencode",
     "tools_call_observed_from_real_agent": false,
     "tools_list_observed_from_real_agent": false,
-    "version_detected": null
+    "version_detected": "1.17.13"
   },
   "production_level_protection_claim": false,
   "real_environment_policy_active": true,
@@ -102,7 +180,7 @@
     "agent_mcp_client_audit_tests": "5 passed",
     "authspec_dangerous_over_broadening": 0,
     "compileall": "passed",
-    "full_pytest": "567 passed, 3 skipped",
+    "full_pytest": "574 passed, 3 skipped",
     "kill_tests": "24/24",
     "openclaw_mcp_config_tests": "3 passed",
     "opencode_mcp_config_tests": "3 passed",

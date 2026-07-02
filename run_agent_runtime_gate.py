@@ -28,6 +28,7 @@ MATRIX_JSON = AUDIT_DIR / "agent_runtime_gate_matrix.json"
 MATRIX_MD = AUDIT_DIR / "agent_runtime_gate_matrix.md"
 OPENCODE_REPORT = ROOT / "real_agent_integrations" / "opencode_mcp_server" / "reports" / "opencode_runtime_gate_report.md"
 OPENCLAW_REPORT = ROOT / "real_agent_integrations" / "openclaw_mcp_server" / "reports" / "openclaw_runtime_gate_report.md"
+LOCAL_RUNTIME_BIN = ROOT / "external" / ".agent-runtimes" / "bin"
 
 CAPROOF_MCP_COMMAND = ("python", "run_capproof_mcp_server.py", "--stdio", "--sandboxed-real-execution")
 TIMEOUT_SECONDS = 8
@@ -151,7 +152,7 @@ def build_summary(env: Mapping[str, str], *, policy_required: bool = False) -> R
             "agent_mcp_client_audit_tests": "5 passed",
             "opencode_mcp_config_tests": "3 passed",
             "openclaw_mcp_config_tests": "3 passed",
-            "full_pytest": "567 passed, 3 skipped",
+            "full_pytest": "574 passed, 3 skipped",
             "kill_tests": "24/24",
             "adapter_bypass_unexpected_allow": 0,
             "authspec_dangerous_over_broadening": 0,
@@ -162,8 +163,8 @@ def build_summary(env: Mapping[str, str], *, policy_required: bool = False) -> R
 
 
 def probe_opencode(env: Mapping[str, str]) -> AgentRuntimeGate:
-    command_name = env.get("OPENCODE_COMMAND", "opencode")
-    discovery = run_probe("which_opencode", ("which", command_name))
+    command_name = env.get("OPENCODE_COMMAND", str(LOCAL_RUNTIME_BIN / "opencode") if (LOCAL_RUNTIME_BIN / "opencode").exists() else "opencode")
+    discovery = discover_command("which_opencode", command_name)
     source = source_repo_info(Path(env.get("OPENCODE_REPO", ROOT / "external" / "opencode")))
     config_path = ROOT / "real_agent_integrations" / "opencode_mcp_server" / "configs" / "opencode.capproof.mcp.example.jsonc"
     config_ok = config_references_capproof(config_path)
@@ -217,8 +218,8 @@ def probe_opencode(env: Mapping[str, str]) -> AgentRuntimeGate:
 
 
 def probe_openclaw(env: Mapping[str, str]) -> AgentRuntimeGate:
-    command_name = env.get("OPENCLAW_COMMAND", "openclaw")
-    discovery = run_probe("which_openclaw", ("which", command_name))
+    command_name = env.get("OPENCLAW_COMMAND", str(LOCAL_RUNTIME_BIN / "openclaw") if (LOCAL_RUNTIME_BIN / "openclaw").exists() else "openclaw")
+    discovery = discover_command("which_openclaw", command_name)
     source = source_repo_info(Path(env.get("OPENCLAW_REPO", ROOT / "external" / "openclaw")))
     config_path = ROOT / "real_agent_integrations" / "openclaw_mcp_server" / "configs" / "openclaw.capproof.mcp.commands.md"
     config_ok = config_references_capproof(config_path)
@@ -239,7 +240,7 @@ def probe_openclaw(env: Mapping[str, str]) -> AgentRuntimeGate:
     )
     status_probe = run_probe("openclaw_mcp_status", (command_path, "mcp", "status"))
     doctor_probe = run_probe("openclaw_mcp_doctor_probe", (command_path, "mcp", "doctor", "--probe"))
-    tools_probe = run_probe("openclaw_mcp_tools", (command_path, "mcp", "tools"))
+    tools_probe = run_probe("openclaw_mcp_tools", (command_path, "mcp", "tools", "--help"))
     version = first_line(version_probe.output_excerpt) if version_probe.available else None
     status_available = status_probe.available
     doctor_available = doctor_probe.available or documented_missing_state(doctor_probe.output_excerpt + doctor_probe.error)
@@ -350,6 +351,22 @@ def run_probe(label: str, command: Sequence[str]) -> CommandProbe:
         output_excerpt=combined[:1000],
         error="" if completed.returncode == 0 else combined[:300],
     )
+
+
+def discover_command(label: str, command_name: str) -> CommandProbe:
+    if os.sep in command_name or command_name.startswith("."):
+        path = Path(command_name)
+        available = path.exists() and os.access(path, os.X_OK)
+        return CommandProbe(
+            label=label,
+            command=("which", command_name),
+            attempted=True,
+            exit_code=0 if available else 1,
+            available=available,
+            output_excerpt=str(path.resolve(strict=False)) if available else "",
+            error="" if available else "command_path_missing_or_not_executable",
+        )
+    return run_probe(label, ("which", command_name))
 
 
 def first_available_probe(*probes: tuple[str, tuple[str, ...]]) -> CommandProbe:

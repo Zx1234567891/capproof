@@ -2,9 +2,16 @@ from pathlib import Path
 import re
 import sys
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
 import run_agent_runtime_gate as gate
+
+
+@pytest.fixture(autouse=True)
+def _isolate_local_runtime_prefix(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setattr(gate, "LOCAL_RUNTIME_BIN", tmp_path / "missing-agent-runtimes" / "bin")
 
 
 def _probe(label: str, command: tuple[str, ...], *, ok: bool, output: str = "") -> gate.CommandProbe:
