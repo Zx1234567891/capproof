@@ -1,0 +1,176 @@
+{
+  "profile": "CapProof local stdio MCP compatibility profile",
+  "rows": [
+    {
+      "evidence": "run_capproof_mcp_server.py --stdio",
+      "feature": "local stdio MCP server",
+      "notes": "Local process stdio only.",
+      "status": "supported",
+      "test_command": "python run_capproof_mcp_server.py --list-tools"
+    },
+    {
+      "evidence": "stdio server handles JSON-RPC initialize",
+      "feature": "initialize",
+      "notes": "Used by Hermes standard MCP smoke.",
+      "status": "supported",
+      "test_command": "tests/test_capproof_mcp_protocol.py -q"
+    },
+    {
+      "evidence": "7 CapProof tools observed",
+      "feature": "tools/list",
+      "notes": "Also observed in real Hermes smoke.",
+      "status": "supported",
+      "test_command": "python run_capproof_mcp_server.py --list-tools"
+    },
+    {
+      "evidence": "standard CapProof MCP call path",
+      "feature": "tools/call",
+      "notes": "Authority-bearing tools enter guard path.",
+      "status": "supported",
+      "test_command": "python run_capproof_mcp_server.py --self-test"
+    },
+    {
+      "evidence": "tool responses include structuredContent",
+      "feature": "structuredContent",
+      "notes": "Includes verdict, proof, trace, executor_called.",
+      "status": "supported",
+      "test_command": "tests/test_capproof_mcp_protocol.py -q"
+    },
+    {
+      "evidence": "stdout reserved for JSON-RPC",
+      "feature": "JSON-RPC stdio cleanliness",
+      "notes": "Human logs go to stderr/live log/report/trace.",
+      "status": "supported",
+      "test_command": "tests/test_capproof_mcp_doctor.py -q"
+    },
+    {
+      "evidence": "tools/list exposes tool",
+      "feature": "capproof.echo_summary",
+      "notes": "No authority-bearing side effect.",
+      "status": "supported",
+      "test_command": "python run_capproof_mcp_server.py --list-tools"
+    },
+    {
+      "evidence": "ALLOW/DENY paths tested",
+      "feature": "capproof.send_message_mock",
+      "notes": "Mock only, no real email.",
+      "status": "supported",
+      "test_command": "python run_capproof_mcp_server.py --self-test"
+    },
+    {
+      "evidence": "workspace sandbox tests",
+      "feature": "capproof.read_workspace_file",
+      "notes": "Workspace-only subset.",
+      "status": "supported",
+      "test_command": "tests/test_capproof_mcp_sandbox_file_read.py -q"
+    },
+    {
+      "evidence": "atomic write sandbox tests",
+      "feature": "capproof.write_workspace_file",
+      "notes": "Workspace-only subset.",
+      "status": "supported",
+      "test_command": "tests/test_capproof_mcp_sandbox_file_write.py -q"
+    },
+    {
+      "evidence": "allowlisted command templates",
+      "feature": "capproof.run_command_template",
+      "notes": "No raw shell support.",
+      "status": "partial",
+      "test_command": "tests/test_capproof_mcp_sandbox_commands.py -q"
+    },
+    {
+      "evidence": "trace viewer and MCP trace tool",
+      "feature": "capproof.get_trace",
+      "notes": "Local trace only.",
+      "status": "supported",
+      "test_command": "tests/test_capproof_mcp_trace.py -q"
+    },
+    {
+      "evidence": "trusted ASK queue",
+      "feature": "capproof.request_authorization",
+      "notes": "ASK does not auto-mint capability.",
+      "status": "supported",
+      "test_command": "tests/test_capproof_mcp_ask_approval_flow.py -q"
+    },
+    {
+      "evidence": "not implemented",
+      "feature": "resources",
+      "notes": "No MCP resources claim.",
+      "status": "not_claimed",
+      "test_command": "none"
+    },
+    {
+      "evidence": "not implemented",
+      "feature": "prompts",
+      "notes": "No MCP prompts claim.",
+      "status": "not_claimed",
+      "test_command": "none"
+    },
+    {
+      "evidence": "not implemented",
+      "feature": "sampling",
+      "notes": "No MCP sampling claim.",
+      "status": "not_claimed",
+      "test_command": "none"
+    },
+    {
+      "evidence": "not implemented",
+      "feature": "elicitation",
+      "notes": "No MCP elicitation claim.",
+      "status": "not_claimed",
+      "test_command": "none"
+    },
+    {
+      "evidence": "not implemented",
+      "feature": "Streamable HTTP",
+      "notes": "Only local stdio is claimed.",
+      "status": "not_claimed",
+      "test_command": "none"
+    },
+    {
+      "evidence": "not implemented",
+      "feature": "OAuth / remote MCP authorization",
+      "notes": "Trusted local CLI approval only.",
+      "status": "not_claimed",
+      "test_command": "none"
+    },
+    {
+      "evidence": "not implemented",
+      "feature": "external MCP server protection",
+      "notes": "No external MCP claim.",
+      "status": "not_claimed",
+      "test_command": "none"
+    },
+    {
+      "evidence": "not implemented",
+      "feature": "all MCP transports",
+      "notes": "Only local stdio subset.",
+      "status": "not_claimed",
+      "test_command": "none"
+    },
+    {
+      "evidence": "not implemented",
+      "feature": "all future/draft MCP versions",
+      "notes": "Evidence is tied to current local profile.",
+      "status": "not_claimed",
+      "test_command": "none"
+    }
+  ],
+  "summary": {
+    "all_mcp_transports_claim": false,
+    "external_mcp_claim": false,
+    "not_claimed": 9,
+    "partial": 1,
+    "production_level_protection_claim": false,
+    "supported": 12
+  },
+  "supported_protocol_subset": [
+    "local stdio MCP server",
+    "initialize",
+    "tools/list",
+    "tools/call",
+    "structuredContent",
+    "JSON-RPC stdio cleanliness"
+  ],
+  "tools_count": 7
+}
