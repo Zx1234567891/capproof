@@ -2654,12 +2654,85 @@ Stage 36R non-claims:
 - No OS-level network-denial claim.
 - No OpenCode/OpenClaw real integration yet.
 
-## 17. Final State for New GPT Session
+## 17. Stage 37PKG - Artifact Packaging, MCP Compatibility Profile, and Claims Matrix
+
+Checkpoint:
+
+`d06928b8c1f26d2db78d88b2b4d30e6905162492`
+`checkpoint: package CapProof Hermes MCP artifact and compatibility profile`
+
+Stage 37PKG packaged the local Hermes + CapProof MCP artifact for reviewer-safe
+reproduction and explicitly documented the supported MCP subset and claims /
+non-claims.
+
+Added or updated:
+
+- `MCP_COMPATIBILITY.md`
+- `CLAIMS_AND_NON_CLAIMS.md`
+- `docs/INSTALL_LOCAL_HERMES_WRAPPER.md`
+- `docs/REPRODUCE_HERMES_CAPROOF_MCP.md`
+- `docs/ARTIFACT_OVERVIEW.md`
+- Makefile targets:
+  - `make install-local-hermes-wrapper`
+  - `make uninstall-local-hermes-wrapper`
+  - `make capproof-doctor`
+  - `make capproof-trace`
+  - `make capproof-trace-follow`
+  - `make capproof-auth-queue`
+  - `make capproof-smoke-local`
+  - `make capproof-test-core`
+  - `make capproof-test-full`
+- `run_mcp_compatibility_matrix.py`
+- `run_artifact_reproduction_check.py`
+- `artifact_reports/mcp_compatibility_matrix.md`
+- `artifact_reports/mcp_compatibility_matrix.json`
+- `artifact_reports/artifact_reproduction_report.md`
+- `artifact_reports/artifact_reproduction_summary.json`
+- Packaging / claims / compatibility tests.
+
+Validation:
+
+- `python run_mcp_compatibility_matrix.py --report`: passed.
+- `python run_artifact_reproduction_check.py --no-secret --local-only --report`: passed.
+- `make capproof-doctor`: passed.
+- `make capproof-trace`: passed.
+- `make capproof-auth-queue`: passed.
+- `make capproof-smoke-local`: passed.
+- Stage 37PKG tests: 10 passed.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 558 passed, 3 skipped.
+- `python run_kill_tests.py --mode all --baselines`: 24/24.
+- `python run_adapter_bypass_gate.py`: adapter bypass unexpected allow 0.
+- `python run_authspec_faithfulness.py --mode auto`: AuthSpec dangerous over-broadening 0.
+- `compileall`: passed.
+
+Stage 37PKG safety status:
+
+- API key written: no.
+- `external/` submitted: no.
+- `.venv-hermes/` submitted: no.
+- `node_modules/` submitted: no.
+- local `auth_queue/` runtime state submitted: no.
+- CapProof core verifier semantics changed: no.
+- Reference Monitor semantics changed: no.
+- Capability Store core semantics changed: no.
+
+Stage 37PKG non-claims:
+
+- No production-level Hermes protection.
+- No all-Hermes-tool-paths-covered claim.
+- No all-MCP-clients-covered claim.
+- No external MCP protection claim.
+- No raw shell support.
+- No arbitrary filesystem access.
+- No OS-level network-denial claim.
+- No OpenCode/OpenClaw real integration yet.
+
+## 18. Final State for New GPT Session
 
 If a new GPT/Codex session starts from here, it should assume:
 
-- The project is at Stage 36R.
-- Current checkpoint is `a132be58d4b40d1b469ad1cc1f609375854c9aa8`.
+- The project is at Stage 37PKG.
+- Current checkpoint is `d06928b8c1f26d2db78d88b2b4d30e6905162492`.
 - Stage 30R real controlled Hermes + DeepSeek + local MCP path succeeded.
 - CapProof guard was active on the local MCP tool-call path.
 - Stage 31M productized the local CapProof MCP server with standard `tools/list` and `tools/call`.
@@ -2711,11 +2784,16 @@ If a new GPT/Codex session starts from here, it should assume:
 - Stage 36R proved foreground rerun changed the task verdict from ASK to ALLOW with executor called.
 - Stage 36R proved Hermes/DeepSeek claimed approval, MCP `_meta.approved_by_user=true`, and scope amplification were rejected.
 - Stage 36R validation ended with full pytest 548 passed, 3 skipped, and compileall passed.
+- Stage 37PKG packaged the local Hermes + CapProof MCP artifact.
+- Stage 37PKG added `MCP_COMPATIBILITY.md`, `CLAIMS_AND_NON_CLAIMS.md`, install/reproduction/artifact docs, Makefile targets, compatibility matrix generation, and no-secret artifact reproduction checks.
+- Stage 37PKG documented the supported local stdio MCP subset: initialize, `tools/list`, `tools/call`, structuredContent, stdout cleanliness, and the 7 CapProof tools.
+- Stage 37PKG documented non-claimed MCP features: resources, prompts, sampling, elicitation, Streamable HTTP, OAuth/remote MCP authorization, external MCP protection, all transports, and future/draft MCP versions.
+- Stage 37PKG validation ended with full pytest 558 passed, 3 skipped, and compileall passed.
 - Real OpenCode/OpenClaw processes have not yet been run.
 - Raw shell, arbitrary filesystem access, real email, external MCP, and OS-level network denial are not claimed.
 - OpenCode/OpenClaw real integration is not claimed complete.
 - DeepSeek is model backend only, not safety TCB.
 - API keys must stay out of files and commits.
 - The repo should not include `external/` third-party source or `.venv-hermes/`.
-- The next approved direction after this checkpoint is Stage 37PKG artifact packaging, MCP compatibility profile, and claims/non-claims matrix.
+- The next approved direction after this checkpoint is Stage 38REAL real-environment validation policy and harness.
 - Future work should preserve Reference Monitor / Capability Store / Proof Model safety semantics unless the user explicitly asks for a carefully reviewed semantic change.
