@@ -1,0 +1,140 @@
+{
+  "claims": [
+    {
+      "claim": "Hermes local foreground CapProof MCP parity",
+      "evidence_file": "artifact_reports/real_environment_validation_summary.json",
+      "notes": "Controlled local Hermes path only.",
+      "stage_commit": "b881d996afe58dfc65ce7e00e7e321c51c108651",
+      "status": "proven",
+      "test_command": "python run_real_environment_validation.py --all --require-real --fail-if-gate-missing --report"
+    },
+    {
+      "claim": "OpenCode local CapProof MCP parity",
+      "evidence_file": "real_agent_integrations/opencode_mcp_server/reports/real_opencode_deepseek_parity_summary.json",
+      "notes": "Controlled local OpenCode path only.",
+      "stage_commit": "b949d71bc7d5ac3fe29be7a75d104c3338a71b72",
+      "status": "proven",
+      "test_command": "python run_real_opencode_deepseek_mcp_parity.py --all --require-real --report"
+    },
+    {
+      "claim": "OpenClaw local CapProof MCP parity",
+      "evidence_file": "real_agent_integrations/openclaw_mcp_server/reports/real_openclaw_deepseek_parity_summary.json",
+      "notes": "Controlled local OpenClaw path only.",
+      "stage_commit": "7d967ebe053e0a7b9e199e7540dbc30547c33411",
+      "status": "proven",
+      "test_command": "python run_real_openclaw_deepseek_mcp_parity.py --all --require-real --report"
+    },
+    {
+      "claim": "DeepSeek backend used by all three via DEEPSEEK_API_KEY",
+      "evidence_file": "artifact_reports/real_agent_parity_evaluator_matrix.json",
+      "notes": "DeepSeek is not part of the safety TCB.",
+      "stage_commit": "47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c",
+      "status": "proven",
+      "test_command": "python run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
+    },
+    {
+      "claim": "standard MCP tools/list/tools/call observed for all three",
+      "evidence_file": "artifact_reports/agent_parity_matrix.json",
+      "notes": "Only the tested local stdio MCP path is covered.",
+      "stage_commit": "47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c",
+      "status": "proven",
+      "test_command": "python run_agent_parity_matrix.py --report"
+    },
+    {
+      "claim": "sandboxed local read/write/template subset",
+      "evidence_file": "artifact_reports/real_agent_parity_evaluator_matrix.json",
+      "notes": "No arbitrary filesystem or raw shell support.",
+      "stage_commit": "3d5f3c2c20451b14c9303398c03a2145e5c3f775",
+      "status": "proven",
+      "test_command": "python run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
+    },
+    {
+      "claim": "DENY/ASK executor gate",
+      "evidence_file": "artifact_reports/real_agent_parity_evaluator_matrix.json",
+      "notes": "executor_called_on_deny_ask remains zero.",
+      "stage_commit": "47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c",
+      "status": "proven",
+      "test_command": "python run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
+    },
+    {
+      "claim": "ASK trusted approve rerun",
+      "evidence_file": "artifact_reports/real_agent_parity_evaluator_matrix.json",
+      "notes": "Only trusted local CLI approval can mint scoped capability.",
+      "stage_commit": "a132be58d4b40d1b469ad1cc1f609375854c9aa8",
+      "status": "proven",
+      "test_command": "python run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
+    },
+    {
+      "claim": "LLM/MCP metadata cannot mint capability",
+      "evidence_file": "artifact_reports/real_agent_parity_evaluator_matrix.json",
+      "notes": "Natural-language and metadata approval are rejected.",
+      "stage_commit": "47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c",
+      "status": "proven",
+      "test_command": "python run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
+    },
+    {
+      "claim": "production-level protection",
+      "evidence_file": "CLAIMS_AND_NON_CLAIMS.md",
+      "notes": "Not claimed.",
+      "stage_commit": "d06928b8c1f26d2db78d88b2b4d30e6905162492",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_claims_and_non_claims.py -q"
+    },
+    {
+      "claim": "all built-in tool paths covered",
+      "evidence_file": "docs/AGENT_PARITY_LIMITATIONS.md",
+      "notes": "Not claimed.",
+      "stage_commit": "47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_real_agent_parity_evaluator.py -q"
+    },
+    {
+      "claim": "external MCP protection",
+      "evidence_file": "docs/AGENT_PARITY_LIMITATIONS.md",
+      "notes": "Not claimed.",
+      "stage_commit": "47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_real_agent_parity_evaluator.py -q"
+    },
+    {
+      "claim": "real email",
+      "evidence_file": "CLAIMS_AND_NON_CLAIMS.md",
+      "notes": "Not claimed.",
+      "stage_commit": "d06928b8c1f26d2db78d88b2b4d30e6905162492",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_claims_and_non_claims.py -q"
+    },
+    {
+      "claim": "raw shell support",
+      "evidence_file": "CLAIMS_AND_NON_CLAIMS.md",
+      "notes": "Not claimed.",
+      "stage_commit": "d06928b8c1f26d2db78d88b2b4d30e6905162492",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_claims_and_non_claims.py -q"
+    },
+    {
+      "claim": "arbitrary filesystem access",
+      "evidence_file": "CLAIMS_AND_NON_CLAIMS.md",
+      "notes": "Not claimed.",
+      "stage_commit": "d06928b8c1f26d2db78d88b2b4d30e6905162492",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_claims_and_non_claims.py -q"
+    },
+    {
+      "claim": "OS-level network denial",
+      "evidence_file": "docs/AGENT_PARITY_LIMITATIONS.md",
+      "notes": "Not claimed.",
+      "stage_commit": "47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_real_agent_parity_evaluator.py -q"
+    },
+    {
+      "claim": "DeepSeek as safety TCB",
+      "evidence_file": "docs/AGENT_PARITY_LIMITATIONS.md",
+      "notes": "Not claimed.",
+      "stage_commit": "47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c",
+      "status": "not_claimed",
+      "test_command": "pytest tests/test_real_agent_parity_evaluator.py -q"
+    }
+  ]
+}
