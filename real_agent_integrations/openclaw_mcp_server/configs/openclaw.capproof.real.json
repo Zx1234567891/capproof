@@ -1,0 +1,93 @@
+{
+  "plugins": {
+    "enabled": false,
+    "slots": {
+      "memory": "none"
+    }
+  },
+  "agents": {
+    "defaults": {
+      "workspace": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/openclaw_mcp_server/sandbox_workspace",
+      "model": {
+        "primary": "deepseek/deepseek-v4-pro"
+      },
+      "models": {
+        "deepseek/deepseek-v4-pro": {
+          "agentRuntime": {
+            "id": "openclaw"
+          }
+        }
+      },
+      "skills": [],
+      "skipBootstrap": true
+    },
+    "list": [
+      {
+        "id": "main",
+        "default": true,
+        "skills": [],
+        "model": {
+          "primary": "deepseek/deepseek-v4-pro"
+        }
+      }
+    ]
+  },
+  "tools": {
+    "profile": "minimal",
+    "alsoAllow": [
+      "capproof__capproof-echo_summary",
+      "capproof__capproof-get_trace",
+      "capproof__capproof-read_workspace_file",
+      "capproof__capproof-request_authorization",
+      "capproof__capproof-run_command_template",
+      "capproof__capproof-send_message_mock",
+      "capproof__capproof-write_workspace_file"
+    ]
+  },
+  "models": {
+    "mode": "replace",
+    "providers": {
+      "deepseek": {
+        "baseUrl": "https://api.deepseek.com",
+        "apiKey": "${DEEPSEEK_API_KEY}",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "deepseek-v4-pro",
+            "name": "DeepSeek V4 Pro",
+            "api": "openai-completions",
+            "reasoning": true,
+            "input": [
+              "text"
+            ],
+            "cost": {
+              "input": 0,
+              "output": 0,
+              "cacheRead": 0,
+              "cacheWrite": 0
+            },
+            "contextWindow": 128000,
+            "maxTokens": 4096,
+            "compat": {
+              "supportsUsageInStreaming": true,
+              "supportsReasoningEffort": true,
+              "maxTokensField": "max_tokens"
+            }
+          }
+        ]
+      }
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "auth": {
+      "mode": "token",
+      "token": "capproof-test"
+    }
+  },
+  "discovery": {
+    "mdns": {
+      "mode": "off"
+    }
+  }
+}
