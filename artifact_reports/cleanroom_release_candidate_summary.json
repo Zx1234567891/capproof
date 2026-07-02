@@ -1,0 +1,276 @@
+{
+  "aggregate_agent_parity_passed": true,
+  "all_agents_deepseek": true,
+  "all_key_source_env": true,
+  "allow_deny_ask_all_agents": true,
+  "cleanroom_git_status_after": "clean",
+  "cleanroom_git_status_after_run_before_cleanup": "M agent_coverage_audit/agent_runtime_bootstrap_report.md\n M agent_coverage_audit/agent_runtime_bootstrap_summary.json\n M artifact_reports/real_agent_parity_evaluator_matrix.json\n M artifact_reports/real_agent_parity_evaluator_matrix.md\n M artifact_reports/real_agent_parity_evaluator_report.md\n M artifact_reports/real_agent_parity_evaluator_summary.json\n M artifact_reports/real_environment_validation_summary.json\n M real_agent_integrations/hermes_mcp_server/configs/hermes.capproof.foreground.mcp.json\n M real_agent_integrations/hermes_mcp_server/configs/real_hermes_sandbox_mcp_smoke_config.json\n M real_agent_integrations/hermes_mcp_server/reports/foreground_ask_flow_live.log\n M real_agent_integrations/hermes_mcp_server/reports/foreground_ask_flow_report.md\n M real_agent_integrations/hermes_mcp_server/reports/foreground_ask_flow_summary.json\n M real_agent_integrations/hermes_mcp_server/reports/foreground_hermes_mcp_demo_report.md\n M real_agent_integrations/hermes_mcp_server/reports/foreground_hermes_mcp_demo_summary.json\n M real_agent_integrations/hermes_mcp_server/reports/foreground_hermes_mcp_live.log\n M real_agent_integrations/hermes_mcp_server/reports/foreground_ux_report.md\n M real_agent_integrations/hermes_mcp_server/reports/foreground_ux_summary.json\n M real_agent_integrations/hermes_mcp_server/reports/real_environment_validation_live.log\n M real_agent_integrations/hermes_mcp_server/reports/real_hermes_sandbox_mcp_smoke_report.md\n M real_agent_integrations/hermes_mcp_server/reports/real_hermes_sandbox_mcp_smoke_summary.json\n D real_agent_integrations/hermes_mcp_server/sandbox_workspace/docs/input.txt\n D real_agent_integrations/hermes_mcp_server/sandbox_workspace/reports/hermes_output.txt\n D real_agent_integrations/hermes_mcp_server/sandbox_workspace/tests/test_stage33r_smoke.py\n M real_agent_integrations/hermes_mcp_server/traces/capproof_mcp_trace.jsonl\n M real_agent_integrations/hermes_mcp_server/traces/foreground_ask_flow_trace.jsonl\n M real_agent_integrations/hermes_mcp_server/traces/foreground_hermes_mcp_trace.jsonl\n M real_agent_integrations/hermes_mcp_server/traces/real_environment_validation_trace.jsonl\n M real_agent_integrations/hermes_mcp_server/traces/real_hermes_sandbox_mcp_smoke.jsonl\n M real_agent_integrations/openclaw_mcp_server/configs/openclaw.capproof.deepseek.real.json5\n M real_agent_integrations/openclaw_mcp_server/reports/openclaw_runtime_bootstrap_report.md\n M real_agent_integrations/openclaw_mcp_server/reports/real_openclaw_deepseek_parity_live.log\n M real_agent_integrations/openclaw_mcp_server/reports/real_openclaw_deepseek_parity_report.md\n M real_agent_integrations/openclaw_mcp_server/reports/real_openclaw_deepseek_parity_summary.json\n M real_agent_integrations/openclaw_mcp_server/traces/real_openclaw_deepseek_parity_trace.jsonl\n M real_agent_integrations/opencode_mcp_server/configs/opencode.capproof.deepseek.real.jsonc\n M real_agent_integrations/opencode_mcp_server/reports/opencode_runtime_bootstrap_report.md\n M real_agent_integrations/opencode_mcp_server/reports/real_opencode_deepseek_parity_live.log\n M real_agent_integrations/opencode_mcp_server/reports/real_opencode_deepseek_parity_report.md\n M real_agent_integrations/opencode_mcp_server/reports/real_opencode_deepseek_parity_summary.json\n M real_agent_integrations/opencode_mcp_server/traces/real_opencode_deepseek_parity_trace.jsonl\n?? .venv-hermes",
+  "cleanroom_git_status_before": "clean",
+  "cleanroom_mode": "fresh-run",
+  "cleanroom_passed": true,
+  "cleanup_result": {
+    "clean": 0,
+    "restore": 0
+  },
+  "copied_outputs": {
+    "copied": [
+      "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_reports/cleanroom_release_candidate_report.md",
+      "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_reports/cleanroom_release_candidate_matrix.json",
+      "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_reports/cleanroom_release_candidate_matrix.md"
+    ],
+    "redaction_safe": true
+  },
+  "evaluator_command": {
+    "command": "/home/xiaowu/anaconda3/bin/python run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report",
+    "duration_seconds": 255.586,
+    "returncode": 0,
+    "stderr_tail": "",
+    "stdout_tail": "evaluator_mode=fresh_run\nfresh_run=True\nevaluator_passed=True\naggregate_agent_parity_passed=True\nsummary=/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/artifact_reports/real_agent_parity_evaluator_summary.json\nreport=/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/artifact_reports/real_agent_parity_evaluator_report.md\n",
+    "timed_out": false
+  },
+  "evaluator_passed": true,
+  "forbidden_tracked_paths": [],
+  "forbidden_tracked_paths_count": 0,
+  "hermes_parity": true,
+  "key_written": false,
+  "openclaw_parity": true,
+  "opencode_parity": true,
+  "preflight": {
+    "artifact_cleanroom_ignored": true,
+    "deepseek_key_present": true,
+    "deepseek_key_printed": false,
+    "default_does_not_run_real_agents": true,
+    "dry_run_preflight_counts_as_completion": false,
+    "gate_ready": true,
+    "missing_gates": [],
+    "real_environment_policy_active": true,
+    "required_gates": [
+      "ALLOW_CAPROOF_CLEANROOM_RC",
+      "ALLOW_AGENT_RUNTIME_REAL_SMOKE",
+      "ALLOW_CAPROOF_AGENT_PARITY",
+      "ALLOW_CAPROOF_REAL_ENV_VALIDATION",
+      "ALLOW_CAPROOF_SANDBOX_REAL_EXECUTION",
+      "ALLOW_CAPROOF_ASK_APPROVAL_DEMO",
+      "ALLOW_CAPROOF_HERMES_FOREGROUND_DEMO",
+      "ALLOW_HERMES_DEEPSEEK_RUN",
+      "ALLOW_CAPROOF_MCP_REAL_HERMES",
+      "ALLOW_CAPROOF_REAL_OPENCODE_SMOKE",
+      "ALLOW_CAPROOF_REAL_OPENCLAW_SMOKE",
+      "DEEPSEEK_API_KEY"
+    ],
+    "reuse_existing_reports_counts_as_completion": false,
+    "root_git_status_clean": false,
+    "source_ref": "HEAD",
+    "stage": "43RC",
+    "workdir": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc"
+  },
+  "production_level_overclaim": false,
+  "raw_logs_copied": false,
+  "real_key_scan": "REAL_KEY_NOT_FOUND",
+  "reason": "ok",
+  "redaction_safe": true,
+  "runtime_bootstrap": {
+    "command": {
+      "command": "/home/xiaowu/anaconda3/bin/python run_agent_runtime_bootstrap.py --bootstrap all --verify --report --install-prefix /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes --source-root /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external",
+      "duration_seconds": 15.584,
+      "returncode": 0,
+      "stderr_tail": "",
+      "stdout_tail": "status=passed\nruntime_bootstrap_passed=True\nopencode.runtime_present=True\nopencode.version_detected=1.17.13\nopencode.real_smoke_eligible=True\nopencode.reason=ok\nopenclaw.runtime_present=True\nopenclaw.version_detected=OpenClaw 2026.6.11 (e085fa1)\nopenclaw.real_smoke_eligible=True\nopenclaw.reason=ok\n",
+      "timed_out": false
+    },
+    "hermes": {
+      "mode": "symlink_ignored_runtime_source",
+      "prepared": true,
+      "source_present": true,
+      "target": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/external/hermes-agent",
+      "venv_mode": "symlink_ignored_runtime_venv",
+      "venv_prepared": true,
+      "venv_source_present": true,
+      "venv_target": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/.venv-hermes"
+    },
+    "summary": {
+      "api_key_written": false,
+      "bin_dir": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes/bin",
+      "bootstrap_gate_present": true,
+      "bootstrap_requested": true,
+      "build_logs": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes/build-logs",
+      "dry_run_preflight_completion_evidence": false,
+      "forked_guard_logic": false,
+      "gitignore_checks": {
+        "agent_runtimes_ignored": true,
+        "external_ignored": true,
+        "local_auth_queue_ignored": true,
+        "node_modules_ignored": true,
+        "venv_hermes_ignored": true
+      },
+      "install_prefix": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes",
+      "integration_claim_made": false,
+      "network_gate_present": true,
+      "no_system_install": true,
+      "node_modules_committed": false,
+      "npm_prefix": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes/npm-prefix",
+      "onboarding_daemon_gateway_started": false,
+      "openclaw": {
+        "binary_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes/bin/openclaw",
+        "bootstrap_attempted": true,
+        "bootstrap_mode": "from_package",
+        "bun_lock_present": false,
+        "go_mod_present": false,
+        "install_command": "npm install --prefix /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes/npm-prefix/openclaw --no-audit --no-fund --no-save openclaw@latest",
+        "install_exit_code": 0,
+        "install_log_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes/build-logs/openclaw_npm_install.log",
+        "link_detail": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes/bin/openclaw",
+        "link_ok": true,
+        "mcp_cli_help_available": true,
+        "mcp_doctor_help_available": true,
+        "mcp_doctor_help_probe": {
+          "command": [
+            "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes/bin/openclaw",
+            "mcp",
+            "doctor",
+            "--help"
+          ],
+          "returncode": 0,
+          "stderr_tail": "",
+          "stdout_tail": "\nOpenClaw 2026.6.11 (e085fa1) \u2014 All your chats, one OpenClaw.\n\nUsage: openclaw mcp doctor [options] [name]\n\nCheck configured MCP servers for static setup problems\n\nArguments:\n  name        MCP server name\n\nOptions:\n  -h, --help  Display help for command\n  --json      Print JSON\n  --probe     Also connect to each checked server (default: false)\n",
+          "timed_out": false
+        },
+        "mcp_status_available": true,
+        "mcp_status_probe": {
+          "command": [
+            "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes/bin/openclaw",
+            "mcp",
+            "status"
+          ],
+          "returncode": 0,
+          "stderr_tail": "",
+          "stdout_tail": "No MCP servers configured in /home/xiaowu/.openclaw/openclaw.json.\n",
+          "timed_out": false
+        },
+        "mcp_tools_help_available": true,
+        "mcp_tools_help_probe": {
+          "command": [
+            "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes/bin/openclaw",
+            "mcp",
+            "tools",
+            "--help"
+          ],
+          "returncode": 0,
+          "stderr_tail": "",
+          "stdout_tail": "\nOpenClaw 2026.6.11 (e085fa1) \u2014 All your chats, one OpenClaw.\n\nUsage: openclaw mcp tools [options] <name>\n\nUpdate per-server MCP tool include/exclude filters\n\nArguments:\n  name             MCP server name\n\nOptions:\n  --clear          Clear this server's MCP tool filter (default: false)\n  --exclude <csv>  Comma-separated MCP tool names or '*' globs to hide\n  -h, --help       Display help for command\n  --include <csv>  Comma-separated MCP tool names or '*' globs to expose\n",
+          "timed_out": false
+        },
+        "node_version": "v24.12.0",
+        "package_json_present": true,
+        "package_lock_present": false,
+        "package_manager": "npm",
+        "pnpm_lock_present": true,
+        "real_smoke_eligible": true,
+        "reason": "ok",
+        "runtime_present": true,
+        "source_commit": "5bcd25f0fb6de3cc2ba6b6a7688a9361eb355143",
+        "source_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/openclaw",
+        "source_remote": "https://github.com/openclaw/openclaw",
+        "source_repo_present": true,
+        "version_detected": "OpenClaw 2026.6.11 (e085fa1)",
+        "version_probe": {
+          "command": [
+            "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes/bin/openclaw",
+            "--version"
+          ],
+          "returncode": 0,
+          "stderr_tail": "",
+          "stdout_tail": "OpenClaw 2026.6.11 (e085fa1)\n",
+          "timed_out": false
+        }
+      },
+      "opencode": {
+        "binary_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes/bin/opencode",
+        "bootstrap_attempted": true,
+        "bootstrap_mode": "from_package",
+        "bun_lock_present": true,
+        "go_mod_present": false,
+        "install_command": "npm install --prefix /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes/npm-prefix/opencode --no-audit --no-fund --no-save opencode-ai@latest",
+        "install_exit_code": 0,
+        "install_log_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes/build-logs/opencode_npm_install.log",
+        "link_detail": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes/bin/opencode",
+        "link_ok": true,
+        "mcp_cli_help_available": false,
+        "mcp_doctor_help_available": false,
+        "mcp_doctor_help_probe": {
+          "command": [],
+          "returncode": null,
+          "stderr_tail": "",
+          "stdout_tail": "",
+          "timed_out": false
+        },
+        "mcp_status_available": false,
+        "mcp_status_probe": {
+          "command": [],
+          "returncode": null,
+          "stderr_tail": "",
+          "stdout_tail": "",
+          "timed_out": false
+        },
+        "mcp_tools_help_available": false,
+        "mcp_tools_help_probe": {
+          "command": [],
+          "returncode": null,
+          "stderr_tail": "",
+          "stdout_tail": "",
+          "timed_out": false
+        },
+        "node_version": null,
+        "package_json_present": true,
+        "package_lock_present": false,
+        "package_manager": "npm",
+        "pnpm_lock_present": false,
+        "real_smoke_eligible": true,
+        "reason": "ok",
+        "runtime_present": true,
+        "source_commit": "f52424e05fab0edddb4462112ceb02044085f903",
+        "source_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/opencode",
+        "source_remote": "https://github.com/anomalyco/opencode",
+        "source_repo_present": true,
+        "version_detected": "1.17.13",
+        "version_probe": {
+          "command": [
+            "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc/external/.agent-runtimes/bin/opencode",
+            "--version"
+          ],
+          "returncode": 0,
+          "stderr_tail": "",
+          "stdout_tail": "1.17.13\n",
+          "timed_out": false
+        }
+      },
+      "production_level_protection_claim": false,
+      "real_environment_policy_active": true,
+      "runtime_bootstrap_passed": true,
+      "stage": "40RB",
+      "status": "passed",
+      "sudo_used": false,
+      "system_install_used": false,
+      "tests_summary": {
+        "adapter_bypass_unexpected_allow": 0,
+        "agent_mcp_client_audit_tests": "5 passed",
+        "agent_runtime_gate_tests": "7 passed",
+        "authspec_dangerous_over_broadening": 0,
+        "compileall": "passed",
+        "full_pytest": "574 passed, 3 skipped",
+        "kill_tests": "24/24",
+        "openclaw_mcp_config_tests": "3 passed",
+        "opencode_mcp_config_tests": "3 passed",
+        "stage_40rb_tests": "7 passed"
+      },
+      "third_party_source_committed": false
+    }
+  },
+  "source_commit": "e90d71c7d5d7ed54a649c109ea239c1a32951d13",
+  "source_ref": "HEAD",
+  "stage": "43RC",
+  "status": "passed",
+  "tools_call_all_agents": true,
+  "tools_list_all_agents": true,
+  "workdir": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/artifact_cleanroom/worktrees/capproof-rc"
+}

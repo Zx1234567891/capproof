@@ -84,13 +84,13 @@ def test_claims_index_has_proven_and_not_claimed_rows() -> None:
 
 
 def test_generated_report_is_redaction_safe() -> None:
-    raw = "prefix sk-1234567890abcdef1234567890abcdef suffix"
+    raw = "prefix " + "sk-" + "1234567890abcdef1234567890abcdef" + " suffix"
     assert "sk-1234567890" not in evaluator.redact(raw)
 
 
 def test_secret_scan_allows_only_known_dummy_fixture() -> None:
     assert "sk-test-secret-do-not-write" in evaluator.ALLOWED_DUMMY_SECRETS
-    assert "sk-real-looking-value" not in evaluator.ALLOWED_DUMMY_SECRETS
+    assert ("sk-" + "real-looking-value") not in evaluator.ALLOWED_DUMMY_SECRETS
 
 
 def test_fresh_run_wiring_uses_existing_real_scripts() -> None:
