@@ -1,10 +1,10 @@
-# CapProof Project Handoff: Stage 0 to Stage 34O
+# CapProof Project Handoff: Stage 0 to Stage 38REAL
 
-Last updated: 2026-06-30
+Last updated: 2026-07-02
 
 Repository: `/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7`
 
-Current effective checkpoint: `4a1c0ef40eeb153f69814b041963068beb9445fa`
+Current effective checkpoint: `b881d996afe58dfc65ce7e00e7e321c51c108651`
 
 Current branch at last checkpoint: `main`
 
@@ -37,34 +37,60 @@ The project has evolved from a minimal scaffold into a substantial prototype con
 - Stage 32R added a standard CapProof MCP smoke gate for real Hermes + DeepSeek, with safe default preflight/list/dry-run behavior, local JSON-RPC MCP client validation, and an authorized real Hermes + DeepSeek standard MCP smoke over the productized CapProof MCP server.
 - Stage 33S added minimal sandboxed real execution for the standard CapProof MCP ALLOW path, limited to workspace-only file read/write and allowlisted command-template execution. The sandbox is not an authorization root; CapProof guard / Reference Monitor authorization remains mandatory.
 - Stage 33R completed an explicitly authorized real Hermes + DeepSeek smoke through the standard CapProof MCP server with `--sandboxed-real-execution`, proving the controlled local sandbox path for five workspace/template scenarios.
-- Stage 34O added OpenCode/OpenClaw MCP reuse audit/config/dry-run artifacts. It generated reusable MCP config material for OpenCode and OpenClaw, recorded that both runtimes are currently unavailable locally, reused the same standard CapProof MCP server command, and verified local JSON-RPC `tools/list` / `tools/call` without running real OpenCode/OpenClaw.
+- Stage 34O added OpenCode/OpenClaw MCP reuse audit/config/dry-run artifacts. It generated reusable MCP config material for OpenCode and OpenClaw, recorded that both runtimes were unavailable in that stage, reused the same standard CapProof MCP server command, and verified local JSON-RPC `tools/list` / `tools/call` without running real OpenCode/OpenClaw.
+- Stage 35UX polished the Hermes foreground CapProof MCP UX with `hermes --doctor`, `hermes --where-trace`, `hermes --trace-follow`, `hermes --capproof-status`, `hermes --list-tasks`, `hermes --classic`, a trace viewer, doctor, quickstart, and a stderr-only startup banner that does not pollute MCP stdio.
+- Stage 36ASK added trusted pending authorization UX: `capproof.request_authorization` creates pending requests only, trusted local CLI approval can mint scoped capabilities, and LLM/MCP metadata cannot approve.
+- Stage 36R validated a real Hermes foreground ASK approval rerun: initial ASK, trusted exact-scope approve, and foreground rerun ALLOW.
+- Stage 37PKG packaged the local Hermes + CapProof MCP artifact, compatibility profile, claims/non-claims matrix, local install/reproduction docs, Makefile targets, and reviewer-safe artifact checks.
+- Stage 38REAL made real-environment validation a project-level completion policy and added a harness proving that dry-run/preflight is safety readiness only, not completion evidence.
 
-The latest validated state is Stage 34O OpenCode/OpenClaw CapProof MCP reuse audit:
+The latest validated state is Stage 38REAL real-environment validation:
 
-- Stage 34O commit: `4a1c0ef40eeb153f69814b041963068beb9445fa` (`checkpoint: add OpenCode and OpenClaw CapProof MCP reuse configs`).
-- OpenCode repo/runtime: `repo_missing` / runtime unavailable.
-- OpenClaw repo/runtime: `repo_missing` / runtime unavailable.
-- OpenCode MCP config template generated at `real_agent_integrations/opencode_mcp_server/configs/opencode.capproof.mcp.example.jsonc`.
-- OpenClaw MCP config commands generated at `real_agent_integrations/openclaw_mcp_server/configs/openclaw.capproof.mcp.commands.md`.
-- Both client templates reuse the same standard CapProof MCP server:
-  - `python run_capproof_mcp_server.py --stdio --sandboxed-real-execution`
-- CapProof guard/security logic was not forked.
-- Local JSON-RPC MCP dry-run passed:
-  - `tools/list`: passed, 7 tools.
-  - ALLOW path: `ALLOW`, `executor_called=true`.
-  - DENY path: `DENY NoCap`, `executor_called=false`.
-  - metadata / LLM output cannot mint capability.
-- No real OpenCode integration is claimed.
-- No real OpenClaw integration is claimed.
-- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 490 passed, 1 skipped.
+- Stage 38REAL commit: `b881d996afe58dfc65ce7e00e7e321c51c108651` (`checkpoint: enforce real-environment validation for CapProof Hermes MCP`).
+- Added `REAL_ENVIRONMENT_VALIDATION.md`.
+- Added `run_real_environment_validation.py`.
+- Added `tests/test_real_environment_validation.py`.
+- Added `artifact_reports/real_environment_validation_report.md`.
+- Added `artifact_reports/real_environment_validation_summary.json`.
+- Added `real_agent_integrations/hermes_mcp_server/reports/real_environment_validation_live.log`.
+- Added `real_agent_integrations/hermes_mcp_server/reports/real_environment_validation_matrix.md`.
+- Added `real_agent_integrations/hermes_mcp_server/reports/real_environment_validation_matrix.json`.
+- Added `real_agent_integrations/hermes_mcp_server/traces/real_environment_validation_trace.jsonl`.
+- `real_environment_passed`: true.
+- Real Hermes foreground run: true.
+- Real DeepSeek call: true.
+- Standard CapProof MCP server used: true.
+- `tools/list` observed: true.
+- `tools/call` observed: true.
+- Sandbox read/write/command executed: true.
+- Raw shell denied and subprocess not started: true.
+- Attacker recipient denied with `executor_called=false`: true.
+- ASK -> trusted approve -> rerun ALLOW: true.
+- LLM / MCP metadata approval rejected: true.
+- `stdout_polluted_mcp_stdio`: false.
+- `key_leak_detected`: false.
+- `production_level_overclaim`: false.
+- Stage 38 tests: 8 passed.
+- Real Hermes ASK flow tests: 9 passed, 1 skipped.
+- Real Hermes foreground MCP demo tests: 12 passed, 1 skipped.
+- Real Hermes sandbox MCP smoke tests: 12 passed, 1 skipped.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 566 passed, 3 skipped.
 - Kill tests: 24/24.
 - Adapter bypass unexpected allow: 0.
 - AuthSpec dangerous over-broadening: 0.
 - Compileall passed.
+- Future dry-run/preflight cannot count as completion evidence.
+- Missing real gates must produce `blocked_missing_real_env_gate`.
+- Future stages require a real-environment scenario before completion.
 - API key was not written.
 - `external/` was not committed.
 - `.venv-hermes/` was not committed.
-- No production-level overclaim is made.
+- `node_modules/` was not committed.
+- Local runtime `auth_queue/` state was not committed.
+- No production-level Hermes protection is claimed.
+- Not all Hermes tool paths are claimed covered.
+- No real email, external MCP, raw shell, arbitrary filesystem access, or OS-level network denial is claimed.
+- No real OpenCode/OpenClaw integration is claimed yet.
 
 The most recent real Hermes sandboxed CapProof MCP smoke remains Stage 33R:
 
@@ -2727,12 +2753,95 @@ Stage 37PKG non-claims:
 - No OS-level network-denial claim.
 - No OpenCode/OpenClaw real integration yet.
 
-## 18. Final State for New GPT Session
+## 18. Stage 38REAL - Real-Environment Validation Policy and Harness
+
+Checkpoint:
+
+`b881d996afe58dfc65ce7e00e7e321c51c108651`
+`checkpoint: enforce real-environment validation for CapProof Hermes MCP`
+
+Stage 38REAL changed the project completion standard: dry-run and preflight
+can prepare for safe execution, but cannot count as completion evidence for
+future development. Completion now requires real-environment validation where
+the stage claims real behavior.
+
+Added:
+
+- `REAL_ENVIRONMENT_VALIDATION.md`
+- `run_real_environment_validation.py`
+- `tests/test_real_environment_validation.py`
+- `artifact_reports/real_environment_validation_report.md`
+- `artifact_reports/real_environment_validation_summary.json`
+- `real_agent_integrations/hermes_mcp_server/reports/real_environment_validation_live.log`
+- `real_agent_integrations/hermes_mcp_server/reports/real_environment_validation_matrix.md`
+- `real_agent_integrations/hermes_mcp_server/reports/real_environment_validation_matrix.json`
+- `real_agent_integrations/hermes_mcp_server/traces/real_environment_validation_trace.jsonl`
+
+Real validation:
+
+- `real_environment_passed`: true.
+- Real Hermes foreground run: true.
+- Real DeepSeek call: true.
+- Standard CapProof MCP server used: true.
+- `tools/list` observed: true.
+- `tools/call` observed: true.
+- Sandbox read/write/command executed: true.
+- Raw shell denied, subprocess not started: true.
+- Attacker recipient denied, `executor_called=false`: true.
+- ASK -> trusted approve -> rerun ALLOW: true.
+- LLM / MCP metadata approval rejected: true.
+- `stdout_polluted_mcp_stdio`: false.
+- `key_leak_detected`: false.
+- `production_level_overclaim`: false.
+
+Validation:
+
+- Stage 38 tests: 8 passed.
+- Real Hermes ASK flow tests: 9 passed, 1 skipped.
+- Real Hermes foreground MCP demo tests: 12 passed, 1 skipped.
+- Real Hermes sandbox MCP smoke tests: 12 passed, 1 skipped.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 566 passed, 3 skipped.
+- `python run_kill_tests.py --mode all --baselines`: 24/24.
+- `python run_adapter_bypass_gate.py`: adapter bypass unexpected allow 0.
+- `python run_authspec_faithfulness.py --mode auto`: AuthSpec dangerous over-broadening 0.
+- `compileall`: passed.
+
+Policy:
+
+- Future dry-run/preflight cannot count as completion evidence.
+- Missing real gates must be reported as `blocked_missing_real_env_gate`.
+- Future stages require a real-environment scenario before completion.
+- OpenCode/OpenClaw runtime absence must be reported as blocked runtime state,
+  not as real integration completion.
+
+Stage 38REAL safety status:
+
+- API key written: no.
+- `external/` submitted: no.
+- `.venv-hermes/` submitted: no.
+- `node_modules/` submitted: no.
+- local `auth_queue/` runtime state submitted: no.
+- CapProof core verifier semantics changed: no.
+- Reference Monitor semantics changed: no.
+- Capability Store core semantics changed: no.
+
+Stage 38REAL non-claims:
+
+- No production-level Hermes protection.
+- No all-Hermes-tool-paths-covered claim.
+- No real email.
+- No external MCP.
+- No raw shell.
+- No arbitrary filesystem access.
+- No OS-level network-denial claim.
+- No OpenCode/OpenClaw real integration yet.
+
+## 19. Final State for New GPT Session
 
 If a new GPT/Codex session starts from here, it should assume:
 
-- The project is at Stage 37PKG.
-- Current checkpoint is `d06928b8c1f26d2db78d88b2b4d30e6905162492`.
+- The project is at Stage 38REAL.
+- Current checkpoint is `b881d996afe58dfc65ce7e00e7e321c51c108651`.
 - Stage 30R real controlled Hermes + DeepSeek + local MCP path succeeded.
 - CapProof guard was active on the local MCP tool-call path.
 - Stage 31M productized the local CapProof MCP server with standard `tools/list` and `tools/call`.
@@ -2789,11 +2898,17 @@ If a new GPT/Codex session starts from here, it should assume:
 - Stage 37PKG documented the supported local stdio MCP subset: initialize, `tools/list`, `tools/call`, structuredContent, stdout cleanliness, and the 7 CapProof tools.
 - Stage 37PKG documented non-claimed MCP features: resources, prompts, sampling, elicitation, Streamable HTTP, OAuth/remote MCP authorization, external MCP protection, all transports, and future/draft MCP versions.
 - Stage 37PKG validation ended with full pytest 558 passed, 3 skipped, and compileall passed.
+- Stage 38REAL added `REAL_ENVIRONMENT_VALIDATION.md`, `run_real_environment_validation.py`, `tests/test_real_environment_validation.py`, and real-environment validation reports/traces/matrix artifacts.
+- Stage 38REAL made dry-run/preflight safety readiness only; they cannot count as completion evidence.
+- Stage 38REAL requires missing real gates to be reported as `blocked_missing_real_env_gate`.
+- Stage 38REAL real validation passed with real Hermes foreground, real DeepSeek, standard CapProof MCP, observed `tools/list` and `tools/call`, real sandbox workspace read/write/command execution, and ASK -> trusted approve -> rerun ALLOW.
+- Stage 38REAL denied raw shell without starting subprocess, denied attacker recipient with `executor_called=false`, rejected LLM/MCP metadata approval, did not pollute MCP stdio stdout, and detected no key leak.
+- Stage 38REAL validation ended with full pytest 566 passed, 3 skipped, and compileall passed.
 - Real OpenCode/OpenClaw processes have not yet been run.
 - Raw shell, arbitrary filesystem access, real email, external MCP, and OS-level network denial are not claimed.
 - OpenCode/OpenClaw real integration is not claimed complete.
 - DeepSeek is model backend only, not safety TCB.
 - API keys must stay out of files and commits.
 - The repo should not include `external/` third-party source or `.venv-hermes/`.
-- The next approved direction after this checkpoint is Stage 38REAL real-environment validation policy and harness.
+- The next approved direction after this checkpoint is Stage 39RT OpenCode/OpenClaw real runtime gate under the Stage 38REAL real-environment validation policy.
 - Future work should preserve Reference Monitor / Capability Store / Proof Model safety semantics unless the user explicitly asks for a carefully reviewed semantic change.
