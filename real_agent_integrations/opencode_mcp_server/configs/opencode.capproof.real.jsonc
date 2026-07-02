@@ -1,0 +1,69 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "deepseek/deepseek-v4-pro",
+  "provider": {
+    "deepseek": {
+      "name": "DeepSeek",
+      "id": "deepseek",
+      "npm": "@ai-sdk/openai-compatible",
+      "api": "{env:DEEPSEEK_BASE_URL}",
+      "env": [
+        "DEEPSEEK_API_KEY"
+      ],
+      "models": {
+        "deepseek-v4-pro": {
+          "id": "deepseek-v4-pro",
+          "name": "deepseek-v4-pro",
+          "attachment": false,
+          "reasoning": true,
+          "temperature": true,
+          "tool_call": true,
+          "limit": {
+            "context": 128000,
+            "output": 8192
+          },
+          "cost": {
+            "input": 0,
+            "output": 0
+          },
+          "options": {}
+        }
+      },
+      "options": {
+        "baseURL": "{env:DEEPSEEK_BASE_URL}",
+        "apiKey": "{env:DEEPSEEK_API_KEY}"
+      }
+    }
+  },
+  "mcp": {
+    "capproof": {
+      "type": "local",
+      "command": [
+        "python",
+        "run_capproof_mcp_server.py",
+        "--stdio",
+        "--sandboxed-real-execution",
+        "--workspace",
+        "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/sandbox_workspace",
+        "--trace-path",
+        "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/traces/real_opencode_mcp_trace.jsonl"
+      ],
+      "cwd": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7",
+      "enabled": true,
+      "timeout": 20000,
+      "environment": {
+        "CAPPROOF_MCP_WORKSPACE": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/sandbox_workspace",
+        "CAPPROOF_MCP_TRACE_PATH": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/traces/real_opencode_mcp_trace.jsonl"
+      }
+    }
+  },
+  "permission": {
+    "*": "deny",
+    "mcp_*": "allow",
+    "capproof_*": "allow"
+  },
+  "share": "disabled",
+  "autoupdate": false,
+  "formatter": false,
+  "lsp": false
+}
