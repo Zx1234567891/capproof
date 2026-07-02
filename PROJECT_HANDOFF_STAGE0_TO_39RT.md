@@ -1,10 +1,10 @@
-# CapProof Project Handoff: Stage 0 to Stage 38REAL
+# CapProof Project Handoff: Stage 0 to Stage 39RT
 
 Last updated: 2026-07-02
 
 Repository: `/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7`
 
-Current effective checkpoint: `b881d996afe58dfc65ce7e00e7e321c51c108651`
+Current effective checkpoint: `7311b7850daf2f00b111d0bc31134665da65f9bf`
 
 Current branch at last checkpoint: `main`
 
@@ -43,6 +43,7 @@ The project has evolved from a minimal scaffold into a substantial prototype con
 - Stage 36R validated a real Hermes foreground ASK approval rerun: initial ASK, trusted exact-scope approve, and foreground rerun ALLOW.
 - Stage 37PKG packaged the local Hermes + CapProof MCP artifact, compatibility profile, claims/non-claims matrix, local install/reproduction docs, Makefile targets, and reviewer-safe artifact checks.
 - Stage 38REAL made real-environment validation a project-level completion policy and added a harness proving that dry-run/preflight is safety readiness only, not completion evidence.
+- Stage 39RT cloned OpenCode/OpenClaw source repos under ignored `external/`, then performed real runtime command discovery. Runtime CLI commands were still missing, so both OpenCode and OpenClaw real smoke remained blocked as `blocked_runtime_missing`.
 
 The latest validated state is Stage 38REAL real-environment validation:
 
@@ -90,6 +91,11 @@ The latest validated state is Stage 38REAL real-environment validation:
 - No production-level Hermes protection is claimed.
 - Not all Hermes tool paths are claimed covered.
 - No real email, external MCP, raw shell, arbitrary filesystem access, or OS-level network denial is claimed.
+- Stage 39RT OpenCode source repo present: true, at `external/opencode`, remote `https://github.com/anomalyco/opencode`, commit `f52424e05fab0edddb4462112ceb02044085f903`.
+- Stage 39RT OpenCode runtime_present: false; real_smoke_eligible: false; reason: `blocked_runtime_missing`.
+- Stage 39RT OpenClaw source repo present: true, at `external/openclaw`, remote `https://github.com/openclaw/openclaw`, commit `5bcd25f0fb6de3cc2ba6b6a7688a9361eb355143`.
+- Stage 39RT OpenClaw runtime_present: false; real_smoke_eligible: false; reason: `blocked_runtime_missing`.
+- `external/` is ignored and not committed.
 - No real OpenCode/OpenClaw integration is claimed yet.
 
 The most recent real Hermes sandboxed CapProof MCP smoke remains Stage 33R:
@@ -2836,12 +2842,79 @@ Stage 38REAL non-claims:
 - No OS-level network-denial claim.
 - No OpenCode/OpenClaw real integration yet.
 
-## 19. Final State for New GPT Session
+## 19. Stage 39RT - OpenCode/OpenClaw Real Runtime Gate
+
+Checkpoint:
+
+`7311b7850daf2f00b111d0bc31134665da65f9bf`
+`checkpoint: gate OpenCode OpenClaw real runtimes for CapProof MCP`
+
+Stage 39RT applied the Stage 38REAL policy to OpenCode/OpenClaw runtime
+detection. It cloned missing third-party source repos under ignored
+`external/`, then performed real command discovery. Source presence was not
+treated as runtime availability or real integration completion.
+
+Runtime gate result:
+
+- Stage 38REAL policy active: true.
+- Dry-run/preflight counts as completion: false.
+- CapProof MCP server reused:
+  - `python run_capproof_mcp_server.py --stdio --sandboxed-real-execution`
+- CapProof guard/security logic forked: no.
+- OpenCode source repo present: true.
+- OpenCode source path: `external/opencode`.
+- OpenCode remote: `https://github.com/anomalyco/opencode`.
+- OpenCode source commit: `f52424e05fab0edddb4462112ceb02044085f903`.
+- OpenCode runtime_present: false.
+- OpenCode real_smoke_eligible: false.
+- OpenCode reason: `blocked_runtime_missing`.
+- OpenClaw source repo present: true.
+- OpenClaw source path: `external/openclaw`.
+- OpenClaw remote: `https://github.com/openclaw/openclaw`.
+- OpenClaw source commit: `5bcd25f0fb6de3cc2ba6b6a7688a9361eb355143`.
+- OpenClaw runtime_present: false.
+- OpenClaw real_smoke_eligible: false.
+- OpenClaw reason: `blocked_runtime_missing`.
+- `external/` ignored and not committed: true.
+- OpenCode/OpenClaw real integration claim: false.
+
+Validation:
+
+- `pytest tests/test_agent_runtime_gate.py -q`: 7 passed.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 567 passed, 3 skipped.
+- `python run_kill_tests.py --mode all --baselines`: 24/24.
+- `python run_adapter_bypass_gate.py`: adapter bypass unexpected allow 0.
+- `python run_authspec_faithfulness.py --mode auto`: AuthSpec dangerous over-broadening 0.
+- `compileall`: passed.
+
+Stage 39RT safety status:
+
+- API key written: no.
+- `external/` submitted: no.
+- `.venv-hermes/` submitted: no.
+- `node_modules/` submitted: no.
+- Runtime cache submitted: no.
+- CapProof core verifier semantics changed: no.
+- Reference Monitor semantics changed: no.
+- Capability Store core semantics changed: no.
+
+Stage 39RT non-claims:
+
+- No OpenCode/OpenClaw real integration claim.
+- No OpenCode/OpenClaw real smoke passed claim.
+- No production-level protection claim.
+- No real email.
+- No external MCP.
+- No raw shell.
+- No arbitrary filesystem access.
+- No OS-level network-denial claim.
+
+## 20. Final State for New GPT Session
 
 If a new GPT/Codex session starts from here, it should assume:
 
-- The project is at Stage 38REAL.
-- Current checkpoint is `b881d996afe58dfc65ce7e00e7e321c51c108651`.
+- The project is at Stage 39RT.
+- Current checkpoint is `7311b7850daf2f00b111d0bc31134665da65f9bf`.
 - Stage 30R real controlled Hermes + DeepSeek + local MCP path succeeded.
 - CapProof guard was active on the local MCP tool-call path.
 - Stage 31M productized the local CapProof MCP server with standard `tools/list` and `tools/call`.
@@ -2904,11 +2977,17 @@ If a new GPT/Codex session starts from here, it should assume:
 - Stage 38REAL real validation passed with real Hermes foreground, real DeepSeek, standard CapProof MCP, observed `tools/list` and `tools/call`, real sandbox workspace read/write/command execution, and ASK -> trusted approve -> rerun ALLOW.
 - Stage 38REAL denied raw shell without starting subprocess, denied attacker recipient with `executor_called=false`, rejected LLM/MCP metadata approval, did not pollute MCP stdio stdout, and detected no key leak.
 - Stage 38REAL validation ended with full pytest 566 passed, 3 skipped, and compileall passed.
+- Stage 39RT cloned OpenCode source to ignored `external/opencode`, commit `f52424e05fab0edddb4462112ceb02044085f903`, remote `https://github.com/anomalyco/opencode`.
+- Stage 39RT cloned OpenClaw source to ignored `external/openclaw`, commit `5bcd25f0fb6de3cc2ba6b6a7688a9361eb355143`, remote `https://github.com/openclaw/openclaw`.
+- Stage 39RT real command discovery found neither `opencode` nor `openclaw` on PATH.
+- Stage 39RT marked OpenCode and OpenClaw `runtime_present=false`, `real_smoke_eligible=false`, reason `blocked_runtime_missing`.
+- Stage 39RT did not claim real OpenCode/OpenClaw integration.
+- Stage 39RT validation ended with full pytest 567 passed, 3 skipped, and compileall passed.
 - Real OpenCode/OpenClaw processes have not yet been run.
 - Raw shell, arbitrary filesystem access, real email, external MCP, and OS-level network denial are not claimed.
 - OpenCode/OpenClaw real integration is not claimed complete.
 - DeepSeek is model backend only, not safety TCB.
 - API keys must stay out of files and commits.
 - The repo should not include `external/` third-party source or `.venv-hermes/`.
-- The next approved direction after this checkpoint is Stage 39RT OpenCode/OpenClaw real runtime gate under the Stage 38REAL real-environment validation policy.
+- The next approved direction after this checkpoint is Stage 40RB OpenCode/OpenClaw local runtime bootstrap under the Stage 38REAL real-environment validation policy.
 - Future work should preserve Reference Monitor / Capability Store / Proof Model safety semantics unless the user explicitly asks for a carefully reviewed semantic change.
