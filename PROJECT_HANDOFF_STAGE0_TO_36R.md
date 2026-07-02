@@ -2592,12 +2592,74 @@ Stage 36ASK non-claims:
 - No OS-level network-denial claim.
 - No OpenCode/OpenClaw real integration yet.
 
-## 16. Final State for New GPT Session
+## 16. Stage 36R - Foreground Hermes ASK Approval Rerun Smoke
+
+Checkpoint:
+
+`a132be58d4b40d1b469ad1cc1f609375854c9aa8`
+`checkpoint: validate foreground Hermes ASK approval flow`
+
+Stage 36R validated the full foreground Hermes ASK authorization loop:
+Hermes first triggered ASK, CapProof created a pending request without
+execution or capability minting, trusted local CLI approved the exact scope,
+and a foreground rerun changed the same task to ALLOW.
+
+Observed real workflow:
+
+- Real Hermes foreground run: yes.
+- Real DeepSeek call: yes.
+- Standard CapProof MCP server used: yes.
+- `tools/list` observed: yes.
+- `tools/call` observed: yes.
+- Initial task verdict: ASK.
+- Pending request created: yes.
+- ASK `executor_called=false`.
+- ASK `capability_minted=false`.
+- Trusted local CLI approve exact scope: succeeded.
+- Approval receipt generated: yes.
+- Foreground rerun verdict: ALLOW.
+- Rerun `executor_called=true`.
+- Hermes/DeepSeek claimed approval: rejected.
+- MCP `_meta.approved_by_user=true`: rejected.
+- Scope amplification: rejected.
+
+Validation:
+
+- `pytest tests/test_real_hermes_foreground_ask_flow.py -q`: 9 passed, 1 skipped.
+- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 548 passed, 3 skipped.
+- `python run_kill_tests.py --mode all --baselines`: 24/24.
+- `python run_adapter_bypass_gate.py`: adapter bypass unexpected allow 0.
+- `python run_authspec_faithfulness.py --mode auto`: AuthSpec dangerous over-broadening 0.
+- `compileall`: passed.
+
+Stage 36R safety status:
+
+- API key written: no.
+- `external/` submitted: no.
+- `.venv-hermes/` submitted: no.
+- `node_modules/` submitted: no.
+- local `auth_queue/` runtime state submitted: no.
+- CapProof core verifier semantics changed: no.
+- Reference Monitor semantics changed: no.
+- Capability Store core semantics changed: no.
+
+Stage 36R non-claims:
+
+- No production-level Hermes protection.
+- No all-Hermes-tool-paths-covered claim.
+- No real email.
+- No external MCP.
+- No raw shell.
+- No arbitrary filesystem access.
+- No OS-level network-denial claim.
+- No OpenCode/OpenClaw real integration yet.
+
+## 17. Final State for New GPT Session
 
 If a new GPT/Codex session starts from here, it should assume:
 
-- The project is at Stage 36ASK.
-- Current checkpoint is `2b263d6eb70c93f64c9a4029ab6791b4ddf0892d`.
+- The project is at Stage 36R.
+- Current checkpoint is `a132be58d4b40d1b469ad1cc1f609375854c9aa8`.
 - Stage 30R real controlled Hermes + DeepSeek + local MCP path succeeded.
 - CapProof guard was active on the local MCP tool-call path.
 - Stage 31M productized the local CapProof MCP server with standard `tools/list` and `tools/call`.
@@ -2642,11 +2704,18 @@ If a new GPT/Codex session starts from here, it should assume:
 - Stage 36ASK proved only trusted local CLI approval can mint scoped capability.
 - Stage 36ASK proved scope amplification, replay approval, expired approvals, LLM claimed approval, and MCP `_meta` approval are rejected.
 - Stage 36ASK validation ended with full pytest 539 passed, 2 skipped, and compileall passed.
+- Stage 36R ran real Hermes foreground and called real DeepSeek for the ASK approval rerun smoke.
+- Stage 36R used the standard CapProof MCP server and observed `tools/list` and `tools/call`.
+- Stage 36R proved ASK created a pending request with `executor_called=false` and `capability_minted=false`.
+- Stage 36R proved trusted local CLI approval of the exact scope minted scoped capability and emitted an approval receipt.
+- Stage 36R proved foreground rerun changed the task verdict from ASK to ALLOW with executor called.
+- Stage 36R proved Hermes/DeepSeek claimed approval, MCP `_meta.approved_by_user=true`, and scope amplification were rejected.
+- Stage 36R validation ended with full pytest 548 passed, 3 skipped, and compileall passed.
 - Real OpenCode/OpenClaw processes have not yet been run.
 - Raw shell, arbitrary filesystem access, real email, external MCP, and OS-level network denial are not claimed.
 - OpenCode/OpenClaw real integration is not claimed complete.
 - DeepSeek is model backend only, not safety TCB.
 - API keys must stay out of files and commits.
 - The repo should not include `external/` third-party source or `.venv-hermes/`.
-- The next approved direction after this checkpoint is Stage 36R real Hermes foreground ASK approval rerun smoke.
+- The next approved direction after this checkpoint is Stage 37PKG artifact packaging, MCP compatibility profile, and claims/non-claims matrix.
 - Future work should preserve Reference Monitor / Capability Store / Proof Model safety semantics unless the user explicitly asks for a carefully reviewed semantic change.
