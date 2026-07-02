@@ -1,58 +1,113 @@
 {
   "api_key_written": false,
+  "blocked_if_missing": true,
   "capproof_mcp_command": [
     "python",
     "run_capproof_mcp_server.py",
     "--stdio",
     "--sandboxed-real-execution"
   ],
-  "external_or_venv_committed": false,
+  "dry_run_counts_as_completion": false,
+  "external_venv_node_modules_runtime_cache_committed": false,
   "forked_guard_logic": false,
+  "integration_claim_made": false,
+  "next_stage_recommended": [
+    "Install or expose a real OpenCode/OpenClaw runtime before real agent smoke"
+  ],
   "openclaw": {
     "agent": "openclaw",
-    "can_load_capproof_mcp_config": false,
+    "blocked_runtime_missing": true,
+    "capproof_mcp_command_referenced": true,
+    "capproof_mcp_config_template_exists": true,
     "command_name": "openclaw",
-    "command_path": "",
-    "config_path": "",
-    "config_path_detected": false,
+    "command_path": null,
+    "config_load_supported": false,
+    "config_template_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/openclaw_mcp_server/configs/openclaw.capproof.mcp.commands.md",
     "mcp_doctor_probe_available": false,
     "mcp_status_available": false,
     "mcp_tools_available": false,
-    "probes": [],
+    "probes": [
+      {
+        "attempted": true,
+        "available": false,
+        "command": [
+          "which",
+          "openclaw"
+        ],
+        "error": "",
+        "exit_code": 1,
+        "label": "which_openclaw",
+        "output_excerpt": ""
+      }
+    ],
     "real_agent_process_run": false,
     "real_integration_claim": false,
     "real_smoke_eligible": false,
-    "reason": "runtime_missing: openclaw command is not on PATH",
+    "reason": "blocked_runtime_missing",
     "runtime_present": false,
+    "source_repo_commit": "5bcd25f0fb6de3cc2ba6b6a7688a9361eb355143",
+    "source_repo_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/openclaw",
+    "source_repo_present": true,
+    "source_repo_remote": "https://github.com/openclaw/openclaw",
     "tools_call_observed_from_real_agent": false,
     "tools_list_observed_from_real_agent": false,
-    "version": "",
-    "version_detected": false
+    "version_detected": null
   },
   "opencode": {
     "agent": "opencode",
-    "can_load_capproof_mcp_config": false,
+    "blocked_runtime_missing": true,
+    "capproof_mcp_command_referenced": true,
+    "capproof_mcp_config_template_exists": true,
     "command_name": "opencode",
-    "command_path": "",
-    "config_path": "",
-    "config_path_detected": false,
+    "command_path": null,
+    "config_load_supported": false,
+    "config_template_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/configs/opencode.capproof.mcp.example.jsonc",
     "mcp_doctor_probe_available": false,
     "mcp_status_available": false,
     "mcp_tools_available": false,
-    "probes": [],
+    "probes": [
+      {
+        "attempted": true,
+        "available": false,
+        "command": [
+          "which",
+          "opencode"
+        ],
+        "error": "",
+        "exit_code": 1,
+        "label": "which_opencode",
+        "output_excerpt": ""
+      }
+    ],
     "real_agent_process_run": false,
     "real_integration_claim": false,
     "real_smoke_eligible": false,
-    "reason": "runtime_missing: opencode command is not on PATH",
+    "reason": "blocked_runtime_missing",
     "runtime_present": false,
+    "source_repo_commit": "f52424e05fab0edddb4462112ceb02044085f903",
+    "source_repo_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/external/opencode",
+    "source_repo_present": true,
+    "source_repo_remote": "https://github.com/anomalyco/opencode",
     "tools_call_observed_from_real_agent": false,
     "tools_list_observed_from_real_agent": false,
-    "version": "",
-    "version_detected": false
+    "version_detected": null
   },
   "production_level_protection_claim": false,
+  "real_environment_policy_active": true,
   "real_openclaw_integration_claim": false,
   "real_opencode_integration_claim": false,
-  "stage": "34R-G",
+  "stage": "39RT",
+  "tests_summary": {
+    "adapter_bypass_unexpected_allow": 0,
+    "agent_mcp_client_audit_tests": "5 passed",
+    "authspec_dangerous_over_broadening": 0,
+    "compileall": "passed",
+    "full_pytest": "567 passed, 3 skipped",
+    "kill_tests": "24/24",
+    "openclaw_mcp_config_tests": "3 passed",
+    "opencode_mcp_config_tests": "3 passed",
+    "policy_required": true,
+    "stage_39rt_tests": "7 passed"
+  },
   "uses_shared_capproof_mcp_server": true
 }
