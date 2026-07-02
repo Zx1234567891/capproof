@@ -30,6 +30,8 @@ def main() -> int:
     parser.add_argument("--self-test", action="store_true", help="run local no-side-effect MCP tool self-test")
     parser.add_argument("--workspace", help="workspace for local mock executor")
     parser.add_argument("--trace-path", help="trace JSONL path")
+    parser.add_argument("--auth-queue-dir", help="authorization queue directory for ASK requests")
+    parser.add_argument("--ask-trace-path", help="authorization audit trace JSONL path")
     parser.add_argument(
         "--sandboxed-real-execution",
         action="store_true",
@@ -40,6 +42,10 @@ def main() -> int:
     ensure_dirs()
     workspace = Path(args.workspace or os.environ.get("CAPPROOF_MCP_WORKSPACE") or tempfile.mkdtemp(prefix="capproof_mcp_"))
     trace_path = Path(args.trace_path or os.environ.get("CAPPROOF_MCP_TRACE_PATH") or DEFAULT_TRACE_PATH)
+    if args.auth_queue_dir:
+        os.environ["CAPPROOF_AUTH_QUEUE_DIR"] = str(Path(args.auth_queue_dir).resolve(strict=False))
+    if args.ask_trace_path:
+        os.environ["CAPPROOF_ASK_TRACE_PATH"] = str(Path(args.ask_trace_path).resolve(strict=False))
     if args.self_test and trace_path.exists():
         trace_path.unlink()
     context = make_default_context(
