@@ -14,7 +14,7 @@ def test_openclaw_commands_use_outbound_mcp_server_path() -> None:
     assert "`openclaw mcp serve` means OpenClaw acting as an MCP server" in text
     assert "openclaw mcp add capproof" in text
     assert "--command python" in text
-    assert "--arg run_capproof_mcp_server.py" in text
+    assert "--arg tools/run_capproof_mcp_server.py" in text
     assert "--arg --stdio" in text
     assert "--arg --sandboxed-real-execution" in text
     assert "openclaw mcp doctor capproof --probe" in text

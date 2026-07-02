@@ -7,9 +7,9 @@ This runbook reproduces the controlled local real-environment evaluator artifact
 Readiness commands do not start agents or call DeepSeek:
 
 ```bash
-python run_real_agent_parity_evaluator.py --preflight
-python run_real_agent_parity_evaluator.py --list-agents
-python run_real_agent_parity_evaluator.py --require-real --fail-if-gate-missing
+python tools/run_real_agent_parity_evaluator.py --preflight
+python tools/run_real_agent_parity_evaluator.py --list-agents
+python tools/run_real_agent_parity_evaluator.py --require-real --fail-if-gate-missing
 ```
 
 The third command should fail when gates are missing. That failure is expected and verifies Stage 38REAL policy.
@@ -32,7 +32,7 @@ ALLOW_CAPROOF_MCP_REAL_HERMES=1 \
 ALLOW_CAPROOF_REAL_OPENCODE_SMOKE=1 \
 ALLOW_CAPROOF_REAL_OPENCLAW_SMOKE=1 \
 DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" \
-python run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report
+python tools/run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report
 ```
 
 Expected result: `evaluator_passed=true`.

@@ -148,7 +148,7 @@ def test_harness_surfaces_cover_existing_kill_tests(tmp_path: Path) -> None:
 
 def test_audit_script_does_not_execute_third_party_commands(tmp_path: Path) -> None:
     payload, _output = run_tmp_audit(tmp_path)
-    source = (ROOT / "run_agent_coverage_audit.py").read_text(encoding="utf-8")
+    source = (ROOT / "tools/run_agent_coverage_audit.py").read_text(encoding="utf-8")
 
     assert payload["safety"]["third_party_commands_executed"] is False
     assert payload["safety"]["real_agents_executed"] is False

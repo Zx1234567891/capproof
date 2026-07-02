@@ -172,7 +172,7 @@ def test_write_artifacts_generates_runtime_gate_reports(tmp_path: Path, monkeypa
     assert "Stage 39RT performs real local runtime discovery/version/probe commands" in report
     assert "blocked_runtime_missing" in report
     assert "integration_claim_made: False" in report
-    assert "python run_capproof_mcp_server.py --stdio --sandboxed-real-execution" in report
+    assert "python tools/run_capproof_mcp_server.py --stdio --sandboxed-real-execution" in report
     assert not re.search(r"sk-[A-Za-z0-9_-]{12,}", combined)
 
 
@@ -185,7 +185,7 @@ def test_runtime_gate_reuses_capproof_mcp_without_forking_guard(monkeypatch) -> 
     summary = gate.build_summary({})
 
     assert summary.uses_shared_capproof_mcp_server is True
-    assert "run_capproof_mcp_server.py" in summary.capproof_mcp_command
+    assert "tools/run_capproof_mcp_server.py" in summary.capproof_mcp_command
     assert "--sandboxed-real-execution" in summary.capproof_mcp_command
     assert summary.forked_guard_logic is False
     assert summary.production_level_protection_claim is False

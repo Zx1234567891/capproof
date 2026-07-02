@@ -1,8 +1,8 @@
 {
   "artifact_name": "CapProof Hermes OpenCode OpenClaw MCP parity artifact",
-  "current_commit": "941b95974cfa7c0001f5b0a9cd51028c5d1020c0",
+  "current_commit": "955b1b19e4893ac9368c97f2856b1b9384ac4b1c",
   "final_checkpoint_note": "Stage 44FINAL commit is the git HEAD after final artifact commit.",
-  "final_release_passed": true,
+  "final_release_passed": false,
   "ignored_runtime_paths": [
     "external/",
     "external/.agent-runtimes/",
@@ -30,13 +30,13 @@
     "artifact_reports/final_claims_evidence_index.json"
   ],
   "important_scripts": [
-    "run_real_agent_parity_evaluator.py",
-    "run_cleanroom_release_candidate.py",
-    "run_agent_parity_matrix.py",
-    "run_real_environment_validation.py",
-    "run_capproof_mcp_server.py",
-    "run_capproof_trace_viewer.py",
-    "run_capproof_auth_queue.py"
+    "tools/run_real_agent_parity_evaluator.py",
+    "tools/run_cleanroom_release_candidate.py",
+    "tools/run_agent_parity_matrix.py",
+    "tools/run_real_environment_validation.py",
+    "tools/run_capproof_mcp_server.py",
+    "tools/run_capproof_trace_viewer.py",
+    "tools/run_capproof_auth_queue.py"
   ],
   "release_candidate_stage": "43RC",
   "stage_43rc_checkpoint": "0ab6e29"

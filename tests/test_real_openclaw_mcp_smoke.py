@@ -83,7 +83,7 @@ def test_generated_config_uses_env_placeholder_not_key(monkeypatch, tmp_path: Pa
 
     assert secret not in text
     assert "${DEEPSEEK_API_KEY}" in text
-    assert "run_capproof_mcp_server.py" not in text
+    assert "tools/run_capproof_mcp_server.py" not in text
     assert "capproof__capproof-read_workspace_file" in text
     assert "capproof__capproof-send_message_mock" in text
 
@@ -92,10 +92,10 @@ def test_mcp_add_command_uses_standard_server(tmp_path: Path) -> None:
     command = smoke.mcp_add_command(tmp_path / "workspace", tmp_path / "trace.jsonl")
 
     joined = " ".join(command)
-    assert "run_capproof_mcp_server.py" in joined
+    assert "tools/run_capproof_mcp_server.py" in joined
     assert "--stdio" in joined
     assert "--sandboxed-real-execution" in joined
-    assert "run_hermes_mcp_proxy.py" not in joined
+    assert "tools/run_hermes_mcp_proxy.py" not in joined
 
 
 def test_trace_analysis_requires_allow_and_deny_evidence() -> None:

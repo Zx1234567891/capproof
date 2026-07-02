@@ -113,9 +113,9 @@ def test_generated_report_is_redaction_safe(monkeypatch, tmp_path: Path) -> None
 
 def test_integration_with_existing_scripts_is_wired() -> None:
     commands = {label: " ".join(command) for label, command in realenv.REAL_COMMANDS}
-    assert "run_real_hermes_foreground_mcp_demo.py" in commands["foreground"]
-    assert "run_real_hermes_sandbox_mcp_smoke.py" in commands["sandbox"]
-    assert "run_real_hermes_foreground_ask_flow.py" in commands["ask"]
+    assert "tools/run_real_hermes_foreground_mcp_demo.py" in commands["foreground"]
+    assert "tools/run_real_hermes_sandbox_mcp_smoke.py" in commands["sandbox"]
+    assert "tools/run_real_hermes_foreground_ask_flow.py" in commands["ask"]
     assert len(realenv.REAL_COMMANDS) == 3
 
 

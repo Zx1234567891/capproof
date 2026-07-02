@@ -7,7 +7,7 @@ from capproof.mcp.context import make_default_context
 from capproof.mcp.server import CapProofMCPServer
 
 
-_CLI_PATH = Path(__file__).resolve().parents[1] / "run_capproof_auth_queue.py"
+_CLI_PATH = Path(__file__).resolve().parents[1] / "tools/run_capproof_auth_queue.py"
 _SPEC = importlib.util.spec_from_file_location("run_capproof_auth_queue", _CLI_PATH)
 assert _SPEC is not None and _SPEC.loader is not None
 _CLI = importlib.util.module_from_spec(_SPEC)

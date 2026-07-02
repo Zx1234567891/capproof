@@ -1,6 +1,6 @@
 {
   "args": [
-    "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/run_capproof_mcp_server.py",
+    "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/tools/run_capproof_mcp_server.py",
     "--stdio"
   ],
   "command": "/home/xiaowu/anaconda3/bin/python",

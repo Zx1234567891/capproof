@@ -7,8 +7,8 @@ Stage 43RC verifies that the Stage 42EVAL artifact can be reproduced from a clea
 These commands do not call DeepSeek and do not start real agents:
 
 ```bash
-python run_cleanroom_release_candidate.py --preflight
-python run_cleanroom_release_candidate.py --require-real --fail-if-gate-missing
+python tools/run_cleanroom_release_candidate.py --preflight
+python tools/run_cleanroom_release_candidate.py --require-real --fail-if-gate-missing
 ```
 
 The second command must fail when gates are missing. That is expected and confirms Stage 38REAL behavior.
@@ -28,7 +28,7 @@ ALLOW_CAPROOF_MCP_REAL_HERMES=1 \
 ALLOW_CAPROOF_REAL_OPENCODE_SMOKE=1 \
 ALLOW_CAPROOF_REAL_OPENCLAW_SMOKE=1 \
 DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" \
-python run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report
+python tools/run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report
 ```
 
 The harness creates an ignored linked worktree under `artifact_cleanroom/worktrees/capproof-rc`, prepares ignored runtimes under that worktree, runs the Stage 42 evaluator as a fresh run, scans for the real key, and copies only redaction-safe summary/report/matrix artifacts back to root `artifact_reports/`.

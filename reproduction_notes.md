@@ -4,22 +4,22 @@ These notes are part of the artifact contract for Stages 12-13. The harness inte
 
 ## Running the Harness
 
-- `python run_kill_tests.py --mode attack`: runs the 12 attack cases and regenerates `kill_test_report.md` with attack success, unsafe side-effect count, and deny-reason distribution.
-- `python run_kill_tests.py --mode benign`: runs the 12 benign counterparts and regenerates `kill_test_report.md` plus `benign_kill_test_report.md` with benign success, overblock, ASK, proof coverage, and endorsement counts.
-- `python run_kill_tests.py --mode all`: runs both attack and benign cases and regenerates `kill_test_report.md` plus `benign_kill_test_report.md` for the combined kill-test harness.
-- `python run_kill_tests.py --mode all --baselines`: runs the combined harness with representative baselines and regenerates `baseline_report.md` plus this `reproduction_notes.md`.
+- `python tools/run_kill_tests.py --mode attack`: runs the 12 attack cases and regenerates `kill_test_report.md` with attack success, unsafe side-effect count, and deny-reason distribution.
+- `python tools/run_kill_tests.py --mode benign`: runs the 12 benign counterparts and regenerates `kill_test_report.md` plus `benign_kill_test_report.md` with benign success, overblock, ASK, proof coverage, and endorsement counts.
+- `python tools/run_kill_tests.py --mode all`: runs both attack and benign cases and regenerates `kill_test_report.md` plus `benign_kill_test_report.md` for the combined kill-test harness.
+- `python tools/run_kill_tests.py --mode all --baselines`: runs the combined harness with representative baselines and regenerates `baseline_report.md` plus this `reproduction_notes.md`.
 - These reports are valid for the current 12-task kill-test harness only; they must not be extrapolated to a complete benchmark or original-system comparison without calibration.
 
 ## Running the AuthSpec Faithfulness Gate
 
-- `python run_authspec_faithfulness.py --mode oracle`: generates the 50-case AuthSpec Faithfulness corpus in Oracle-AuthSpec Mode, where `G_sys = G*`, and writes oracle generated specs, evaluations, summaries, and `authspec_faithfulness_report.md`.
-- `python run_authspec_faithfulness.py --mode auto`: runs the representative rule-based AuthSpec Builder in Deployed-AuthSpec Mode, compares generated `G_sys` against ground-truth `G*`, and writes generated specs, per-case evaluations, aggregate metrics, and `authspec_faithfulness_report.md`.
-- `python run_authspec_faithfulness.py --report`: regenerates `authspec_faithfulness_report.md` from the latest saved AuthSpec Faithfulness results without running a new builder pass.
+- `python tools/run_authspec_faithfulness.py --mode oracle`: generates the 50-case AuthSpec Faithfulness corpus in Oracle-AuthSpec Mode, where `G_sys = G*`, and writes oracle generated specs, evaluations, summaries, and `authspec_faithfulness_report.md`.
+- `python tools/run_authspec_faithfulness.py --mode auto`: runs the representative rule-based AuthSpec Builder in Deployed-AuthSpec Mode, compares generated `G_sys` against ground-truth `G*`, and writes generated specs, per-case evaluations, aggregate metrics, and `authspec_faithfulness_report.md`.
+- `python tools/run_authspec_faithfulness.py --report`: regenerates `authspec_faithfulness_report.md` from the latest saved AuthSpec Faithfulness results without running a new builder pass.
 - AuthSpec Faithfulness results are a 50-case gate for `G_sys` versus `G*`; they are not a complete benchmark and do not establish deployability for automatic AuthSpec generation.
 
 ## Running the Adapter Bypass Gate
 
-- `python run_adapter_bypass_gate.py`: runs the adapter/canonicalization bypass gate with mock actions only, regenerates `adapter_bypass_gate/` artifacts, and writes `adapter_bypass_gate_report.md`.
+- `python tools/run_adapter_bypass_gate.py`: runs the adapter/canonicalization bypass gate with mock actions only, regenerates `adapter_bypass_gate/` artifacts, and writes `adapter_bypass_gate_report.md`.
 - This gate does not send email, perform network I/O, execute shell commands, or use LLMs. It checks adapter field coverage and canonicalization behavior before any real executor.
 
 ## Running the Agent Adapter Tests
@@ -36,29 +36,29 @@ These notes are part of the artifact contract for Stages 12-13. The harness inte
 
 ## Running the Agent Coverage Audit
 
-- `python run_agent_coverage_audit.py`: runs the Stage 18 static, read-only adapter coverage audit and writes `agent_coverage_audit/` reports. Missing third-party repos are reported as `repo_missing`.
-- `python run_agent_coverage_audit.py --opencode-repo external/opencode`: audits a local OpenCode checkout if present; it does not clone, install, build, or run OpenCode.
-- `python run_agent_coverage_audit.py --openclaw-repo external/openclaw`: audits a local OpenClaw checkout if present; it does not clone, install, build, or run OpenClaw.
-- `python run_agent_coverage_audit.py --hermes-repo external/hermes-agent`: audits a local Hermes Agent checkout if present; it does not clone, install, build, or run Hermes.
-- `python run_agent_coverage_audit.py --hermes-repo external/external/hermes-agent`: audits the nested local Hermes checkout shape used in this workspace. Use whichever path matches the local checkout.
+- `python tools/run_agent_coverage_audit.py`: runs the Stage 18 static, read-only adapter coverage audit and writes `agent_coverage_audit/` reports. Missing third-party repos are reported as `repo_missing`.
+- `python tools/run_agent_coverage_audit.py --opencode-repo external/opencode`: audits a local OpenCode checkout if present; it does not clone, install, build, or run OpenCode.
+- `python tools/run_agent_coverage_audit.py --openclaw-repo external/openclaw`: audits a local OpenClaw checkout if present; it does not clone, install, build, or run OpenClaw.
+- `python tools/run_agent_coverage_audit.py --hermes-repo external/hermes-agent`: audits a local Hermes Agent checkout if present; it does not clone, install, build, or run Hermes.
+- `python tools/run_agent_coverage_audit.py --hermes-repo external/external/hermes-agent`: audits the nested local Hermes checkout shape used in this workspace. Use whichever path matches the local checkout.
 - Stage 19 local Hermes audit: the commands above perform static source reads only and regenerate `agent_coverage_audit/hermes_audit.md`, `coverage_matrix.json`, `coverage_matrix.md`, and `audit_summary.md`. In this workspace, the provided checkout unpacked at `external/external/hermes-agent`; the audit script resolves that local nested checkout when `external/hermes-agent` is absent. If neither path exists, Hermes remains `repo_missing`.
 - The audit does not run Hermes, install dependencies, execute third-party commands, execute tools, connect to gateways/MCP servers, call network services, send email, or execute shell actions.
 - Do not add `external/hermes-agent` or `external/external/hermes-agent` third-party source to the CapProof git repository; pass `--hermes-repo` to point at a local checkout.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/test_hermes_adapter_coverage.py -q`: runs the Stage 20 Hermes observed-shape mock coverage tests derived from the local static Hermes audit. These tests cover terminal, send_message, dynamic MCP, memory/provider-memory, delegate_task, cronjob, edit_file, and dispatcher effective-args shapes. They do not run Hermes, install dependencies, execute tools, connect to gateways/MCP servers, or perform network/shell/email side effects.
-- `python run_hermes_dry_run.py`: runs the Stage 21 supported-subset Hermes dry-run over mock/replay JSON events and regenerates `hermes_dry_run_report.md` plus `hermes_dry_run/reports/summary.json`.
-- `python run_hermes_dry_run.py --category supported`: runs only supported-subset dry-run cases.
-- `python run_hermes_dry_run.py --category deny`: runs only explicit-deny dry-run cases.
-- `python run_hermes_dry_run.py --category sanitized`: runs only sanitized / stripped allow memory cases.
-- `python run_hermes_dry_run.py --category unknown`: runs only unknown/runtime-capture-needed fail-closed cases.
-- `python run_hermes_dry_run.py --json`: prints the dry-run summary JSON to stdout in addition to writing reports.
+- `python tools/run_hermes_dry_run.py`: runs the Stage 21 supported-subset Hermes dry-run over mock/replay JSON events and regenerates `hermes_dry_run_report.md` plus `hermes_dry_run/reports/summary.json`.
+- `python tools/run_hermes_dry_run.py --category supported`: runs only supported-subset dry-run cases.
+- `python tools/run_hermes_dry_run.py --category deny`: runs only explicit-deny dry-run cases.
+- `python tools/run_hermes_dry_run.py --category sanitized`: runs only sanitized / stripped allow memory cases.
+- `python tools/run_hermes_dry_run.py --category unknown`: runs only unknown/runtime-capture-needed fail-closed cases.
+- `python tools/run_hermes_dry_run.py --json`: prints the dry-run summary JSON to stdout in addition to writing reports.
 - Stage 21 dry-run commands do not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to gateways/MCP servers, call network services, send email, or execute shell actions. They only replay mock JSON events through `HermesAgentLikeAdapter`, `CapProofMiddleware`, and `MockExecutor`.
-- `python run_hermes_capture_validation.py`: runs the Stage 22 Hermes runtime capture schema replay validation over synthetic captured events and regenerates `hermes_capture_validation_report.md` plus `hermes_capture_examples/summary.json`.
+- `python tools/run_hermes_capture_validation.py`: runs the Stage 22 Hermes runtime capture schema replay validation over synthetic captured events and regenerates `hermes_capture_validation_report.md` plus `hermes_capture_examples/summary.json`.
 - `pytest tests/test_hermes_capture_validation.py -q`: runs the Stage 22 capture validation unit tests.
 - Stage 22 capture validation does not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to gateways/MCP servers, call network services, send email, or execute shell actions. It validates `pre_execution_gate` / `observer_only` / `unsupported` capture semantics over synthetic JSON only.
-- `python run_hermes_capture_prototype.py --input hermes_capture_examples`: runs the Stage 23 capture prototype over Stage 22 wrapped synthetic examples.
-- `python run_hermes_capture_prototype.py --input hermes_capture_prototype/input_examples`: runs the Stage 23 capture prototype over raw Hermes-like JSON captured-event examples.
-- `python run_hermes_capture_prototype.py --jsonl hermes_capture_prototype/input_examples/events.jsonl`: runs the prototype over JSONL captured events.
-- `python run_hermes_capture_prototype.py --report`: prints the latest prototype report, summary, and trace paths.
+- `python tools/run_hermes_capture_prototype.py --input hermes_capture_examples`: runs the Stage 23 capture prototype over Stage 22 wrapped synthetic examples.
+- `python tools/run_hermes_capture_prototype.py --input hermes_capture_prototype/input_examples`: runs the Stage 23 capture prototype over raw Hermes-like JSON captured-event examples.
+- `python tools/run_hermes_capture_prototype.py --jsonl hermes_capture_prototype/input_examples/events.jsonl`: runs the prototype over JSONL captured events.
+- `python tools/run_hermes_capture_prototype.py --report`: prints the latest prototype report, summary, and trace paths.
 - `pytest tests/test_hermes_capture_prototype.py -q`: runs the Stage 23 capture prototype tests.
 - Stage 23 capture prototype commands process only JSON / JSONL captured-event examples. They do not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to gateways/MCP servers, call network services, send email, or execute shell actions.
 
@@ -211,9 +211,9 @@ paths are covered.
 Default safe commands:
 
 ```bash
-python run_real_hermes_foreground_mcp_demo.py --preflight
-python run_real_hermes_foreground_mcp_demo.py --list-tasks
-python run_real_hermes_foreground_mcp_demo.py --dry-run
+python tools/run_real_hermes_foreground_mcp_demo.py --preflight
+python tools/run_real_hermes_foreground_mcp_demo.py --list-tasks
+python tools/run_real_hermes_foreground_mcp_demo.py --dry-run
 ```
 
 Authorized real foreground command:
@@ -224,7 +224,7 @@ ALLOW_CAPROOF_MCP_REAL_HERMES=1 \
 ALLOW_CAPROOF_SANDBOX_REAL_EXECUTION=1 \
 ALLOW_CAPROOF_HERMES_FOREGROUND_DEMO=1 \
 DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" \
-python run_real_hermes_foreground_mcp_demo.py --all --foreground
+python tools/run_real_hermes_foreground_mcp_demo.py --all --foreground
 ```
 
 Validation commands:
@@ -239,11 +239,11 @@ pytest tests/test_capproof_mcp_sandbox_file_read.py -q
 pytest tests/test_capproof_mcp_sandbox_file_write.py -q
 pytest tests/test_capproof_mcp_sandbox_commands.py -q
 pytest tests/test_capproof_mcp_sandbox_env.py -q
-python run_kill_tests.py --mode all --baselines
-python run_adapter_bypass_gate.py
-python run_authspec_faithfulness.py --mode auto
+python tools/run_kill_tests.py --mode all --baselines
+python tools/run_adapter_bypass_gate.py
+python tools/run_authspec_faithfulness.py --mode auto
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
-python -m compileall src tests run_real_hermes_foreground_mcp_demo.py run_capproof_mcp_stdio_recorder.py
+python -m compileall src tests tools/run_real_hermes_foreground_mcp_demo.py tools/run_capproof_mcp_stdio_recorder.py
 ```
 
 Stage 34H boundaries:
@@ -281,10 +281,10 @@ hermes --doctor
 hermes --where-trace
 hermes --capproof-status
 hermes --list-tasks
-python run_capproof_mcp_doctor.py --all
-python run_capproof_trace_viewer.py --latest --last 20
-python run_capproof_trace_viewer.py --latest --format json --last 5
-python run_capproof_trace_viewer.py --latest --filter-verdict DENY
+python tools/run_capproof_mcp_doctor.py --all
+python tools/run_capproof_trace_viewer.py --latest --last 20
+python tools/run_capproof_trace_viewer.py --latest --format json --last 5
+python tools/run_capproof_trace_viewer.py --latest --filter-verdict DENY
 ```
 
 Interactive trace following:
@@ -309,11 +309,11 @@ pytest tests/test_capproof_mcp_sandbox_file_read.py -q
 pytest tests/test_capproof_mcp_sandbox_file_write.py -q
 pytest tests/test_capproof_mcp_sandbox_commands.py -q
 pytest tests/test_capproof_mcp_sandbox_env.py -q
-python run_kill_tests.py --mode all --baselines
-python run_adapter_bypass_gate.py
-python run_authspec_faithfulness.py --mode auto
+python tools/run_kill_tests.py --mode all --baselines
+python tools/run_adapter_bypass_gate.py
+python tools/run_authspec_faithfulness.py --mode auto
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
-python -m compileall src tests run_capproof_trace_viewer.py run_capproof_mcp_doctor.py run_hermes_capproof_foreground.py
+python -m compileall src tests tools/run_capproof_trace_viewer.py tools/run_capproof_mcp_doctor.py tools/run_hermes_capproof_foreground.py
 ```
 
 ## Stage 36ASK - Trusted Pending Authorization UX
@@ -326,13 +326,13 @@ request.
 Queue commands:
 
 ```bash
-python run_capproof_auth_queue.py doctor
-python run_capproof_auth_queue.py list
-python run_capproof_auth_queue.py show AUTHREQ_ID
-python run_capproof_auth_queue.py approve AUTHREQ_ID --scope-file approved_scope.json
-python run_capproof_auth_queue.py deny AUTHREQ_ID --reason "..."
-python run_capproof_auth_queue.py audit AUTHREQ_ID
-python run_capproof_auth_queue.py expire AUTHREQ_ID
+python tools/run_capproof_auth_queue.py doctor
+python tools/run_capproof_auth_queue.py list
+python tools/run_capproof_auth_queue.py show AUTHREQ_ID
+python tools/run_capproof_auth_queue.py approve AUTHREQ_ID --scope-file approved_scope.json
+python tools/run_capproof_auth_queue.py deny AUTHREQ_ID --reason "..."
+python tools/run_capproof_auth_queue.py audit AUTHREQ_ID
+python tools/run_capproof_auth_queue.py expire AUTHREQ_ID
 ```
 
 Stage 36ASK validation commands:
@@ -348,11 +348,11 @@ pytest tests/test_capproof_mcp_doctor.py -q
 pytest tests/test_hermes_wrapper_ux.py -q
 pytest tests/test_real_hermes_foreground_mcp_demo.py -q
 pytest tests/test_real_hermes_sandbox_mcp_smoke.py -q
-python run_kill_tests.py --mode all --baselines
-python run_adapter_bypass_gate.py
-python run_authspec_faithfulness.py --mode auto
+python tools/run_kill_tests.py --mode all --baselines
+python tools/run_adapter_bypass_gate.py
+python tools/run_authspec_faithfulness.py --mode auto
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
-python -m compileall src tests run_capproof_auth_queue.py run_capproof_trace_viewer.py run_capproof_mcp_doctor.py
+python -m compileall src tests tools/run_capproof_auth_queue.py tools/run_capproof_trace_viewer.py tools/run_capproof_mcp_doctor.py
 ```
 
 Stage 36ASK boundaries:
@@ -374,9 +374,9 @@ foreground task changes the verdict from ASK to ALLOW.
 Default no-real-Hermes commands:
 
 ```bash
-python run_real_hermes_foreground_ask_flow.py --preflight
-python run_real_hermes_foreground_ask_flow.py --list-scenarios
-python run_real_hermes_foreground_ask_flow.py --dry-run
+python tools/run_real_hermes_foreground_ask_flow.py --preflight
+python tools/run_real_hermes_foreground_ask_flow.py --list-scenarios
+python tools/run_real_hermes_foreground_ask_flow.py --dry-run
 ```
 
 Authorized real foreground run:
@@ -387,14 +387,14 @@ ALLOW_CAPROOF_MCP_REAL_HERMES=1 \
 ALLOW_CAPROOF_HERMES_FOREGROUND_DEMO=1 \
 ALLOW_CAPROOF_ASK_APPROVAL_DEMO=1 \
 DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" \
-python run_real_hermes_foreground_ask_flow.py --all --foreground
+python tools/run_real_hermes_foreground_ask_flow.py --all --foreground
 ```
 
 Stage 36R validation commands:
 
 ```bash
-python run_capproof_auth_queue.py doctor
-python run_capproof_trace_viewer.py --latest --filter-verdict ASK --last 20
+python tools/run_capproof_auth_queue.py doctor
+python tools/run_capproof_trace_viewer.py --latest --filter-verdict ASK --last 20
 pytest tests/test_real_hermes_foreground_ask_flow.py -q
 pytest tests/test_capproof_auth_queue.py -q
 pytest tests/test_capproof_mcp_ask_approval_flow.py -q
@@ -406,11 +406,11 @@ pytest tests/test_capproof_mcp_doctor.py -q
 pytest tests/test_hermes_wrapper_ux.py -q
 pytest tests/test_real_hermes_foreground_mcp_demo.py -q
 pytest tests/test_real_hermes_sandbox_mcp_smoke.py -q
-python run_kill_tests.py --mode all --baselines
-python run_adapter_bypass_gate.py
-python run_authspec_faithfulness.py --mode auto
+python tools/run_kill_tests.py --mode all --baselines
+python tools/run_adapter_bypass_gate.py
+python tools/run_authspec_faithfulness.py --mode auto
 PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest
-python -m compileall src tests run_real_hermes_foreground_ask_flow.py run_capproof_auth_queue.py run_capproof_trace_viewer.py
+python -m compileall src tests tools/run_real_hermes_foreground_ask_flow.py tools/run_capproof_auth_queue.py tools/run_capproof_trace_viewer.py
 ```
 
 Stage 36R observed result:

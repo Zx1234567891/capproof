@@ -3,7 +3,7 @@
   "blocked_if_missing": true,
   "capproof_mcp_command": [
     "python",
-    "run_capproof_mcp_server.py",
+    "tools/run_capproof_mcp_server.py",
     "--stdio",
     "--sandboxed-real-execution"
   ],

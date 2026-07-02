@@ -2,11 +2,11 @@
   "profile": "CapProof local stdio MCP compatibility profile",
   "rows": [
     {
-      "evidence": "run_capproof_mcp_server.py --stdio",
+      "evidence": "tools/run_capproof_mcp_server.py --stdio",
       "feature": "local stdio MCP server",
       "notes": "Local process stdio only.",
       "status": "supported",
-      "test_command": "python run_capproof_mcp_server.py --list-tools"
+      "test_command": "python tools/run_capproof_mcp_server.py --list-tools"
     },
     {
       "evidence": "stdio server handles JSON-RPC initialize",
@@ -20,14 +20,14 @@
       "feature": "tools/list",
       "notes": "Also observed in real Hermes smoke.",
       "status": "supported",
-      "test_command": "python run_capproof_mcp_server.py --list-tools"
+      "test_command": "python tools/run_capproof_mcp_server.py --list-tools"
     },
     {
       "evidence": "standard CapProof MCP call path",
       "feature": "tools/call",
       "notes": "Authority-bearing tools enter guard path.",
       "status": "supported",
-      "test_command": "python run_capproof_mcp_server.py --self-test"
+      "test_command": "python tools/run_capproof_mcp_server.py --self-test"
     },
     {
       "evidence": "tool responses include structuredContent",
@@ -48,14 +48,14 @@
       "feature": "capproof.echo_summary",
       "notes": "No authority-bearing side effect.",
       "status": "supported",
-      "test_command": "python run_capproof_mcp_server.py --list-tools"
+      "test_command": "python tools/run_capproof_mcp_server.py --list-tools"
     },
     {
       "evidence": "ALLOW/DENY paths tested",
       "feature": "capproof.send_message_mock",
       "notes": "Mock only, no real email.",
       "status": "supported",
-      "test_command": "python run_capproof_mcp_server.py --self-test"
+      "test_command": "python tools/run_capproof_mcp_server.py --self-test"
     },
     {
       "evidence": "workspace sandbox tests",

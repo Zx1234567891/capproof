@@ -33,7 +33,7 @@
       "label": "opencode_mcp_tools_discovery",
       "returncode": 0,
       "stderr_tail": "\u001b[0m\n",
-      "stdout_tail": "\u250c  MCP Servers\n\u2502\n\u25cf  \u2713 capproof \u001b[90mconnected\n\u2502      \u001b[90mpython run_capproof_mcp_server.py --stdio --sandboxed-real-execution --workspace /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/sandbox_workspace --trace-path /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/traces/real_opencode_deepseek_parity_trace.jsonl\n\u2502\n\u2514  1 server(s)\n\n",
+      "stdout_tail": "\u250c  MCP Servers\n\u2502\n\u25cf  \u2713 capproof \u001b[90mconnected\n\u2502      \u001b[90mpython tools/run_capproof_mcp_server.py --stdio --sandboxed-real-execution --workspace /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/sandbox_workspace --trace-path /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/traces/real_opencode_deepseek_parity_trace.jsonl\n\u2502\n\u2514  1 server(s)\n\n",
       "timed_out": false
     },
     {
@@ -179,7 +179,7 @@
       "label": "opencode_deepseek_ask_tools_discovery",
       "returncode": 0,
       "stderr_tail": "\u001b[0m\n",
-      "stdout_tail": "\u250c  MCP Servers\n\u2502\n\u25cf  \u2713 capproof \u001b[90mconnected\n\u2502      \u001b[90mpython run_capproof_mcp_server.py --stdio --sandboxed-real-execution --workspace /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/sandbox_workspace --trace-path /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/traces/real_opencode_deepseek_parity_trace.jsonl\n\u2502\n\u2514  1 server(s)\n\n",
+      "stdout_tail": "\u250c  MCP Servers\n\u2502\n\u25cf  \u2713 capproof \u001b[90mconnected\n\u2502      \u001b[90mpython tools/run_capproof_mcp_server.py --stdio --sandboxed-real-execution --workspace /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/sandbox_workspace --trace-path /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/traces/real_opencode_deepseek_parity_trace.jsonl\n\u2502\n\u2514  1 server(s)\n\n",
       "timed_out": false
     },
     {

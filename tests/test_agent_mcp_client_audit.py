@@ -26,7 +26,7 @@ def test_local_json_rpc_dry_run_reuses_capproof_mcp_server() -> None:
 
     assert summary.uses_shared_capproof_mcp_server is True
     assert summary.forked_guard_logic is False
-    assert "run_capproof_mcp_server.py" in summary.capproof_mcp_command
+    assert "tools/run_capproof_mcp_server.py" in summary.capproof_mcp_command
     assert "--sandboxed-real-execution" in summary.capproof_mcp_command
     assert dry.tools_list_passed is True
     assert dry.tools_call_passed is True

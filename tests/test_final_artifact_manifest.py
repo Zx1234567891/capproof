@@ -10,8 +10,8 @@ import run_final_release_check as final
 def test_manifest_lists_required_scripts_and_docs() -> None:
     manifest = final.release_manifest({"final_release_passed": True})
 
-    assert "run_real_agent_parity_evaluator.py" in manifest["important_scripts"]
-    assert "run_cleanroom_release_candidate.py" in manifest["important_scripts"]
+    assert "tools/run_real_agent_parity_evaluator.py" in manifest["important_scripts"]
+    assert "tools/run_cleanroom_release_candidate.py" in manifest["important_scripts"]
     assert "MCP_COMPATIBILITY.md" in manifest["important_docs"]
     assert "artifact_reports/cleanroom_release_candidate_summary.json" in manifest["important_reports"]
 

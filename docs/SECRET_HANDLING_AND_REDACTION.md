@@ -26,7 +26,7 @@ Reports must not record the key value.
 Reviewer-safe scans:
 
 ```bash
-python run_real_agent_parity_evaluator.py --preflight
+python tools/run_real_agent_parity_evaluator.py --preflight
 git ls-files external external/.agent-runtimes .venv-hermes node_modules
 ```
 

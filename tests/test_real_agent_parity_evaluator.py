@@ -94,6 +94,6 @@ def test_secret_scan_allows_only_known_dummy_fixture() -> None:
 
 
 def test_fresh_run_wiring_uses_existing_real_scripts() -> None:
-    assert "run_real_environment_validation.py" in evaluator.REAL_COMMANDS["hermes"]
-    assert "run_real_opencode_deepseek_mcp_parity.py" in evaluator.REAL_COMMANDS["opencode"]
-    assert "run_real_openclaw_deepseek_mcp_parity.py" in evaluator.REAL_COMMANDS["openclaw"]
+    assert "tools/run_real_environment_validation.py" in evaluator.REAL_COMMANDS["hermes"]
+    assert "tools/run_real_opencode_deepseek_mcp_parity.py" in evaluator.REAL_COMMANDS["opencode"]
+    assert "tools/run_real_openclaw_deepseek_mcp_parity.py" in evaluator.REAL_COMMANDS["openclaw"]

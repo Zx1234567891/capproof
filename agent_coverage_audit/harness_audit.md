@@ -7,7 +7,7 @@
 
 ## Required Questions
 
-- Current kill_tests and run_kill_tests.py can be expressed as HarnessAdapter events for send/write/http scenarios.
+- Current kill_tests and tools/run_kill_tests.py can be expressed as HarnessAdapter events for send/write/http scenarios.
 - Benign and attack modes should continue to share one guard flow.
 - Oracles are observable side-effect checks and should not depend on proof language.
 - HarnessAdapter does not bypass Reference Monitor; fake proof metadata remains ignored.
@@ -3009,7 +3009,7 @@
 
 ### static keyword surface: shell
 
-- Source file: `run_kill_tests.py`
+- Source file: `tools/run_kill_tests.py`
 - Action kind: `shell`
 - Possible tool: `run_shell`
 - Evidence status: `observed in source`
@@ -3025,7 +3025,7 @@
 
 ### static keyword surface: file_write
 
-- Source file: `run_kill_tests.py`
+- Source file: `tools/run_kill_tests.py`
 - Action kind: `file_write`
 - Possible tool: `write_file`
 - Evidence status: `observed in source`
@@ -3041,7 +3041,7 @@
 
 ### static keyword surface: file_read
 
-- Source file: `run_kill_tests.py`
+- Source file: `tools/run_kill_tests.py`
 - Action kind: `file_read`
 - Possible tool: `read_file`
 - Evidence status: `observed in source`
@@ -3057,7 +3057,7 @@
 
 ### static keyword surface: network
 
-- Source file: `run_kill_tests.py`
+- Source file: `tools/run_kill_tests.py`
 - Action kind: `network`
 - Possible tool: `http_post`
 - Evidence status: `observed in source`
@@ -3073,7 +3073,7 @@
 
 ### static keyword surface: email_messaging
 
-- Source file: `run_kill_tests.py`
+- Source file: `tools/run_kill_tests.py`
 - Action kind: `email_messaging`
 - Possible tool: `send_email/send_message`
 - Evidence status: `observed in source`
@@ -3089,7 +3089,7 @@
 
 ### static keyword surface: memory
 
-- Source file: `run_kill_tests.py`
+- Source file: `tools/run_kill_tests.py`
 - Action kind: `memory`
 - Possible tool: `memory_write`
 - Evidence status: `observed in source`
@@ -3105,7 +3105,7 @@
 
 ### static keyword surface: skill_plugin
 
-- Source file: `run_kill_tests.py`
+- Source file: `tools/run_kill_tests.py`
 - Action kind: `skill_plugin`
 - Possible tool: `skill_action`
 - Evidence status: `observed in source`
@@ -3121,7 +3121,7 @@
 
 ### static keyword surface: delegation
 
-- Source file: `run_kill_tests.py`
+- Source file: `tools/run_kill_tests.py`
 - Action kind: `delegation`
 - Possible tool: `delegation`
 - Evidence status: `observed in source`
@@ -3137,7 +3137,7 @@
 
 ### static keyword surface: scheduled
 
-- Source file: `run_kill_tests.py`
+- Source file: `tools/run_kill_tests.py`
 - Action kind: `scheduled`
 - Possible tool: `scheduled_action`
 - Evidence status: `observed in source`
@@ -3321,7 +3321,7 @@
 - Current profile coverage: `yes`
 - Missing fields: none
 - Adapter coverage gap: no
-- Likely hook point: run_kill_tests.py action construction
+- Likely hook point: tools/run_kill_tests.py action construction
 - Residual risk: future tasks may introduce new tool surfaces
 - Recommended adapter update: Use HarnessAdapter event schema for future AuthLaunderBench inputs
 - Recommended test case: all kill_tests can be emitted as HarnessAdapter events

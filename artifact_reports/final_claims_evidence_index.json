@@ -6,7 +6,7 @@
       "notes": "Controlled local Hermes path only.",
       "stage_commit": "b881d996afe58dfc65ce7e00e7e321c51c108651",
       "status": "proven",
-      "test_command": "python run_real_environment_validation.py --all --require-real --fail-if-gate-missing --report"
+      "test_command": "python tools/run_real_environment_validation.py --all --require-real --fail-if-gate-missing --report"
     },
     {
       "claim": "OpenCode local CapProof MCP parity",
@@ -14,7 +14,7 @@
       "notes": "Controlled local OpenCode path only.",
       "stage_commit": "b949d71bc7d5ac3fe29be7a75d104c3338a71b72",
       "status": "proven",
-      "test_command": "python run_real_opencode_deepseek_mcp_parity.py --all --require-real --report"
+      "test_command": "python tools/run_real_opencode_deepseek_mcp_parity.py --all --require-real --report"
     },
     {
       "claim": "OpenClaw local CapProof MCP parity",
@@ -22,7 +22,7 @@
       "notes": "Controlled local OpenClaw path only.",
       "stage_commit": "7d967ebe053e0a7b9e199e7540dbc30547c33411",
       "status": "proven",
-      "test_command": "python run_real_openclaw_deepseek_mcp_parity.py --all --require-real --report"
+      "test_command": "python tools/run_real_openclaw_deepseek_mcp_parity.py --all --require-real --report"
     },
     {
       "claim": "DeepSeek backend used by all three via DEEPSEEK_API_KEY",
@@ -30,7 +30,7 @@
       "notes": "DeepSeek is not part of the safety TCB.",
       "stage_commit": "47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c",
       "status": "proven",
-      "test_command": "python run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
+      "test_command": "python tools/run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
     },
     {
       "claim": "standard MCP tools/list/tools/call observed for all three",
@@ -38,7 +38,7 @@
       "notes": "Only the tested local stdio MCP path is covered.",
       "stage_commit": "47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c",
       "status": "proven",
-      "test_command": "python run_agent_parity_matrix.py --report"
+      "test_command": "python tools/run_agent_parity_matrix.py --report"
     },
     {
       "claim": "sandboxed local read/write/template subset",
@@ -46,7 +46,7 @@
       "notes": "No arbitrary filesystem or raw shell support.",
       "stage_commit": "3d5f3c2c20451b14c9303398c03a2145e5c3f775",
       "status": "proven",
-      "test_command": "python run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
+      "test_command": "python tools/run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
     },
     {
       "claim": "DENY/ASK executor gate",
@@ -54,7 +54,7 @@
       "notes": "executor_called_on_deny_ask remains zero.",
       "stage_commit": "47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c",
       "status": "proven",
-      "test_command": "python run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
+      "test_command": "python tools/run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
     },
     {
       "claim": "ASK trusted approve rerun",
@@ -62,7 +62,7 @@
       "notes": "Only trusted local CLI approval can mint scoped capability.",
       "stage_commit": "a132be58d4b40d1b469ad1cc1f609375854c9aa8",
       "status": "proven",
-      "test_command": "python run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
+      "test_command": "python tools/run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
     },
     {
       "claim": "LLM/MCP metadata cannot mint capability",
@@ -70,7 +70,7 @@
       "notes": "Natural-language and metadata approval are rejected.",
       "stage_commit": "47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c",
       "status": "proven",
-      "test_command": "python run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
+      "test_command": "python tools/run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
     },
     {
       "claim": "production-level protection",

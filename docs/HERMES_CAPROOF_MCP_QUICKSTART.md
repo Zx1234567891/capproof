@@ -42,9 +42,9 @@ hermes --trace-follow
 Or directly:
 
 ```bash
-python run_capproof_trace_viewer.py --latest --last 20
-python run_capproof_trace_viewer.py --latest --filter-verdict DENY
-python run_capproof_trace_viewer.py --latest --format json --last 5
+python tools/run_capproof_trace_viewer.py --latest --last 20
+python tools/run_capproof_trace_viewer.py --latest --filter-verdict DENY
+python tools/run_capproof_trace_viewer.py --latest --format json --last 5
 ```
 
 Trace entries show the MCP method, tool name, original arguments, canonical

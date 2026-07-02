@@ -5,7 +5,7 @@ timed_out=False
 stdout_tail=┌  MCP Servers
 │
 ●  ✓ capproof [90mconnected
-│      [90mpython run_capproof_mcp_server.py --stdio --sandboxed-real-execution --workspace /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/sandbox_workspace --trace-path /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/traces/real_opencode_deepseek_parity_trace.jsonl
+│      [90mpython tools/run_capproof_mcp_server.py --stdio --sandboxed-real-execution --workspace /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/sandbox_workspace --trace-path /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/traces/real_opencode_deepseek_parity_trace.jsonl
 │
 └  1 server(s)
 
@@ -82,7 +82,7 @@ timed_out=False
 stdout_tail=┌  MCP Servers
 │
 ●  ✓ capproof [90mconnected
-│      [90mpython run_capproof_mcp_server.py --stdio --sandboxed-real-execution --workspace /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/sandbox_workspace --trace-path /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/traces/real_opencode_deepseek_parity_trace.jsonl
+│      [90mpython tools/run_capproof_mcp_server.py --stdio --sandboxed-real-execution --workspace /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/sandbox_workspace --trace-path /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/opencode_mcp_server/traces/real_opencode_deepseek_parity_trace.jsonl
 │
 └  1 server(s)
 

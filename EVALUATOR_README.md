@@ -5,8 +5,8 @@ Stage 42EVAL freezes the controlled local real-environment evaluator artifact fo
 The evaluator command is:
 
 ```bash
-python run_real_agent_parity_evaluator.py --preflight
-python run_real_agent_parity_evaluator.py --list-agents
+python tools/run_real_agent_parity_evaluator.py --preflight
+python tools/run_real_agent_parity_evaluator.py --list-agents
 ```
 
 Those commands are readiness checks only. They do not call DeepSeek, do not start real agents, and cannot be completion evidence.
@@ -25,7 +25,7 @@ ALLOW_CAPROOF_MCP_REAL_HERMES=1 \
 ALLOW_CAPROOF_REAL_OPENCODE_SMOKE=1 \
 ALLOW_CAPROOF_REAL_OPENCLAW_SMOKE=1 \
 DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" \
-python run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report
+python tools/run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report
 ```
 
 The evaluator runs the existing Hermes, OpenCode, and OpenClaw real parity harnesses, regenerates `artifact_reports/agent_parity_matrix.*`, scans for key leaks and forbidden tracked paths, and writes:

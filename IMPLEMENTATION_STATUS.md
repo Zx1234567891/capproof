@@ -439,7 +439,7 @@ Scope:
 - Generate task fixtures and a kill-test report.
 
 Completed:
-- Added `run_kill_tests.py`.
+- Added `tools/run_kill_tests.py`.
 - Generated `kill_tests/` with 12 task directories and 96 required task files.
 - Generated `kill_test_report.md`.
 - Each task directory contains:
@@ -484,8 +484,8 @@ Per-task outcomes:
 - `k12_delegated_prior_endorsement` -> `AgentMismatch`
 
 Self-check commands:
-- `python run_kill_tests.py` -> 12 passed, 0 failed.
-- `python -m compileall src tests run_kill_tests.py` -> passed.
+- `python tools/run_kill_tests.py` -> 12 passed, 0 failed.
+- `python -m compileall src tests tools/run_kill_tests.py` -> passed.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest` -> 157 passed, 0 failed.
 
 Known risks:
@@ -514,7 +514,7 @@ Scope:
 
 Completed:
 - Added `baselines/` with structured baseline implementations.
-- Extended `run_kill_tests.py --baselines`.
+- Extended `tools/run_kill_tests.py --baselines`.
 - Generated `baseline_report.md`.
 - Generated `reproduction_notes.md`.
 - Baselines output `ALLOW`, `DENY`, or `ASK`, plus `executed_action` when they allow.
@@ -555,8 +555,8 @@ Baseline aggregate results:
 | agentarmor_subset | 2 | 7 | 3 | 2 | 2 | 0 | 10 |
 
 Self-check commands:
-- `python run_kill_tests.py --baselines` -> completed, generated reports, CapProof 12/12 kill tests passed.
-- `python -m compileall src tests run_kill_tests.py baselines` -> passed.
+- `python tools/run_kill_tests.py --baselines` -> completed, generated reports, CapProof 12/12 kill tests passed.
+- `python -m compileall src tests tools/run_kill_tests.py baselines` -> passed.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest -q` -> passed.
 
 Known risks:
@@ -584,11 +584,11 @@ Scope:
 - Allow fail-closed canonicalizer hardening and report the security impact.
 
 Implemented:
-- Added `run_adapter_bypass_gate.py`.
+- Added `tools/run_adapter_bypass_gate.py`.
 - Added `adapter_bypass_gate/` generated case and report artifacts.
 - Added `adapter_bypass_gate_report.md`.
 - Added `tests/test_adapter_bypass_gate.py`.
-- Updated `reproduction_notes.md` and `run_kill_tests.py` reproduction-note generation.
+- Updated `reproduction_notes.md` and `tools/run_kill_tests.py` reproduction-note generation.
 - Hardened endpoint canonicalization to reject userinfo, percent-encoded netloc, invalid ports, and trailing-dot hosts.
 - Hardened file path canonicalization to reject NUL bytes and non-NFC Unicode path forms.
 
@@ -613,7 +613,7 @@ Scope:
 - Generate missing-repo placeholder reports when local source checkouts are unavailable.
 
 Implemented:
-- Added `run_agent_coverage_audit.py`.
+- Added `tools/run_agent_coverage_audit.py`.
 - Added `agent_coverage_audit/` generated reports:
   - `audit_summary.md`
   - `coverage_matrix.json`
@@ -623,7 +623,7 @@ Implemented:
   - `hermes_audit.md`
   - `harness_audit.md`
 - Added `tests/test_agent_coverage_audit.py`.
-- Updated `reproduction_notes.md` and the `run_kill_tests.py` reproduction-note template.
+- Updated `reproduction_notes.md` and the `tools/run_kill_tests.py` reproduction-note template.
 
 Current repo availability:
 - OpenCode: repo missing; audit requires local checkout.
@@ -647,7 +647,7 @@ Scope:
 - Generate coverage rows that distinguish `observed in source`, `inferred from naming/docs`, `not found`, and `unknown`.
 
 Implemented:
-- Updated `run_agent_coverage_audit.py` with focused Hermes source-surface rows for:
+- Updated `tools/run_agent_coverage_audit.py` with focused Hermes source-surface rows for:
   - model tool-call dispatcher and middleware boundary
   - file read/write/patch tools
   - terminal command tool
@@ -732,7 +732,7 @@ Scope:
 - Do not modify Reference Monitor, Capability Store, or Proof Model safety semantics.
 
 Implemented:
-- Added `run_hermes_dry_run.py`.
+- Added `tools/run_hermes_dry_run.py`.
 - Added `hermes_dry_run/` with supported, sanitized, deny, and unknown case files and subset documentation.
 - Added `hermes_dry_run_report.md` and `hermes_dry_run/reports/summary.json` generated outputs.
 - Added `tests/test_hermes_dry_run.py`.
@@ -770,7 +770,7 @@ Scope:
 Implemented:
 - Added `src/capproof/hermes_capture.py` with `HermesRuntimeEvent`, `HermesHookPoint`, `HermesCaptureMode`, `HermesCapturedToolCall`, `HermesCaptureValidationResult`, and `HermesCapturedEventAdapter`.
 - Added `hermes_runtime_capture_design.md`.
-- Added `run_hermes_capture_validation.py`.
+- Added `tools/run_hermes_capture_validation.py`.
 - Added `hermes_capture_examples/` synthetic captured events for supported pre-execution, deny pre-execution, observer-only, and unsupported/missing-field cases.
 - Added `hermes_capture_validation_report.md` and `hermes_capture_examples/summary.json` generated outputs.
 - Added `tests/test_hermes_capture_validation.py`.
@@ -806,7 +806,7 @@ Scope:
 - Do not modify Reference Monitor, Capability Store, or Proof Model safety semantics.
 
 Implemented:
-- Added `run_hermes_capture_prototype.py`.
+- Added `tools/run_hermes_capture_prototype.py`.
 - Added `hermes_capture_prototype/input_examples/` raw JSON and JSONL capture examples.
 - Added generated trace/report outputs under `hermes_capture_prototype/traces/` and `hermes_capture_prototype/reports/`.
 - Added `tests/test_hermes_capture_prototype.py`.
@@ -844,7 +844,7 @@ Implemented:
   `ToolDispatcherCapture`, `TerminalCapture`, `MCPCapture`, `MemoryCapture`,
   `GatewayCapture`, `DelegationCapture`, `SchedulerCapture`, and
   `MiddlewareRewriteCapture`.
-- Added `run_hermes_capture_instrumentation.py`.
+- Added `tools/run_hermes_capture_instrumentation.py`.
 - Added `hermes_capture_instrumentation/fixtures/` fixture events.
 - Added generated trace/report outputs under `hermes_capture_instrumentation/traces/`
   and `hermes_capture_instrumentation/reports/`, plus
@@ -881,7 +881,7 @@ Scope:
 - Do not modify Reference Monitor, Capability Store, or Proof Model safety semantics.
 
 Implemented:
-- Added `run_hermes_runtime_capture_experiment.py`.
+- Added `tools/run_hermes_runtime_capture_experiment.py`.
 - Added `hermes_runtime_capture_experiment/` with `preflight/`, `traces/`, `reports/`, `fixtures/`, and `patches/`.
 - Added `tests/test_hermes_runtime_capture_experiment.py`.
 - Added no-run preflight reports under `hermes_runtime_capture_experiment/reports/`.
@@ -914,7 +914,7 @@ Scope:
 - Do not modify Reference Monitor, Capability Store, or Proof Model safety semantics.
 
 Implemented:
-- Added `run_hermes_trace_collection_plan.py`.
+- Added `tools/run_hermes_trace_collection_plan.py`.
 - Added `hermes_trace_collection_plan/safety_policy.md`.
 - Added `hermes_trace_collection_plan/templates/captured_event_schema.json`.
 - Added `hermes_trace_collection_plan/templates/events.example.jsonl`.
@@ -950,7 +950,7 @@ Scope:
 - Do not run Hermes by default, install dependencies, execute third-party commands, execute real tools, use network, modify Hermes source, or modify Reference Monitor / Capability Store / Proof Model safety semantics.
 
 Implemented:
-- Extended `run_hermes_runtime_capture_experiment.py` to write Stage 27 capture-run reports.
+- Extended `tools/run_hermes_runtime_capture_experiment.py` to write Stage 27 capture-run reports.
 - Hardened capture-run gating to require `ALLOW_HERMES_CAPTURE_RUN=1`, `HERMES_CAPTURE_COMMAND`, `HERMES_CAPTURE_TRACE_PATH`, `CAPPROOF_CAPTURE_ONLY=1`, `CAPPROOF_NO_REAL_TOOLS=1`, `NO_NETWORK=1`, and `HERMES_TEST_WORKSPACE`.
 - Added `tests/test_hermes_capture_run.py`.
 - Updated reproduction notes.
@@ -980,8 +980,8 @@ Scope:
 - Do not modify Reference Monitor, Capability Store, or Proof Model safety semantics.
 
 Implemented:
-- Added `run_hermes_capture_run.py`.
-- Added `tests/test_hermes_capture_run_stage28.py`.
+- Added `tools/run_hermes_capture_run.py`.
+- Added `tests/test_hermes_capture_tools/run_stage28.py`.
 - Extended `hermes_capture_run/` with `reports/`, `traces/`, `imported_traces/`, and `safety_logs/`.
 - Updated reproduction notes.
 
@@ -1006,13 +1006,13 @@ Status: implemented, self-check pending.
 
 Scope:
 - Add hand-written Hermes runtime JSONL traces for supported, denied, and mixed offline import validation.
-- Reuse `run_hermes_capture_run.py --import-trace` to validate schema completeness, hook readiness, side-effect timing, and mock CapProof guard replay.
+- Reuse `tools/run_hermes_capture_run.py --import-trace` to validate schema completeness, hook readiness, side-effect timing, and mock CapProof guard replay.
 - Generate `hermes_capture_run/reports/manual_trace_import_report.md` from the manual traces.
 - Do not run Hermes, execute capture-run, install dependencies, execute third-party commands, execute real tools, use network, modify Hermes source, or modify Reference Monitor / Capability Store / Proof Model safety semantics.
 
 Implemented:
 - Added manual traces under `hermes_capture_run/imported_traces/manual/`.
-- Added aggregate manual trace report generation to `run_hermes_capture_run.py`.
+- Added aggregate manual trace report generation to `tools/run_hermes_capture_run.py`.
 - Added `tests/test_hermes_trace_import_stage29a.py`.
 - Updated reproduction notes.
 
@@ -1071,7 +1071,7 @@ Scope:
 - Do not modify Reference Monitor / Capability Store / Proof Model safety semantics.
 
 Implemented:
-- Added `run_hermes_deepseek_setup.py`.
+- Added `tools/run_hermes_deepseek_setup.py`.
 - Added `real_agent_integrations/hermes_deepseek/` templates and reports.
 - Added static Hermes model/provider config audit output.
 - Added optional DeepSeek smoke-test path gated by `ALLOW_DEEPSEEK_SMOKE_TEST=1` and `DEEPSEEK_API_KEY`.
@@ -1103,7 +1103,7 @@ Scope:
 - Do not modify Reference Monitor / Capability Store / Proof Model safety semantics.
 
 Implemented:
-- Added `run_real_hermes_mcp_test.py`.
+- Added `tools/run_real_hermes_mcp_test.py`.
 - Added isolated `.venv-hermes` bootstrap for the local Hermes checkout.
 - Added `real_agent_integrations/hermes_mcp_proxy/` reports, traces, configs, and server directories.
 - Added local stdio MCP server script for Hermes-launched MCP tool calls.
@@ -1160,9 +1160,9 @@ Implemented:
   - `tool_registry.py`
   - `server.py`
   - `stdio.py`
-- Added `run_capproof_mcp_server.py`.
-- Added `run_hermes_capproof_mcp_demo.py`.
-- Updated `run_hermes_mcp_proxy.py` to use the productized MCP server for list/call paths while preserving legacy Stage 30 tool-name aliases.
+- Added `tools/run_capproof_mcp_server.py`.
+- Added `tools/run_hermes_capproof_mcp_demo.py`.
+- Updated `tools/run_hermes_mcp_proxy.py` to use the productized MCP server for list/call paths while preserving legacy Stage 30 tool-name aliases.
 - Updated `real_agent_integrations/hermes_mcp_proxy/server/capproof_mcp_stdio_server.py` as a compatibility entrypoint for the productized stdio server.
 - Added `real_agent_integrations/hermes_mcp_server/` configs, prompts, traces, and reports.
 - Added tests:
@@ -1208,7 +1208,7 @@ Scope:
 - Do not claim production-level Hermes protection.
 
 Implemented:
-- Added `run_hermes_mcp_coverage.py`.
+- Added `tools/run_hermes_mcp_coverage.py`.
 - Added `real_agent_integrations/hermes_mcp_server/scenarios/`.
 - Added `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.md`.
 - Added `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.json`.
@@ -1252,7 +1252,7 @@ Scope:
 - Do not claim production-level Hermes protection.
 
 Implemented:
-- Added `run_real_hermes_standard_mcp_smoke.py`.
+- Added `tools/run_real_hermes_standard_mcp_smoke.py`.
 - Added `tests/test_real_hermes_standard_mcp_smoke.py`.
 - Added `real_agent_integrations/hermes_mcp_server/configs/real_hermes_standard_mcp_smoke_config.json`.
 - Added `real_agent_integrations/hermes_mcp_server/reports/real_hermes_standard_mcp_smoke_report.md`.
@@ -1314,8 +1314,8 @@ Implemented:
 - Added `src/capproof/mcp/sandbox_executors.py`.
 - Added `src/capproof/mcp/command_templates.py`.
 - Added explicit `executor_mode="sandbox"` support in `make_default_context(...)`.
-- Added `--sandboxed-real-execution` to `run_capproof_mcp_server.py`.
-- Added `run_capproof_sandbox_smoke.py`.
+- Added `--sandboxed-real-execution` to `tools/run_capproof_mcp_server.py`.
+- Added `tools/run_capproof_sandbox_smoke.py`.
 - Added tests:
   - `tests/test_capproof_mcp_sandbox_policy.py`
   - `tests/test_capproof_mcp_sandbox_paths.py`
@@ -1345,18 +1345,18 @@ Stage 33S local smoke result:
 - os_level_network_denial_claim: false
 
 Validation:
-- `python run_capproof_mcp_server.py --list-tools`: passed.
-- `python run_capproof_mcp_server.py --self-test`: passed.
-- `python run_capproof_sandbox_smoke.py --preflight`: passed.
-- `python run_capproof_sandbox_smoke.py --local-client --scenario all`: passed.
-- `python run_capproof_sandbox_smoke.py --report`: passed.
+- `python tools/run_capproof_mcp_server.py --list-tools`: passed.
+- `python tools/run_capproof_mcp_server.py --self-test`: passed.
+- `python tools/run_capproof_sandbox_smoke.py --preflight`: passed.
+- `python tools/run_capproof_sandbox_smoke.py --local-client --scenario all`: passed.
+- `python tools/run_capproof_sandbox_smoke.py --report`: passed.
 - Stage 33S sandbox test files: passed.
 - Existing MCP / Stage 32R tests requested for this stage: passed.
-- `python run_kill_tests.py --mode all --baselines`: 24/24 passed.
-- `python run_adapter_bypass_gate.py`: unexpected allow 0.
-- `python run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
+- `python tools/run_kill_tests.py --mode all --baselines`: 24/24 passed.
+- `python tools/run_adapter_bypass_gate.py`: unexpected allow 0.
+- `python tools/run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 467 passed.
-- `python -m compileall src tests run_capproof_sandbox_smoke.py`: passed.
+- `python -m compileall src tests tools/run_capproof_sandbox_smoke.py`: passed.
 
 Known boundaries:
 - This is a minimal local sandbox executor, not production-level Hermes protection.
@@ -1377,7 +1377,7 @@ Scope:
 - Do not claim OS-level network denial.
 
 Implemented:
-- Added `run_real_hermes_sandbox_mcp_smoke.py`.
+- Added `tools/run_real_hermes_sandbox_mcp_smoke.py`.
 - Added `tests/test_real_hermes_sandbox_mcp_smoke.py`.
 - Added `real_agent_integrations/hermes_mcp_server/configs/real_hermes_sandbox_mcp_smoke_config.json`.
 - Added `real_agent_integrations/hermes_mcp_server/reports/real_hermes_sandbox_mcp_smoke_report.md`.
@@ -1406,18 +1406,18 @@ Smoke scenarios:
 - `raw_shell_denied`: `DENY CommandTemplateViolation`, executor not called, subprocess not started, raw shell unsupported.
 
 Validation:
-- `python run_real_hermes_sandbox_mcp_smoke.py --preflight`: passed.
-- `python run_real_hermes_sandbox_mcp_smoke.py --list-scenarios`: passed.
-- `python run_real_hermes_sandbox_mcp_smoke.py --dry-run`: passed.
-- Authorized `python run_real_hermes_sandbox_mcp_smoke.py --all`: passed.
+- `python tools/run_real_hermes_sandbox_mcp_smoke.py --preflight`: passed.
+- `python tools/run_real_hermes_sandbox_mcp_smoke.py --list-scenarios`: passed.
+- `python tools/run_real_hermes_sandbox_mcp_smoke.py --dry-run`: passed.
+- Authorized `python tools/run_real_hermes_sandbox_mcp_smoke.py --all`: passed.
 - `pytest tests/test_real_hermes_sandbox_mcp_smoke.py -q`: 12 passed, 1 skipped.
 - Stage 33S sandbox test files: passed.
 - Stage 32R / 32H / MCP regression tests requested for this stage: passed.
-- `python run_kill_tests.py --mode all --baselines`: 24/24 passed.
-- `python run_adapter_bypass_gate.py`: unexpected allow 0.
-- `python run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
+- `python tools/run_kill_tests.py --mode all --baselines`: 24/24 passed.
+- `python tools/run_adapter_bypass_gate.py`: unexpected allow 0.
+- `python tools/run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 479 passed, 1 skipped.
-- `python -m compileall src tests run_real_hermes_sandbox_mcp_smoke.py run_capproof_sandbox_smoke.py`: passed.
+- `python -m compileall src tests tools/run_real_hermes_sandbox_mcp_smoke.py tools/run_capproof_sandbox_smoke.py`: passed.
 
 Known boundaries:
 - This validates the controlled real Hermes + DeepSeek + standard MCP sandbox path only.
@@ -1440,7 +1440,7 @@ Scope:
 - Preserve CapProof core verifier / Reference Monitor semantics.
 
 Implemented:
-- Added `run_agent_mcp_client_audit.py`.
+- Added `tools/run_agent_mcp_client_audit.py`.
 - Added `tests/test_agent_mcp_client_audit.py`.
 - Added `agent_coverage_audit/opencode_mcp_audit.md`.
 - Added `agent_coverage_audit/openclaw_mcp_audit.md`.
@@ -1464,7 +1464,7 @@ Audit result:
 - Real OpenCode/OpenClaw `tools/list` observed: false.
 - Real OpenCode/OpenClaw `tools/call` observed: false.
 - Configs point to the shared CapProof MCP server command:
-  - `python run_capproof_mcp_server.py --stdio --sandboxed-real-execution`
+  - `python tools/run_capproof_mcp_server.py --stdio --sandboxed-real-execution`
 - Forked guard logic: false.
 
 Local JSON-RPC dry-run:
@@ -1477,21 +1477,21 @@ Local JSON-RPC dry-run:
 - LLM output cannot allow tool call: true.
 
 Validation:
-- `python run_agent_mcp_client_audit.py --all`: passed.
-- `python run_agent_mcp_client_audit.py --report`: passed.
-- `python run_capproof_mcp_server.py --list-tools`: passed.
-- `python run_capproof_mcp_server.py --self-test`: passed.
-- `python run_capproof_sandbox_smoke.py --local-client --scenario all`: passed.
+- `python tools/run_agent_mcp_client_audit.py --all`: passed.
+- `python tools/run_agent_mcp_client_audit.py --report`: passed.
+- `python tools/run_capproof_mcp_server.py --list-tools`: passed.
+- `python tools/run_capproof_mcp_server.py --self-test`: passed.
+- `python tools/run_capproof_sandbox_smoke.py --local-client --scenario all`: passed.
 - `pytest tests/test_agent_mcp_client_audit.py -q`: 5 passed.
 - `pytest tests/test_opencode_mcp_config.py -q`: 3 passed.
 - `pytest tests/test_openclaw_mcp_config.py -q`: 3 passed.
 - `pytest tests/test_real_hermes_sandbox_mcp_smoke.py -q`: 12 passed, 1 skipped.
 - Stage 33S sandbox tests: passed.
-- `python run_kill_tests.py --mode all --baselines`: 24/24 passed.
-- `python run_adapter_bypass_gate.py`: unexpected allow 0.
-- `python run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
+- `python tools/run_kill_tests.py --mode all --baselines`: 24/24 passed.
+- `python tools/run_adapter_bypass_gate.py`: unexpected allow 0.
+- `python tools/run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 490 passed, 1 skipped.
-- `python -m compileall src tests run_agent_mcp_client_audit.py`: passed.
+- `python -m compileall src tests tools/run_agent_mcp_client_audit.py`: passed.
 
 Known boundaries:
 - No real OpenCode/OpenClaw integration is claimed.
@@ -1510,11 +1510,11 @@ Scope:
 - Do not run a real OpenCode/OpenClaw agent process.
 - Do not observe or claim real OpenCode/OpenClaw `tools/list` / `tools/call`.
 - Reuse the same standard CapProof MCP server command:
-  - `python run_capproof_mcp_server.py --stdio --sandboxed-real-execution`
+  - `python tools/run_capproof_mcp_server.py --stdio --sandboxed-real-execution`
 - Do not fork CapProof guard / Reference Monitor logic.
 
 Implemented:
-- Added `run_agent_runtime_gate.py`.
+- Added `tools/run_agent_runtime_gate.py`.
 - Added `tests/test_agent_runtime_gate.py`.
 - Added `agent_coverage_audit/agent_runtime_gate_report.md`.
 - Added `agent_coverage_audit/agent_runtime_gate_summary.json`.
@@ -1550,19 +1550,19 @@ Runtime gate result:
 - Forked guard logic: false.
 
 Validation:
-- `python run_agent_runtime_gate.py --all`: passed.
-- `python run_agent_runtime_gate.py --report`: passed.
+- `python tools/run_agent_runtime_gate.py --all`: passed.
+- `python tools/run_agent_runtime_gate.py --report`: passed.
 - `pytest tests/test_agent_runtime_gate.py -q`: 6 passed.
 - `pytest tests/test_agent_mcp_client_audit.py -q`: 5 passed.
 - `pytest tests/test_opencode_mcp_config.py -q`: 3 passed.
 - `pytest tests/test_openclaw_mcp_config.py -q`: 3 passed.
-- `python run_capproof_mcp_server.py --list-tools`: passed.
-- `python run_capproof_sandbox_smoke.py --local-client --scenario all`: passed.
-- `python run_kill_tests.py --mode all --baselines`: 24/24 passed.
-- `python run_adapter_bypass_gate.py`: unexpected allow 0.
-- `python run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
+- `python tools/run_capproof_mcp_server.py --list-tools`: passed.
+- `python tools/run_capproof_sandbox_smoke.py --local-client --scenario all`: passed.
+- `python tools/run_kill_tests.py --mode all --baselines`: 24/24 passed.
+- `python tools/run_adapter_bypass_gate.py`: unexpected allow 0.
+- `python tools/run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 496 passed, 1 skipped.
-- `python -m compileall src tests run_agent_runtime_gate.py run_agent_mcp_client_audit.py`: passed.
+- `python -m compileall src tests tools/run_agent_runtime_gate.py tools/run_agent_mcp_client_audit.py`: passed.
 
 Known boundaries:
 - Runtime gate metadata probes are not real agent smoke tests.
@@ -1584,8 +1584,8 @@ Scope:
 - Validate foreground observability only; this is not a production wrapper and does not claim all Hermes tool paths are covered.
 
 Implemented:
-- Added `run_real_hermes_foreground_mcp_demo.py`.
-- Added `run_capproof_mcp_stdio_recorder.py`.
+- Added `tools/run_real_hermes_foreground_mcp_demo.py`.
+- Added `tools/run_capproof_mcp_stdio_recorder.py`.
 - Added `tests/test_real_hermes_foreground_mcp_demo.py`.
 - Added `real_agent_integrations/hermes_mcp_server/configs/hermes.capproof.foreground.mcp.json`.
 - Added `real_agent_integrations/hermes_mcp_server/reports/foreground_hermes_mcp_demo_report.md`.
@@ -1618,19 +1618,19 @@ Task results:
 - executor_called_on_deny_ask: 0.
 
 Validation:
-- `python run_real_hermes_foreground_mcp_demo.py --preflight`: passed.
-- `python run_real_hermes_foreground_mcp_demo.py --list-tasks`: passed.
-- `python run_real_hermes_foreground_mcp_demo.py --dry-run`: passed.
+- `python tools/run_real_hermes_foreground_mcp_demo.py --preflight`: passed.
+- `python tools/run_real_hermes_foreground_mcp_demo.py --list-tasks`: passed.
+- `python tools/run_real_hermes_foreground_mcp_demo.py --dry-run`: passed.
 - Explicit foreground run with the required allow environment variables: passed.
 - `pytest tests/test_real_hermes_foreground_mcp_demo.py -q`: 12 passed, 1 skipped.
 - `pytest tests/test_real_hermes_sandbox_mcp_smoke.py -q`: 12 passed, 1 skipped.
 - `pytest tests/test_real_hermes_standard_mcp_smoke.py -q`: 10 passed.
 - Stage 33S sandbox tests: passed.
-- `python run_kill_tests.py --mode all --baselines`: 24/24 passed.
-- `python run_adapter_bypass_gate.py`: unexpected allow 0.
-- `python run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
+- `python tools/run_kill_tests.py --mode all --baselines`: 24/24 passed.
+- `python tools/run_adapter_bypass_gate.py`: unexpected allow 0.
+- `python tools/run_authspec_faithfulness.py --mode auto`: dangerous over-broadening 0.
 - `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 508 passed, 2 skipped.
-- `python -m compileall src tests run_real_hermes_foreground_mcp_demo.py run_capproof_mcp_stdio_recorder.py`: passed.
+- `python -m compileall src tests tools/run_real_hermes_foreground_mcp_demo.py tools/run_capproof_mcp_stdio_recorder.py`: passed.
 
 Known boundaries:
 - No production-level Hermes protection is claimed.
@@ -1648,26 +1648,26 @@ Purpose:
 - Keep `DEEPSEEK_API_KEY` as an environment-only secret; the wrapper does not write or print it.
 
 Entrypoint:
-- `python run_hermes_capproof_foreground.py`
+- `python tools/run_hermes_capproof_foreground.py`
 - `hermes`, via local wrapper `~/.local/bin/hermes -> bin/hermes`
 
 Behavior:
 - Default mode launches real Hermes in TUI mode with inherited terminal stdin/stdout/stderr.
 - `--classic` launches Hermes' classic foreground CLI for users who prefer normal terminal paste behavior.
-- The old report-oriented multi-task harness is available as `python run_hermes_capproof_foreground.py --workflow-demo`.
+- The old report-oriented multi-task harness is available as `python tools/run_hermes_capproof_foreground.py --workflow-demo`.
 - Automatically sets:
   - `ALLOW_HERMES_DEEPSEEK_RUN=1`
   - `ALLOW_CAPROOF_MCP_REAL_HERMES=1`
   - `ALLOW_CAPROOF_SANDBOX_REAL_EXECUTION=1`
   - `ALLOW_CAPROOF_HERMES_FOREGROUND_DEMO=1`
 - Requires `DEEPSEEK_API_KEY` to already exist in the shell.
-- Delegates to `run_real_hermes_foreground_mcp_demo.py` and the standard CapProof MCP stdio recorder.
+- Delegates to `tools/run_real_hermes_foreground_mcp_demo.py` and the standard CapProof MCP stdio recorder.
 - Prints only a short user-facing summary and artifact paths.
 
 Validation:
 - `pytest tests/test_hermes_capproof_foreground_entrypoint.py -q`: passed.
-- `python run_hermes_capproof_foreground.py --dry-run`: passed.
-- `python run_hermes_capproof_foreground.py --preflight`: passed when `DEEPSEEK_API_KEY` is present.
+- `python tools/run_hermes_capproof_foreground.py --dry-run`: passed.
+- `python tools/run_hermes_capproof_foreground.py --preflight`: passed when `DEEPSEEK_API_KEY` is present.
 - `hermes --list-tasks`: passed from outside the repository root.
 - Default interactive path is covered by subprocess passthrough tests; it does not capture Hermes stdout/stderr.
 
@@ -1689,8 +1689,8 @@ Commands:
 - `hermes --where-trace`
 - `hermes --trace-follow`
 - `hermes --capproof-status`
-- `python run_capproof_mcp_doctor.py --all`
-- `python run_capproof_trace_viewer.py --latest --last 20`
+- `python tools/run_capproof_mcp_doctor.py --all`
+- `python tools/run_capproof_trace_viewer.py --latest --last 20`
 
 UX behavior:
 - `hermes` still launches real Hermes TUI with CapProof MCP attached.
@@ -1700,10 +1700,10 @@ UX behavior:
 - Trace viewer pretty output includes timestamp, user task, MCP method, tool name, verdict, reason, proof id, executor status, sandbox status, and canonical action hash.
 
 Validation:
-- `python run_capproof_mcp_doctor.py --all`: passed.
-- `python run_capproof_trace_viewer.py --latest --last 20`: passed.
-- `python run_capproof_trace_viewer.py --latest --format json --last 5`: passed.
-- `python run_capproof_trace_viewer.py --latest --filter-verdict DENY`: passed.
+- `python tools/run_capproof_mcp_doctor.py --all`: passed.
+- `python tools/run_capproof_trace_viewer.py --latest --last 20`: passed.
+- `python tools/run_capproof_trace_viewer.py --latest --format json --last 5`: passed.
+- `python tools/run_capproof_trace_viewer.py --latest --filter-verdict DENY`: passed.
 - `hermes --doctor`: passed.
 - `hermes --where-trace`: passed.
 - `hermes --capproof-status`: passed.
@@ -1727,7 +1727,7 @@ Implemented:
 - Added `src/capproof/mcp/authorization_queue.py`.
 - Added `src/capproof/mcp/authorization_store.py`.
 - Added `src/capproof/mcp/authorization_receipts.py`.
-- Added `run_capproof_auth_queue.py`.
+- Added `tools/run_capproof_auth_queue.py`.
 - Added ASK flow report, summary, and trace artifacts under `real_agent_integrations/hermes_mcp_server/`.
 - Added tests for queue CLI, approval flow, scope amplification rejection, replay rejection, and expiry.
 
@@ -1759,7 +1759,7 @@ Purpose:
 - Prove that rerunning the same foreground task changes from ASK to ALLOW only after trusted approval.
 
 Implemented:
-- Added `run_real_hermes_foreground_ask_flow.py`.
+- Added `tools/run_real_hermes_foreground_ask_flow.py`.
 - Added `tests/test_real_hermes_foreground_ask_flow.py`.
 - Added foreground ASK report, summary, live log, and JSONL trace artifacts.
 - Added safe example approval scopes under `real_agent_integrations/hermes_mcp_server/auth_queue_examples/`.
@@ -1783,10 +1783,10 @@ Observed foreground result:
 - Scope amplification rejected: yes.
 
 Validation:
-- `python run_real_hermes_foreground_ask_flow.py --preflight`: passed.
-- `python run_real_hermes_foreground_ask_flow.py --list-scenarios`: passed.
-- `python run_real_hermes_foreground_ask_flow.py --dry-run`: passed.
-- Authorized `python run_real_hermes_foreground_ask_flow.py --all --foreground`: passed.
+- `python tools/run_real_hermes_foreground_ask_flow.py --preflight`: passed.
+- `python tools/run_real_hermes_foreground_ask_flow.py --list-scenarios`: passed.
+- `python tools/run_real_hermes_foreground_ask_flow.py --dry-run`: passed.
+- Authorized `python tools/run_real_hermes_foreground_ask_flow.py --all --foreground`: passed.
 - `pytest tests/test_real_hermes_foreground_ask_flow.py -q`: 9 passed, 1 skipped.
 - Full `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest`: 548 passed, 3 skipped.
 - Kill tests: 24/24.

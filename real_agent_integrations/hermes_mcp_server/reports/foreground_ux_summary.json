@@ -31,7 +31,7 @@
   },
   "live_log_path": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/hermes_mcp_server/reports/foreground_hermes_mcp_live.log",
   "mcp_mode": "stdio",
-  "mcp_server_command": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/run_capproof_mcp_server.py",
+  "mcp_server_command": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/tools/run_capproof_mcp_server.py",
   "passed": true,
   "sandbox_workspace": "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/hermes_mcp_server/sandbox_workspace",
   "sandboxed_real_execution": true,

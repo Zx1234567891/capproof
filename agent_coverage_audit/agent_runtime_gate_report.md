@@ -18,7 +18,7 @@
 
 ## Shared CapProof MCP Server
 
-- command: `python run_capproof_mcp_server.py --stdio --sandboxed-real-execution`
+- command: `python tools/run_capproof_mcp_server.py --stdio --sandboxed-real-execution`
 - uses_shared_capproof_mcp_server: True
 - forked_guard_logic: False
 

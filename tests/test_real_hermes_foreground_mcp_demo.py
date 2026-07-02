@@ -82,7 +82,7 @@ def test_foreground_mcp_config_uses_stdio_recorder_and_sandbox() -> None:
     data = json.loads(demo.CONFIG_PATH.read_text(encoding="utf-8"))
 
     assert data["transport"] == "stdio"
-    assert data["args"][0].endswith("run_capproof_mcp_stdio_recorder.py")
+    assert data["args"][0].endswith("tools/run_capproof_mcp_stdio_recorder.py")
     assert "--stdio" in data["args"]
     assert "--sandboxed-real-execution" in data["args"]
     assert data["api_key_written"] is False

@@ -40,7 +40,7 @@
       "type": "local",
       "command": [
         "python",
-        "run_capproof_mcp_server.py",
+        "tools/run_capproof_mcp_server.py",
         "--stdio",
         "--sandboxed-real-execution",
         "--workspace",

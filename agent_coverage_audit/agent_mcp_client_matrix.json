@@ -3,7 +3,7 @@
   "arbitrary_filesystem_access_supported": false,
   "capproof_mcp_command": [
     "python",
-    "run_capproof_mcp_server.py",
+    "tools/run_capproof_mcp_server.py",
     "--stdio",
     "--sandboxed-real-execution"
   ],

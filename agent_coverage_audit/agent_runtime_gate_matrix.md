@@ -8,6 +8,6 @@
 | opencode_runtime_gate | True | ok |
 | openclaw_real_command_detection | True | which openclaw probe recorded |
 | openclaw_runtime_gate | True | ok |
-| shared_capproof_mcp_server | True | single run_capproof_mcp_server.py command reused |
+| shared_capproof_mcp_server | True | single tools/run_capproof_mcp_server.py command reused |
 | no_real_integration_claim | True | Stage 39RT does not run agent smoke |
 | no_production_overclaim | True | non-claim preserved |

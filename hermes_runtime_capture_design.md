@@ -87,7 +87,7 @@ The wrappers only construct `HermesRuntimeEvent` values:
 - `MiddlewareRewriteCapture` records original/effective args and middleware
   source. Authorization must use effective args.
 
-`run_hermes_capture_instrumentation.py` reads fixture or trace JSON/JSONL,
+`tools/run_hermes_capture_instrumentation.py` reads fixture or trace JSON/JSONL,
 writes a JSONL trace, and then replays the captured events offline through the
 existing capture validation bridge and CapProof guard dry-run. Capture and
 replay are intentionally separate. `pre_execution_gate` events are eligible for

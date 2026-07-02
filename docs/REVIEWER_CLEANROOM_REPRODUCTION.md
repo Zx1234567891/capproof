@@ -5,8 +5,8 @@ Use this runbook after Stage 42EVAL has passed.
 ## Readiness
 
 ```bash
-python run_cleanroom_release_candidate.py --preflight
-python run_cleanroom_release_candidate.py --require-real --fail-if-gate-missing
+python tools/run_cleanroom_release_candidate.py --preflight
+python tools/run_cleanroom_release_candidate.py --require-real --fail-if-gate-missing
 ```
 
 Preflight is not completion evidence. Missing gates must block.
@@ -28,7 +28,7 @@ ALLOW_CAPROOF_MCP_REAL_HERMES=1 \
 ALLOW_CAPROOF_REAL_OPENCODE_SMOKE=1 \
 ALLOW_CAPROOF_REAL_OPENCLAW_SMOKE=1 \
 DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" \
-python run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report
+python tools/run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report
 ```
 
 Expected result: `cleanroom_passed=true`.

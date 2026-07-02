@@ -7,12 +7,12 @@ checks.
 ## Main Entry Points
 
 - `bin/hermes`
-- `run_capproof_mcp_server.py`
-- `run_capproof_mcp_doctor.py`
-- `run_capproof_trace_viewer.py`
-- `run_capproof_auth_queue.py`
-- `run_mcp_compatibility_matrix.py`
-- `run_artifact_reproduction_check.py`
+- `tools/run_capproof_mcp_server.py`
+- `tools/run_capproof_mcp_doctor.py`
+- `tools/run_capproof_trace_viewer.py`
+- `tools/run_capproof_auth_queue.py`
+- `tools/run_mcp_compatibility_matrix.py`
+- `tools/run_artifact_reproduction_check.py`
 
 ## Core Documents
 

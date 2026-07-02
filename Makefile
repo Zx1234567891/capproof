@@ -14,21 +14,21 @@ uninstall-local-hermes-wrapper:
 	@echo "Removed $(INSTALL_BIN)/hermes"
 
 capproof-doctor:
-	$(PYTHON) run_capproof_mcp_doctor.py --all
+	$(PYTHON) tools/run_capproof_mcp_doctor.py --all
 
 capproof-trace:
-	$(PYTHON) run_capproof_trace_viewer.py --latest --last 20
+	$(PYTHON) tools/run_capproof_trace_viewer.py --latest --last 20
 
 capproof-trace-follow:
-	$(PYTHON) run_capproof_trace_viewer.py --latest --follow
+	$(PYTHON) tools/run_capproof_trace_viewer.py --latest --follow
 
 capproof-auth-queue:
-	$(PYTHON) run_capproof_auth_queue.py doctor
+	$(PYTHON) tools/run_capproof_auth_queue.py doctor
 
 capproof-smoke-local:
-	$(PYTHON) run_capproof_mcp_server.py --list-tools
-	$(PYTHON) run_capproof_mcp_server.py --self-test
-	$(PYTHON) run_capproof_sandbox_smoke.py --local-client --scenario all
+	$(PYTHON) tools/run_capproof_mcp_server.py --list-tools
+	$(PYTHON) tools/run_capproof_mcp_server.py --self-test
+	$(PYTHON) tools/run_capproof_sandbox_smoke.py --local-client --scenario all
 
 capproof-test-core:
 	pytest tests/test_mcp_compatibility_profile.py -q
@@ -44,7 +44,7 @@ capproof-real-hermes-foreground:
 	test "$$ALLOW_CAPROOF_MCP_REAL_HERMES" = "1"
 	test "$$ALLOW_CAPROOF_HERMES_FOREGROUND_DEMO" = "1"
 	test -n "$$DEEPSEEK_API_KEY"
-	$(PYTHON) run_real_hermes_foreground_mcp_demo.py --all --foreground
+	$(PYTHON) tools/run_real_hermes_foreground_mcp_demo.py --all --foreground
 
 capproof-real-hermes-ask-flow:
 	test "$$ALLOW_HERMES_DEEPSEEK_RUN" = "1"
@@ -52,4 +52,4 @@ capproof-real-hermes-ask-flow:
 	test "$$ALLOW_CAPROOF_HERMES_FOREGROUND_DEMO" = "1"
 	test "$$ALLOW_CAPROOF_ASK_APPROVAL_DEMO" = "1"
 	test -n "$$DEEPSEEK_API_KEY"
-	$(PYTHON) run_real_hermes_foreground_ask_flow.py --all --foreground
+	$(PYTHON) tools/run_real_hermes_foreground_ask_flow.py --all --foreground

@@ -23,7 +23,7 @@
 
 - Hermes started: True
 - DeepSeek called: True
-- MCP server command: `/home/xiaowu/anaconda3/bin/python /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/run_capproof_mcp_stdio_recorder.py --stdio --sandboxed-real-execution --trace-path /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/hermes_mcp_server/traces/foreground_hermes_mcp_trace.jsonl --workspace /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/hermes_mcp_server/sandbox_workspace --live-log /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/hermes_mcp_server/reports/foreground_hermes_mcp_live.log`
+- MCP server command: `/home/xiaowu/anaconda3/bin/python /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/tools/run_capproof_mcp_stdio_recorder.py --stdio --sandboxed-real-execution --trace-path /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/hermes_mcp_server/traces/foreground_hermes_mcp_trace.jsonl --workspace /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/hermes_mcp_server/sandbox_workspace --live-log /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/hermes_mcp_server/reports/foreground_hermes_mcp_live.log`
 - tools/list observed: True
 - tools/call observed: True
 - workflow captured: True

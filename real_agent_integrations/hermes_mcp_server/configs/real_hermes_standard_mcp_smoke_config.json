@@ -1,7 +1,7 @@
 {
   "api_key_written": false,
   "args": [
-    "run_capproof_mcp_server.py",
+    "tools/run_capproof_mcp_server.py",
     "--stdio"
   ],
   "command": "python",

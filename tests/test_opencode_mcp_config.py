@@ -18,7 +18,7 @@ def test_opencode_config_template_uses_capproof_mcp_server() -> None:
 
     capproof = data["mcpServers"]["capproof"]
     assert capproof["command"] == "python"
-    assert capproof["args"][0] == "run_capproof_mcp_server.py"
+    assert capproof["args"][0] == "tools/run_capproof_mcp_server.py"
     assert "--stdio" in capproof["args"]
     assert "--sandboxed-real-execution" in capproof["args"]
     assert data["securityBoundary"]["metadataCannotMintCapability"] is True

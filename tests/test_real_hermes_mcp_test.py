@@ -249,7 +249,7 @@ def test_integration_test_is_opt_in() -> None:
 def test_standalone_proxy_call_tool_uses_capproof(monkeypatch, tmp_path: Path, capsys) -> None:
     workspace = tmp_path / "hermes-temp-workspace"
     args = [
-        "run_hermes_mcp_proxy.py",
+        "tools/run_hermes_mcp_proxy.py",
         "--workspace",
         str(workspace),
         "--call-tool",

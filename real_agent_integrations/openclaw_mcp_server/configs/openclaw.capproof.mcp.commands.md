@@ -13,7 +13,7 @@ Important distinction:
 CapProof should be registered as an outbound MCP server:
 
 ```bash
-openclaw mcp add capproof --command python --arg run_capproof_mcp_server.py --arg --stdio --arg --sandboxed-real-execution
+openclaw mcp add capproof --command python --arg tools/run_capproof_mcp_server.py --arg --stdio --arg --sandboxed-real-execution
 openclaw mcp doctor capproof --probe
 openclaw mcp tools capproof
 ```

@@ -17,7 +17,7 @@
         "--command",
         "python",
         "--arg",
-        "run_capproof_mcp_server.py",
+        "tools/run_capproof_mcp_server.py",
         "--arg",
         "--stdio",
         "--arg",
@@ -56,7 +56,7 @@
       "label": "openclaw_mcp_tools_discovery",
       "returncode": 0,
       "stderr_tail": "[bundle-mcp] tool \"capproof.echo_summary\" from server \"capproof\" registered as \"capproof__capproof-echo_summary\" to keep the tool name provider-safe.\n[bundle-mcp] tool \"capproof.get_trace\" from server \"capproof\" registered as \"capproof__capproof-get_trace\" to keep the tool name provider-safe.\n[bundle-mcp] tool \"capproof.read_workspace_file\" from server \"capproof\" registered as \"capproof__capproof-read_workspace_file\" to keep the tool name provider-safe.\n[bundle-mcp] tool \"capproof.request_authorization\" from server \"capproof\" registered as \"capproof__capproof-request_authorization\" to keep the tool name provider-safe.\n[bundle-mcp] tool \"capproof.run_command_template\" from server \"capproof\" registered as \"capproof__capproof-run_command_template\" to keep the tool name provider-safe.\n[bundle-mcp] tool \"capproof.send_message_mock\" from server \"capproof\" registered as \"capproof__capproof-send_message_mock\" to keep the tool name provider-safe.\n[bundle-mcp] tool \"capproof.write_workspace_file\" from server \"capproof\" registered as \"capproof__capproof-write_workspace_file\" to keep the tool name provider-safe.\n",
-      "stdout_tail": "{\n  \"generatedAt\": \"2026-07-02T15:28:39.641Z\",\n  \"servers\": {\n    \"capproof\": {\n      \"launch\": \"python run_capproof_mcp_server.py --stdio --sandboxed-real-execution --workspace /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/openclaw_mcp_server/sandbox_workspace --trace-path /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/openclaw_mcp_server/traces/real_openclaw_mcp_trace.jsonl (cwd=/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7)\",\n      \"tools\": 7,\n      \"requestTimeoutMs\": 20000\n    }\n  },\n  \"tools\": [\n    \"capproof__capproof-echo_summary\",\n    \"capproof__capproof-get_trace\",\n    \"capproof__capproof-read_workspace_file\",\n    \"capproof__capproof-request_authorization\",\n    \"capproof__capproof-run_command_template\",\n    \"capproof__capproof-send_message_mock\",\n    \"capproof__capproof-write_workspace_file\"\n  ],\n  \"diagnostics\": []\n}\n",
+      "stdout_tail": "{\n  \"generatedAt\": \"2026-07-02T15:28:39.641Z\",\n  \"servers\": {\n    \"capproof\": {\n      \"launch\": \"python tools/run_capproof_mcp_server.py --stdio --sandboxed-real-execution --workspace /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/openclaw_mcp_server/sandbox_workspace --trace-path /home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/real_agent_integrations/openclaw_mcp_server/traces/real_openclaw_mcp_trace.jsonl (cwd=/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7)\",\n      \"tools\": 7,\n      \"requestTimeoutMs\": 20000\n    }\n  },\n  \"tools\": [\n    \"capproof__capproof-echo_summary\",\n    \"capproof__capproof-get_trace\",\n    \"capproof__capproof-read_workspace_file\",\n    \"capproof__capproof-request_authorization\",\n    \"capproof__capproof-run_command_template\",\n    \"capproof__capproof-send_message_mock\",\n    \"capproof__capproof-write_workspace_file\"\n  ],\n  \"diagnostics\": []\n}\n",
       "timed_out": false
     },
     {

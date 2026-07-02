@@ -90,7 +90,7 @@
       "evidence_stage": "Stage 38REAL",
       "notes": "Controlled local Hermes MCP path.",
       "status": "proven",
-      "test_command": "python run_real_environment_validation.py --all --require-real --fail-if-gate-missing --report"
+      "test_command": "python tools/run_real_environment_validation.py --all --require-real --fail-if-gate-missing --report"
     },
     {
       "claim": "OpenCode local CapProof MCP parity",
@@ -99,7 +99,7 @@
       "evidence_stage": "Stage 40O-D",
       "notes": "Controlled local OpenCode MCP path.",
       "status": "proven",
-      "test_command": "python run_real_opencode_deepseek_mcp_parity.py --all --require-real --report"
+      "test_command": "python tools/run_real_opencode_deepseek_mcp_parity.py --all --require-real --report"
     },
     {
       "claim": "OpenClaw local CapProof MCP parity",
@@ -108,7 +108,7 @@
       "evidence_stage": "Stage 40C-D",
       "notes": "Controlled local OpenClaw MCP path.",
       "status": "proven",
-      "test_command": "python run_real_openclaw_deepseek_mcp_parity.py --all --require-real --report"
+      "test_command": "python tools/run_real_openclaw_deepseek_mcp_parity.py --all --require-real --report"
     },
     {
       "claim": "All three use DeepSeek via DEEPSEEK_API_KEY",
@@ -117,7 +117,7 @@
       "evidence_stage": "Stage 43RC",
       "notes": "DeepSeek is not safety TCB.",
       "status": "proven",
-      "test_command": "python run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
+      "test_command": "python tools/run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
     },
     {
       "claim": "All three use same standard CapProof MCP server",
@@ -126,7 +126,7 @@
       "evidence_stage": "Stage 41AP",
       "notes": "Same productized stdio MCP server path.",
       "status": "proven",
-      "test_command": "python run_agent_parity_matrix.py --report"
+      "test_command": "python tools/run_agent_parity_matrix.py --report"
     },
     {
       "claim": "tools/list and tools/call observed for all three",
@@ -135,7 +135,7 @@
       "evidence_stage": "Stage 43RC",
       "notes": "Observed in tested local path.",
       "status": "proven",
-      "test_command": "python run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
+      "test_command": "python tools/run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
     },
     {
       "claim": "sandboxed local read/write/template subset",
@@ -144,7 +144,7 @@
       "evidence_stage": "Stage 43RC",
       "notes": "No arbitrary filesystem access.",
       "status": "proven",
-      "test_command": "python run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
+      "test_command": "python tools/run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
     },
     {
       "claim": "DENY/ASK executor gate",
@@ -153,7 +153,7 @@
       "evidence_stage": "Stage 43RC",
       "notes": "DENY/ASK executor remains off.",
       "status": "proven",
-      "test_command": "python run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
+      "test_command": "python tools/run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
     },
     {
       "claim": "trusted ASK approve rerun",
@@ -162,7 +162,7 @@
       "evidence_stage": "Stage 43RC",
       "notes": "Trusted local CLI only.",
       "status": "proven",
-      "test_command": "python run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
+      "test_command": "python tools/run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
     },
     {
       "claim": "LLM/MCP metadata cannot mint capability in tested paths",
@@ -171,7 +171,7 @@
       "evidence_stage": "Stage 42EVAL",
       "notes": "Tested metadata/natural-language rejection.",
       "status": "proven",
-      "test_command": "python run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
+      "test_command": "python tools/run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report"
     },
     {
       "claim": "clean-room fresh-run reproduction passed",
@@ -180,7 +180,7 @@
       "evidence_stage": "Stage 43RC",
       "notes": "Release candidate reproduced from clean worktree.",
       "status": "proven",
-      "test_command": "python run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
+      "test_command": "python tools/run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report"
     },
     {
       "claim": "production-level protection",
@@ -283,7 +283,7 @@
     }
   ],
   "cleanroom_command": {
-    "command": "/home/xiaowu/anaconda3/bin/python run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report",
+    "command": "/home/xiaowu/anaconda3/bin/python tools/run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report",
     "duration_seconds": 272.032,
     "returncode": 0,
     "stderr_tail": "",

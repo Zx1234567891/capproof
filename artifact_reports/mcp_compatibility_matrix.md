@@ -13,14 +13,14 @@
 
 | feature | status | evidence | test command | notes |
 | --- | --- | --- | --- | --- |
-| local stdio MCP server | supported | run_capproof_mcp_server.py --stdio | `python run_capproof_mcp_server.py --list-tools` | Local process stdio only. |
+| local stdio MCP server | supported | tools/run_capproof_mcp_server.py --stdio | `python tools/run_capproof_mcp_server.py --list-tools` | Local process stdio only. |
 | initialize | supported | stdio server handles JSON-RPC initialize | `tests/test_capproof_mcp_protocol.py -q` | Used by Hermes standard MCP smoke. |
-| tools/list | supported | 7 CapProof tools observed | `python run_capproof_mcp_server.py --list-tools` | Also observed in real Hermes smoke. |
-| tools/call | supported | standard CapProof MCP call path | `python run_capproof_mcp_server.py --self-test` | Authority-bearing tools enter guard path. |
+| tools/list | supported | 7 CapProof tools observed | `python tools/run_capproof_mcp_server.py --list-tools` | Also observed in real Hermes smoke. |
+| tools/call | supported | standard CapProof MCP call path | `python tools/run_capproof_mcp_server.py --self-test` | Authority-bearing tools enter guard path. |
 | structuredContent | supported | tool responses include structuredContent | `tests/test_capproof_mcp_protocol.py -q` | Includes verdict, proof, trace, executor_called. |
 | JSON-RPC stdio cleanliness | supported | stdout reserved for JSON-RPC | `tests/test_capproof_mcp_doctor.py -q` | Human logs go to stderr/live log/report/trace. |
-| capproof.echo_summary | supported | tools/list exposes tool | `python run_capproof_mcp_server.py --list-tools` | No authority-bearing side effect. |
-| capproof.send_message_mock | supported | ALLOW/DENY paths tested | `python run_capproof_mcp_server.py --self-test` | Mock only, no real email. |
+| capproof.echo_summary | supported | tools/list exposes tool | `python tools/run_capproof_mcp_server.py --list-tools` | No authority-bearing side effect. |
+| capproof.send_message_mock | supported | ALLOW/DENY paths tested | `python tools/run_capproof_mcp_server.py --self-test` | Mock only, no real email. |
 | capproof.read_workspace_file | supported | workspace sandbox tests | `tests/test_capproof_mcp_sandbox_file_read.py -q` | Workspace-only subset. |
 | capproof.write_workspace_file | supported | atomic write sandbox tests | `tests/test_capproof_mcp_sandbox_file_write.py -q` | Workspace-only subset. |
 | capproof.run_command_template | partial | allowlisted command templates | `tests/test_capproof_mcp_sandbox_commands.py -q` | No raw shell support. |

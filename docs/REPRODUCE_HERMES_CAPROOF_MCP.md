@@ -7,7 +7,7 @@ external MCP, and do not run raw shell.
 ## No-Secret Default Checks
 
 ```bash
-python run_artifact_reproduction_check.py --no-secret --local-only --report
+python tools/run_artifact_reproduction_check.py --no-secret --local-only --report
 make capproof-doctor
 make capproof-trace
 make capproof-auth-queue
@@ -20,11 +20,11 @@ health, compatibility matrix generation, secret scan, and local smoke paths.
 ## Local Smoke Checks
 
 ```bash
-python run_capproof_mcp_server.py --list-tools
-python run_capproof_mcp_server.py --self-test
-python run_capproof_sandbox_smoke.py --local-client --scenario all
-python run_capproof_trace_viewer.py --latest --last 5
-python run_capproof_auth_queue.py doctor
+python tools/run_capproof_mcp_server.py --list-tools
+python tools/run_capproof_mcp_server.py --self-test
+python tools/run_capproof_sandbox_smoke.py --local-client --scenario all
+python tools/run_capproof_trace_viewer.py --latest --last 5
+python tools/run_capproof_auth_queue.py doctor
 ```
 
 ## Gated Real Hermes Checks
@@ -38,7 +38,7 @@ ALLOW_CAPROOF_HERMES_FOREGROUND_DEMO=1 \
 ALLOW_CAPROOF_SANDBOX_REAL_EXECUTION=1 \
 ALLOW_CAPROOF_ASK_APPROVAL_DEMO=1 \
 DEEPSEEK_API_KEY="$DEEPSEEK_API_KEY" \
-python run_real_hermes_foreground_ask_flow.py --all --foreground
+python tools/run_real_hermes_foreground_ask_flow.py --all --foreground
 ```
 
 Do not write `DEEPSEEK_API_KEY` into any file. Keep it in the environment only.
@@ -59,18 +59,18 @@ Do not write `DEEPSEEK_API_KEY` into any file. Keep it in the environment only.
 ## Inspect Trace Viewer
 
 ```bash
-python run_capproof_trace_viewer.py --latest --last 20
-python run_capproof_trace_viewer.py --latest --format json --last 5
-python run_capproof_trace_viewer.py --latest --filter-verdict DENY
+python tools/run_capproof_trace_viewer.py --latest --last 20
+python tools/run_capproof_trace_viewer.py --latest --format json --last 5
+python tools/run_capproof_trace_viewer.py --latest --filter-verdict DENY
 ```
 
 ## Inspect ASK Queue
 
 ```bash
-python run_capproof_auth_queue.py doctor
-python run_capproof_auth_queue.py list
-python run_capproof_auth_queue.py show AUTHREQ_ID
-python run_capproof_auth_queue.py audit AUTHREQ_ID
+python tools/run_capproof_auth_queue.py doctor
+python tools/run_capproof_auth_queue.py list
+python tools/run_capproof_auth_queue.py show AUTHREQ_ID
+python tools/run_capproof_auth_queue.py audit AUTHREQ_ID
 ```
 
 ## What These Results Prove

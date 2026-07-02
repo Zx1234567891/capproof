@@ -29,7 +29,7 @@ through JSON-RPC.
 
 ## Boundary
 
-- Reuse the same `run_capproof_mcp_server.py --stdio --sandboxed-real-execution` server.
+- Reuse the same `tools/run_capproof_mcp_server.py --stdio --sandboxed-real-execution` server.
 - Do not fork CapProof guard or Reference Monitor logic.
 - Tool metadata, skill/plugin metadata, MCP metadata, and LLM output cannot mint capability.
 - DENY/ASK executor_called must remain false.

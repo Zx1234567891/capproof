@@ -85,7 +85,7 @@ fields are audited against real runtime payloads.
 
 Stage 21 defines a supported subset for mock/replay Hermes JSON events, plus
 separate sanitized/stripped allow, explicit-deny, and unknown/runtime-capture-
-needed subsets. The dry-run runner is `run_hermes_dry_run.py`; it feeds events through
+needed subsets. The dry-run runner is `tools/run_hermes_dry_run.py`; it feeds events through
 `HermesAgentLikeAdapter`, `AgentAdapterRegistry`, `CapProofMiddleware`, and
 `MockExecutor`.
 

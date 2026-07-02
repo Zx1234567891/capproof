@@ -19,11 +19,11 @@
 | --- | --- |
 | `bin/hermes --doctor` | 0 |
 | `bin/hermes --where-trace` | 0 |
-| `python run_capproof_mcp_server.py --list-tools` | 0 |
-| `python run_capproof_mcp_doctor.py --all` | 0 |
-| `python run_capproof_trace_viewer.py --latest --last 5` | 0 |
-| `python run_capproof_auth_queue.py doctor` | 0 |
-| `python run_mcp_compatibility_matrix.py --report` | 0 |
+| `python tools/run_capproof_mcp_server.py --list-tools` | 0 |
+| `python tools/run_capproof_mcp_doctor.py --all` | 0 |
+| `python tools/run_capproof_trace_viewer.py --latest --last 5` | 0 |
+| `python tools/run_capproof_auth_queue.py doctor` | 0 |
+| `python tools/run_mcp_compatibility_matrix.py --report` | 0 |
 | `pytest tests/test_mcp_compatibility_profile.py tests/test_claims_and_non_claims.py tests/test_install_local_hermes_wrapper_docs.py tests/test_artifact_reproduction_check.py -q` | 0 |
 
 ## Non-Claims

@@ -76,7 +76,7 @@
       "mcp_method": "tools/list",
       "mcp_server_command": [
         "/home/xiaowu/anaconda3/bin/python",
-        "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/run_capproof_mcp_stdio_recorder.py",
+        "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/tools/run_capproof_mcp_stdio_recorder.py",
         "--stdio",
         "--sandboxed-real-execution",
         "--trace-path",
@@ -107,7 +107,7 @@
       "mcp_method": "tools/call",
       "mcp_server_command": [
         "/home/xiaowu/anaconda3/bin/python",
-        "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/run_capproof_mcp_stdio_recorder.py",
+        "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/tools/run_capproof_mcp_stdio_recorder.py",
         "--stdio",
         "--sandboxed-real-execution",
         "--trace-path",
@@ -140,7 +140,7 @@
       "mcp_method": "tools/call",
       "mcp_server_command": [
         "/home/xiaowu/anaconda3/bin/python",
-        "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/run_capproof_mcp_stdio_recorder.py",
+        "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/tools/run_capproof_mcp_stdio_recorder.py",
         "--stdio",
         "--sandboxed-real-execution",
         "--trace-path",
@@ -176,7 +176,7 @@
       "mcp_method": "tools/call",
       "mcp_server_command": [
         "/home/xiaowu/anaconda3/bin/python",
-        "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/run_capproof_mcp_stdio_recorder.py",
+        "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/tools/run_capproof_mcp_stdio_recorder.py",
         "--stdio",
         "--sandboxed-real-execution",
         "--trace-path",
@@ -209,7 +209,7 @@
       "mcp_method": "tools/call",
       "mcp_server_command": [
         "/home/xiaowu/anaconda3/bin/python",
-        "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/run_capproof_mcp_stdio_recorder.py",
+        "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/tools/run_capproof_mcp_stdio_recorder.py",
         "--stdio",
         "--sandboxed-real-execution",
         "--trace-path",
@@ -247,7 +247,7 @@
       "mcp_method": "tools/call",
       "mcp_server_command": [
         "/home/xiaowu/anaconda3/bin/python",
-        "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/run_capproof_mcp_stdio_recorder.py",
+        "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/tools/run_capproof_mcp_stdio_recorder.py",
         "--stdio",
         "--sandboxed-real-execution",
         "--trace-path",
@@ -284,7 +284,7 @@
       "mcp_method": "tools/call",
       "mcp_server_command": [
         "/home/xiaowu/anaconda3/bin/python",
-        "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/run_capproof_mcp_stdio_recorder.py",
+        "/home/xiaowu/Desktop/CapProof_USENIX_Revised_v7/tools/run_capproof_mcp_stdio_recorder.py",
         "--stdio",
         "--sandboxed-real-execution",
         "--trace-path",

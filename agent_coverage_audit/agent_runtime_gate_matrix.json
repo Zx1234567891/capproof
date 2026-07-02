@@ -30,7 +30,7 @@
     "passed": true
   },
   {
-    "evidence": "single run_capproof_mcp_server.py command reused",
+    "evidence": "single tools/run_capproof_mcp_server.py command reused",
     "item": "shared_capproof_mcp_server",
     "passed": true
   },

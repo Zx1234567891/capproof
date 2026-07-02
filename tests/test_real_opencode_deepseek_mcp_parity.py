@@ -76,7 +76,7 @@ def test_config_uses_env_placeholder_not_key(monkeypatch, tmp_path: Path) -> Non
 
     assert secret not in text
     assert "{env:DEEPSEEK_API_KEY}" in text
-    assert "run_capproof_mcp_server.py" in text
+    assert "tools/run_capproof_mcp_server.py" in text
     assert "--stdio" in text
     assert "--sandboxed-real-execution" in text
     assert "CAPPROOF_AUTH_QUEUE_DIR" in text

@@ -56,7 +56,7 @@ def test_reproduction_report_contains_non_claims() -> None:
         "external_mcp": False,
         "secret_scan": {"ok": True, "matches": []},
         "tracked_forbidden_paths": {"tracked": []},
-        "commands": [{"command": "python run_capproof_mcp_server.py --list-tools", "returncode": 0}],
+        "commands": [{"command": "python tools/run_capproof_mcp_server.py --list-tools", "returncode": 0}],
         "packaging_tests": {"command": "pytest packaging tests", "returncode": 0},
     }
 
