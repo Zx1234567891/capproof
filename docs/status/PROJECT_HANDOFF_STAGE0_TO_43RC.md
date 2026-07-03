@@ -58,7 +58,7 @@ Stage 43RC checkpoint:
 
 Stage 43RC added:
 
-- `CLEANROOM_REPRODUCTION.md`
+- `docs/release/CLEANROOM_REPRODUCTION.md`
 - `run_cleanroom_release_candidate.py`
 - `tests/test_cleanroom_release_candidate.py`
 - `artifact_reports/cleanroom_release_candidate_report.md`

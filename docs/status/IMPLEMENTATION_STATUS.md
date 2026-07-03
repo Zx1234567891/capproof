@@ -179,7 +179,7 @@ Scope:
 - Require content arguments to reference existing provenance receipts.
 - Reject memory authority use, delegation amplification, endorsement scope mismatch, consumed/expired/revoked caps, task/agent mismatch, and canonicalization failures.
 - Keep verifier free of model calls, natural-language proof trust, and real tool execution.
-- Move top-level design Markdown files into `docs/`, keeping `README.md` and `IMPLEMENTATION_STATUS.md` at repository root.
+- Move top-level design Markdown files into `docs/`, keeping `README.md` and `docs/status/IMPLEMENTATION_STATUS.md` at repository root.
 
 Completed:
 - Added `MonitorState`, `VerificationResult`, `ReferenceMonitor`, `verify`, and `canonical_action_hash`.
@@ -769,7 +769,7 @@ Scope:
 
 Implemented:
 - Added `src/capproof/hermes_capture.py` with `HermesRuntimeEvent`, `HermesHookPoint`, `HermesCaptureMode`, `HermesCapturedToolCall`, `HermesCaptureValidationResult`, and `HermesCapturedEventAdapter`.
-- Added `hermes_runtime_capture_design.md`.
+- Added `docs/design/hermes_runtime_capture_design.md`.
 - Added `tools/run_hermes_capture_validation.py`.
 - Added `hermes_capture_examples/` synthetic captured events for supported pre-execution, deny pre-execution, observer-only, and unsupported/missing-field cases.
 - Added `hermes_capture_validation_report.md` and `hermes_capture_examples/summary.json` generated outputs.
@@ -1308,7 +1308,7 @@ Scope:
 - Do not claim production-level Hermes protection.
 
 Implemented:
-- Added `SANDBOXED_REAL_EXECUTION.md`.
+- Added `docs/design/SANDBOXED_REAL_EXECUTION.md`.
 - Added `src/capproof/mcp/sandbox_policy.py`.
 - Added `src/capproof/mcp/sandbox.py`.
 - Added `src/capproof/mcp/sandbox_executors.py`.

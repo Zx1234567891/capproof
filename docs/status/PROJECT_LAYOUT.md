@@ -1,7 +1,8 @@
 # Project Layout
 
-The repository root is kept for stable release documents, manifests, and
-top-level project metadata. Executable maintenance and reproduction scripts
+The repository root is intentionally minimal. It keeps `README.md`, project
+metadata, and build/test entry points; detailed Markdown artifacts live under
+`docs/` or `artifact_reports/`. Executable maintenance and reproduction scripts
 live under `tools/`.
 
 ## Main Directories
@@ -10,7 +11,10 @@ live under `tools/`.
 - `tests/`: pytest suites and regression checks.
 - `tools/`: repository-level commands and staged reproduction harnesses.
 - `bin/`: user-facing local command wrappers, including `hermes`.
-- `docs/`: reviewer guides, quickstarts, and supporting documentation.
+- `docs/`: reviewer guides, release docs, status handoffs, quickstarts, and supporting documentation.
+- `docs/release/`: final release manifest, claims, compatibility, evaluator, and reproduction documentation.
+- `docs/status/`: implementation status, project layout, and handoff archives.
+- `docs/design/`: design notes that are not part of the primary paper-planning sequence.
 - `artifact_reports/`: generated release, evaluator, matrix, and reproduction reports.
 - `real_agent_integrations/`: Hermes, OpenCode, and OpenClaw local MCP integration artifacts.
 - `agent_coverage_audit/`, `adapter_bypass_gate/`, `authspec_faithfulness/`, `kill_tests/`: evaluation inputs and reports.

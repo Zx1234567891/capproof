@@ -73,10 +73,11 @@ v3 was a **targeted correction** that fixed the related-work / baseline factual 
 
 ## File map
 
-Design and paper-planning Markdown files live under `docs/`; repository tools
-and reproduction harnesses live under `tools/`; `README.md` and
-`IMPLEMENTATION_STATUS.md` stay at the repository root. See
-`PROJECT_LAYOUT.md` for the current directory convention.
+Design, release, status, and reviewer Markdown files live under `docs/`;
+generated top-level reports live under `artifact_reports/`; repository tools
+and reproduction harnesses live under `tools/`. The repository root keeps
+`README.md` as the single top-level Markdown entry point. See
+`docs/status/PROJECT_LAYOUT.md` for the current directory convention.
 
 | File | Contents |
 |---|---|

@@ -48,7 +48,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DRY_RUN_DIR = ROOT / "hermes_dry_run"
 CASES_DIR = DRY_RUN_DIR / "cases"
 REPORTS_DIR = DRY_RUN_DIR / "reports"
-REPORT_PATH = ROOT / "hermes_dry_run_report.md"
+REPORT_PATH = ROOT / "artifact_reports" / "hermes_dry_run_report.md"
 TASK_ID = "task_hermes_dry_run"
 
 

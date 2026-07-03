@@ -16,8 +16,8 @@ checks.
 
 ## Core Documents
 
-- `MCP_COMPATIBILITY.md`
-- `CLAIMS_AND_NON_CLAIMS.md`
+- `docs/release/MCP_COMPATIBILITY.md`
+- `docs/release/CLAIMS_AND_NON_CLAIMS.md`
 - `docs/INSTALL_LOCAL_HERMES_WRAPPER.md`
 - `docs/REPRODUCE_HERMES_CAPROOF_MCP.md`
 - `docs/HERMES_CAPROOF_MCP_QUICKSTART.md`

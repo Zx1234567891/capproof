@@ -74,7 +74,7 @@
     },
     {
       "claim": "production-level protection",
-      "evidence_file": "CLAIMS_AND_NON_CLAIMS.md",
+      "evidence_file": "docs/release/CLAIMS_AND_NON_CLAIMS.md",
       "notes": "Not claimed.",
       "stage_commit": "d06928b8c1f26d2db78d88b2b4d30e6905162492",
       "status": "not_claimed",
@@ -98,7 +98,7 @@
     },
     {
       "claim": "real email",
-      "evidence_file": "CLAIMS_AND_NON_CLAIMS.md",
+      "evidence_file": "docs/release/CLAIMS_AND_NON_CLAIMS.md",
       "notes": "Not claimed.",
       "stage_commit": "d06928b8c1f26d2db78d88b2b4d30e6905162492",
       "status": "not_claimed",
@@ -106,7 +106,7 @@
     },
     {
       "claim": "raw shell support",
-      "evidence_file": "CLAIMS_AND_NON_CLAIMS.md",
+      "evidence_file": "docs/release/CLAIMS_AND_NON_CLAIMS.md",
       "notes": "Not claimed.",
       "stage_commit": "d06928b8c1f26d2db78d88b2b4d30e6905162492",
       "status": "not_claimed",
@@ -114,7 +114,7 @@
     },
     {
       "claim": "arbitrary filesystem access",
-      "evidence_file": "CLAIMS_AND_NON_CLAIMS.md",
+      "evidence_file": "docs/release/CLAIMS_AND_NON_CLAIMS.md",
       "notes": "Not claimed.",
       "stage_commit": "d06928b8c1f26d2db78d88b2b4d30e6905162492",
       "status": "not_claimed",

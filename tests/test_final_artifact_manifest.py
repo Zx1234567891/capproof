@@ -12,7 +12,7 @@ def test_manifest_lists_required_scripts_and_docs() -> None:
 
     assert "tools/run_real_agent_parity_evaluator.py" in manifest["important_scripts"]
     assert "tools/run_cleanroom_release_candidate.py" in manifest["important_scripts"]
-    assert "MCP_COMPATIBILITY.md" in manifest["important_docs"]
+    assert "docs/release/MCP_COMPATIBILITY.md" in manifest["important_docs"]
     assert "artifact_reports/cleanroom_release_candidate_summary.json" in manifest["important_reports"]
 
 
@@ -27,5 +27,5 @@ def test_manifest_json_generated_by_report() -> None:
 def test_checksums_exclude_self_files() -> None:
     paths = final.artifact_paths_for_checksums()
 
-    assert "FINAL_ARTIFACT_CHECKSUMS.md" not in paths
-    assert "FINAL_ARTIFACT_CHECKSUMS.json" not in paths
+    assert "docs/release/FINAL_ARTIFACT_CHECKSUMS.md" not in paths
+    assert "docs/release/FINAL_ARTIFACT_CHECKSUMS.json" not in paths

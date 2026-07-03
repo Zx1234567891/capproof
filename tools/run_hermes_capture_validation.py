@@ -48,7 +48,7 @@ from capproof import (
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES_DIR = ROOT / "hermes_capture_examples"
-REPORT_PATH = ROOT / "hermes_capture_validation_report.md"
+REPORT_PATH = ROOT / "artifact_reports" / "hermes_capture_validation_report.md"
 SUMMARY_PATH = ROOT / "hermes_capture_examples" / "summary.json"
 TASK_ID = "task_hermes_capture_validation"
 

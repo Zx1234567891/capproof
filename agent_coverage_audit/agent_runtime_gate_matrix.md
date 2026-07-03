@@ -2,7 +2,7 @@
 
 | item | passed | evidence |
 | --- | --- | --- |
-| real_environment_policy_active | True | REAL_ENVIRONMENT_VALIDATION.md present and active |
+| real_environment_policy_active | True | docs/release/REAL_ENVIRONMENT_VALIDATION.md present and active |
 | dry_run_not_completion | True | Stage 38REAL policy carried into Stage 39RT |
 | opencode_real_command_detection | True | which opencode probe recorded |
 | opencode_runtime_gate | True | ok |

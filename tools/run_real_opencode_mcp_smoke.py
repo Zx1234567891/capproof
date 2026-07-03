@@ -866,7 +866,7 @@ def first_line(text: str) -> str | None:
 
 
 def real_policy_active() -> bool:
-    path = ROOT / "REAL_ENVIRONMENT_VALIDATION.md"
+    path = ROOT / "docs/release/REAL_ENVIRONMENT_VALIDATION.md"
     if not path.exists():
         return False
     text = path.read_text(encoding="utf-8", errors="ignore").lower()

@@ -26,17 +26,17 @@ from typing import Any, Mapping, Sequence
 ROOT = Path(__file__).resolve().parents[1]
 REPORT_DIR = ROOT / "artifact_reports"
 
-FINAL_STATUS_MD = ROOT / "FINAL_ARTIFACT_STATUS.md"
-RELEASE_MANIFEST_MD = ROOT / "ARTIFACT_RELEASE_MANIFEST.md"
-RELEASE_MANIFEST_JSON = ROOT / "ARTIFACT_RELEASE_MANIFEST.json"
-CLAIMS_TABLE_MD = ROOT / "FINAL_CLAIMS_EVIDENCE_TABLE.md"
-CLAIMS_TABLE_JSON = ROOT / "FINAL_CLAIMS_EVIDENCE_TABLE.json"
-REPRO_COMMANDS_MD = ROOT / "FINAL_REPRODUCTION_COMMANDS.md"
-NON_CLAIMS_MD = ROOT / "FINAL_NON_CLAIMS_AND_LIMITATIONS.md"
-SECRET_REPORT_MD = ROOT / "FINAL_SECRET_HYGIENE_REPORT.md"
-COMMIT_INDEX_MD = ROOT / "FINAL_COMMIT_INDEX.md"
-CHECKSUMS_MD = ROOT / "FINAL_ARTIFACT_CHECKSUMS.md"
-CHECKSUMS_JSON = ROOT / "FINAL_ARTIFACT_CHECKSUMS.json"
+FINAL_STATUS_MD = ROOT / "docs/release/FINAL_ARTIFACT_STATUS.md"
+RELEASE_MANIFEST_MD = ROOT / "docs/release/ARTIFACT_RELEASE_MANIFEST.md"
+RELEASE_MANIFEST_JSON = ROOT / "docs/release/ARTIFACT_RELEASE_MANIFEST.json"
+CLAIMS_TABLE_MD = ROOT / "docs/release/FINAL_CLAIMS_EVIDENCE_TABLE.md"
+CLAIMS_TABLE_JSON = ROOT / "docs/release/FINAL_CLAIMS_EVIDENCE_TABLE.json"
+REPRO_COMMANDS_MD = ROOT / "docs/release/FINAL_REPRODUCTION_COMMANDS.md"
+NON_CLAIMS_MD = ROOT / "docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md"
+SECRET_REPORT_MD = ROOT / "docs/release/FINAL_SECRET_HYGIENE_REPORT.md"
+COMMIT_INDEX_MD = ROOT / "docs/release/FINAL_COMMIT_INDEX.md"
+CHECKSUMS_MD = ROOT / "docs/release/FINAL_ARTIFACT_CHECKSUMS.md"
+CHECKSUMS_JSON = ROOT / "docs/release/FINAL_ARTIFACT_CHECKSUMS.json"
 
 SUMMARY_PATH = REPORT_DIR / "final_release_check_summary.json"
 REPORT_PATH = REPORT_DIR / "final_release_check_report.md"
@@ -77,12 +77,12 @@ IMPORTANT_SCRIPTS = (
     "tools/run_capproof_auth_queue.py",
 )
 IMPORTANT_DOCS = (
-    "MCP_COMPATIBILITY.md",
-    "CLAIMS_AND_NON_CLAIMS.md",
-    "REAL_ENVIRONMENT_VALIDATION.md",
-    "EVALUATOR_README.md",
-    "REAL_AGENT_PARITY_EVALUATOR.md",
-    "CLEANROOM_REPRODUCTION.md",
+    "docs/release/MCP_COMPATIBILITY.md",
+    "docs/release/CLAIMS_AND_NON_CLAIMS.md",
+    "docs/release/REAL_ENVIRONMENT_VALIDATION.md",
+    "docs/release/EVALUATOR_README.md",
+    "docs/release/REAL_AGENT_PARITY_EVALUATOR.md",
+    "docs/release/CLEANROOM_REPRODUCTION.md",
     "docs/REVIEWER_REAL_ENVIRONMENT_RUNBOOK.md",
     "docs/REVIEWER_CLEANROOM_REPRODUCTION.md",
     "docs/SECRET_HANDLING_AND_REDACTION.md",
@@ -382,7 +382,7 @@ def not_claimed(claim: str) -> dict[str, str]:
     return {
         "claim": claim,
         "status": "not_claimed",
-        "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+        "evidence_file": "docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
         "evidence_stage": "Stage 44FINAL",
         "commit": "final release commit",
         "test_command": "pytest tests/test_final_non_claims.py -q",
@@ -438,15 +438,15 @@ def artifact_paths_for_checksums() -> list[str]:
         *IMPORTANT_SCRIPTS,
         *IMPORTANT_DOCS,
         *IMPORTANT_REPORTS,
-        "FINAL_ARTIFACT_STATUS.md",
-        "ARTIFACT_RELEASE_MANIFEST.md",
-        "ARTIFACT_RELEASE_MANIFEST.json",
-        "FINAL_CLAIMS_EVIDENCE_TABLE.md",
-        "FINAL_CLAIMS_EVIDENCE_TABLE.json",
-        "FINAL_REPRODUCTION_COMMANDS.md",
-        "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
-        "FINAL_SECRET_HYGIENE_REPORT.md",
-        "FINAL_COMMIT_INDEX.md",
+        "docs/release/FINAL_ARTIFACT_STATUS.md",
+        "docs/release/ARTIFACT_RELEASE_MANIFEST.md",
+        "docs/release/ARTIFACT_RELEASE_MANIFEST.json",
+        "docs/release/FINAL_CLAIMS_EVIDENCE_TABLE.md",
+        "docs/release/FINAL_CLAIMS_EVIDENCE_TABLE.json",
+        "docs/release/FINAL_REPRODUCTION_COMMANDS.md",
+        "docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+        "docs/release/FINAL_SECRET_HYGIENE_REPORT.md",
+        "docs/release/FINAL_COMMIT_INDEX.md",
         "tools/run_final_release_check.py",
         "tests/test_final_release_check.py",
         "tests/test_final_artifact_manifest.py",
@@ -457,7 +457,7 @@ def artifact_paths_for_checksums() -> list[str]:
         "artifact_reports/final_release_matrix.md",
         "artifact_reports/final_release_matrix.json",
     ]
-    return [path for path in paths if path not in {"FINAL_ARTIFACT_CHECKSUMS.md", "FINAL_ARTIFACT_CHECKSUMS.json"}]
+    return [path for path in paths if path not in {"docs/release/FINAL_ARTIFACT_CHECKSUMS.md", "docs/release/FINAL_ARTIFACT_CHECKSUMS.json"}]
 
 
 def secret_scan(env: Mapping[str, str]) -> dict[str, Any]:

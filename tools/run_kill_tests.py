@@ -62,10 +62,11 @@ from capproof import (
 
 
 KILL_TEST_DIR = ROOT / "kill_tests"
-REPORT_PATH = ROOT / "kill_test_report.md"
-BENIGN_REPORT_PATH = ROOT / "benign_kill_test_report.md"
-BASELINE_REPORT_PATH = ROOT / "baseline_report.md"
-REPRODUCTION_NOTES_PATH = ROOT / "reproduction_notes.md"
+ARTIFACT_REPORT_DIR = ROOT / "artifact_reports"
+REPORT_PATH = ARTIFACT_REPORT_DIR / "kill_test_report.md"
+BENIGN_REPORT_PATH = ARTIFACT_REPORT_DIR / "benign_kill_test_report.md"
+BASELINE_REPORT_PATH = ARTIFACT_REPORT_DIR / "baseline_report.md"
+REPRODUCTION_NOTES_PATH = ARTIFACT_REPORT_DIR / "reproduction_notes.md"
 TASK_ID = "task_kill"
 AGENT_ID = "agent_email"
 PARENT_AGENT = "agent_parent"
@@ -1814,22 +1815,22 @@ def write_reproduction_notes() -> None:
         "",
         "## Running the Harness",
         "",
-        "- `python tools/run_kill_tests.py --mode attack`: runs the 12 attack cases and regenerates `kill_test_report.md` with attack success, unsafe side-effect count, and deny-reason distribution.",
-        "- `python tools/run_kill_tests.py --mode benign`: runs the 12 benign counterparts and regenerates `kill_test_report.md` plus `benign_kill_test_report.md` with benign success, overblock, ASK, proof coverage, and endorsement counts.",
-        "- `python tools/run_kill_tests.py --mode all`: runs both attack and benign cases and regenerates `kill_test_report.md` plus `benign_kill_test_report.md` for the combined kill-test harness.",
-        "- `python tools/run_kill_tests.py --mode all --baselines`: runs the combined harness with representative baselines and regenerates `baseline_report.md` plus this `reproduction_notes.md`.",
+        "- `python tools/run_kill_tests.py --mode attack`: runs the 12 attack cases and regenerates `artifact_reports/kill_test_report.md` with attack success, unsafe side-effect count, and deny-reason distribution.",
+        "- `python tools/run_kill_tests.py --mode benign`: runs the 12 benign counterparts and regenerates `artifact_reports/kill_test_report.md` plus `artifact_reports/benign_kill_test_report.md` with benign success, overblock, ASK, proof coverage, and endorsement counts.",
+        "- `python tools/run_kill_tests.py --mode all`: runs both attack and benign cases and regenerates `artifact_reports/kill_test_report.md` plus `artifact_reports/benign_kill_test_report.md` for the combined kill-test harness.",
+        "- `python tools/run_kill_tests.py --mode all --baselines`: runs the combined harness with representative baselines and regenerates `artifact_reports/baseline_report.md` plus `artifact_reports/reproduction_notes.md`.",
         "- These reports are valid for the current 12-task kill-test harness only; they must not be extrapolated to a complete benchmark or original-system comparison without calibration.",
         "",
         "## Running the AuthSpec Faithfulness Gate",
         "",
-        "- `python tools/run_authspec_faithfulness.py --mode oracle`: generates the 50-case AuthSpec Faithfulness corpus in Oracle-AuthSpec Mode, where `G_sys = G*`, and writes oracle generated specs, evaluations, summaries, and `authspec_faithfulness_report.md`.",
-        "- `python tools/run_authspec_faithfulness.py --mode auto`: runs the representative rule-based AuthSpec Builder in Deployed-AuthSpec Mode, compares generated `G_sys` against ground-truth `G*`, and writes generated specs, per-case evaluations, aggregate metrics, and `authspec_faithfulness_report.md`.",
-        "- `python tools/run_authspec_faithfulness.py --report`: regenerates `authspec_faithfulness_report.md` from the latest saved AuthSpec Faithfulness results without running a new builder pass.",
+        "- `python tools/run_authspec_faithfulness.py --mode oracle`: generates the 50-case AuthSpec Faithfulness corpus in Oracle-AuthSpec Mode, where `G_sys = G*`, and writes oracle generated specs, evaluations, summaries, and `artifact_reports/authspec_faithfulness_report.md`.",
+        "- `python tools/run_authspec_faithfulness.py --mode auto`: runs the representative rule-based AuthSpec Builder in Deployed-AuthSpec Mode, compares generated `G_sys` against ground-truth `G*`, and writes generated specs, per-case evaluations, aggregate metrics, and `artifact_reports/authspec_faithfulness_report.md`.",
+        "- `python tools/run_authspec_faithfulness.py --report`: regenerates `artifact_reports/authspec_faithfulness_report.md` from the latest saved AuthSpec Faithfulness results without running a new builder pass.",
         "- AuthSpec Faithfulness results are a 50-case gate for `G_sys` versus `G*`; they are not a complete benchmark and do not establish deployability for automatic AuthSpec generation.",
         "",
         "## Running the Adapter Bypass Gate",
         "",
-        "- `python tools/run_adapter_bypass_gate.py`: runs the adapter/canonicalization bypass gate with mock actions only, regenerates `adapter_bypass_gate/` artifacts, and writes `adapter_bypass_gate_report.md`.",
+        "- `python tools/run_adapter_bypass_gate.py`: runs the adapter/canonicalization bypass gate with mock actions only, regenerates `adapter_bypass_gate/` artifacts, and writes `artifact_reports/adapter_bypass_gate_report.md`.",
         "- This gate does not send email, perform network I/O, execute shell commands, or use LLMs. It checks adapter field coverage and canonicalization behavior before any real executor.",
         "",
         "## Running the Agent Adapter Tests",
@@ -1855,14 +1856,14 @@ def write_reproduction_notes() -> None:
         "- The audit does not run Hermes, install dependencies, execute third-party commands, execute tools, connect to gateways/MCP servers, call network services, send email, or execute shell actions.",
         "- Do not add `external/hermes-agent` or `external/external/hermes-agent` third-party source to the CapProof git repository; pass `--hermes-repo` to point at a local checkout.",
         "- `PYTEST_DISABLE_PLUGIN_AUTOLOAD=1 pytest tests/test_hermes_adapter_coverage.py -q`: runs the Stage 20 Hermes observed-shape mock coverage tests derived from the local static Hermes audit. These tests cover terminal, send_message, dynamic MCP, memory/provider-memory, delegate_task, cronjob, edit_file, and dispatcher effective-args shapes. They do not run Hermes, install dependencies, execute tools, connect to gateways/MCP servers, or perform network/shell/email side effects.",
-        "- `python tools/run_hermes_dry_run.py`: runs the Stage 21 supported-subset Hermes dry-run over mock/replay JSON events and regenerates `hermes_dry_run_report.md` plus `hermes_dry_run/reports/summary.json`.",
+        "- `python tools/run_hermes_dry_run.py`: runs the Stage 21 supported-subset Hermes dry-run over mock/replay JSON events and regenerates `artifact_reports/hermes_dry_run_report.md` plus `hermes_dry_run/reports/summary.json`.",
         "- `python tools/run_hermes_dry_run.py --category supported`: runs only supported-subset dry-run cases.",
         "- `python tools/run_hermes_dry_run.py --category deny`: runs only explicit-deny dry-run cases.",
         "- `python tools/run_hermes_dry_run.py --category sanitized`: runs only sanitized / stripped allow memory cases.",
         "- `python tools/run_hermes_dry_run.py --category unknown`: runs only unknown/runtime-capture-needed fail-closed cases.",
         "- `python tools/run_hermes_dry_run.py --json`: prints the dry-run summary JSON to stdout in addition to writing reports.",
         "- Stage 21 dry-run commands do not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to gateways/MCP servers, call network services, send email, or execute shell actions. They only replay mock JSON events through `HermesAgentLikeAdapter`, `CapProofMiddleware`, and `MockExecutor`.",
-        "- `python tools/run_hermes_capture_validation.py`: runs the Stage 22 Hermes runtime capture schema replay validation over synthetic captured events and regenerates `hermes_capture_validation_report.md` plus `hermes_capture_examples/summary.json`.",
+        "- `python tools/run_hermes_capture_validation.py`: runs the Stage 22 Hermes runtime capture schema replay validation over synthetic captured events and regenerates `artifact_reports/hermes_capture_validation_report.md` plus `hermes_capture_examples/summary.json`.",
         "- `pytest tests/test_hermes_capture_validation.py -q`: runs the Stage 22 capture validation unit tests.",
         "- Stage 22 capture validation does not run Hermes, install dependencies, execute third-party project commands, execute real tools, connect to gateways/MCP servers, call network services, send email, or execute shell actions. It validates `pre_execution_gate` / `observer_only` / `unsupported` capture semantics over synthetic JSON only.",
         "- `python tools/run_hermes_capture_prototype.py --input hermes_capture_examples`: runs the Stage 23 capture prototype over Stage 22 wrapped synthetic examples.",

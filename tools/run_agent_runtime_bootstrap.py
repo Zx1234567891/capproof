@@ -422,7 +422,7 @@ def render_agent_report(agent: str, data: dict[str, Any]) -> str:
 
 def matrix_rows(summary: dict[str, Any]) -> list[dict[str, Any]]:
     return [
-        {"item": "real_environment_policy_active", "passed": summary["real_environment_policy_active"], "evidence": "REAL_ENVIRONMENT_VALIDATION.md active"},
+        {"item": "real_environment_policy_active", "passed": summary["real_environment_policy_active"], "evidence": "docs/release/REAL_ENVIRONMENT_VALIDATION.md active"},
         {"item": "preflight_not_completion", "passed": not summary["dry_run_preflight_completion_evidence"], "evidence": "preflight cannot mark runtime_bootstrap_passed"},
         {"item": "opencode_bootstrap", "passed": summary["opencode"]["runtime_present"] or summary["opencode"]["reason"].startswith("blocked_"), "evidence": summary["opencode"]["reason"]},
         {"item": "openclaw_bootstrap", "passed": summary["openclaw"]["runtime_present"] or summary["openclaw"]["reason"].startswith("blocked_"), "evidence": summary["openclaw"]["reason"]},
@@ -465,7 +465,7 @@ def gitignore_checks() -> dict[str, bool]:
 
 
 def real_policy_active() -> bool:
-    path = ROOT / "REAL_ENVIRONMENT_VALIDATION.md"
+    path = ROOT / "docs/release/REAL_ENVIRONMENT_VALIDATION.md"
     if not path.exists():
         return False
     text = path.read_text(encoding="utf-8", errors="ignore").lower()

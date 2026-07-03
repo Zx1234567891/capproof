@@ -29,7 +29,7 @@ def test_mcp_compatibility_profile_lists_supported_subset(tmp_path: Path, monkey
 
 
 def test_mcp_compatibility_doc_matches_non_claims() -> None:
-    text = Path("MCP_COMPATIBILITY.md").read_text(encoding="utf-8")
+    text = Path("docs/release/MCP_COMPATIBILITY.md").read_text(encoding="utf-8")
     assert "local stdio MCP server" in text
     assert "tools/list" in text
     assert "tools/call" in text

@@ -2,7 +2,7 @@
 
 - artifact name: CapProof Hermes OpenCode OpenClaw MCP parity artifact
 - release candidate stage: 43RC
-- current commit: 955b1b19e4893ac9368c97f2856b1b9384ac4b1c
+- current commit: 6d0c5743728130c513ea7fcda04f4779f3f2f1ef
 - final checkpoint note: Stage 44FINAL commit is the git HEAD after final artifact commit.
 
 ## Important Scripts
@@ -17,12 +17,12 @@
 
 ## Important Docs
 
-- `MCP_COMPATIBILITY.md`
-- `CLAIMS_AND_NON_CLAIMS.md`
-- `REAL_ENVIRONMENT_VALIDATION.md`
-- `EVALUATOR_README.md`
-- `REAL_AGENT_PARITY_EVALUATOR.md`
-- `CLEANROOM_REPRODUCTION.md`
+- `docs/release/MCP_COMPATIBILITY.md`
+- `docs/release/CLAIMS_AND_NON_CLAIMS.md`
+- `docs/release/REAL_ENVIRONMENT_VALIDATION.md`
+- `docs/release/EVALUATOR_README.md`
+- `docs/release/REAL_AGENT_PARITY_EVALUATOR.md`
+- `docs/release/CLEANROOM_REPRODUCTION.md`
 - `docs/REVIEWER_REAL_ENVIRONMENT_RUNBOOK.md`
 - `docs/REVIEWER_CLEANROOM_REPRODUCTION.md`
 - `docs/SECRET_HANDLING_AND_REDACTION.md`

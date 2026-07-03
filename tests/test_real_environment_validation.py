@@ -86,14 +86,14 @@ def test_report_contains_real_non_real_distinction(monkeypatch, tmp_path: Path) 
 
 
 def test_gate_names_are_documented() -> None:
-    text = Path("REAL_ENVIRONMENT_VALIDATION.md").read_text(encoding="utf-8")
+    text = Path("docs/release/REAL_ENVIRONMENT_VALIDATION.md").read_text(encoding="utf-8")
     for name in realenv.REQUIRED_GATES:
         assert name in text
     assert "not completion evidence" in text
 
 
 def test_prohibited_claims_absent_from_policy() -> None:
-    text = Path("REAL_ENVIRONMENT_VALIDATION.md").read_text(encoding="utf-8")
+    text = Path("docs/release/REAL_ENVIRONMENT_VALIDATION.md").read_text(encoding="utf-8")
     assert "Production wrapper protection" in text
     assert "OS-level network denial unless implemented and tested" in text
     assert "DeepSeek remains outside the CapProof safety TCB" in text

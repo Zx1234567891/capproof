@@ -11,11 +11,11 @@
 | DENY/ASK executor gate | proven | artifact_reports/real_agent_parity_evaluator_matrix.json | `python tools/run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report` | 47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c | executor_called_on_deny_ask remains zero. |
 | ASK trusted approve rerun | proven | artifact_reports/real_agent_parity_evaluator_matrix.json | `python tools/run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report` | a132be58d4b40d1b469ad1cc1f609375854c9aa8 | Only trusted local CLI approval can mint scoped capability. |
 | LLM/MCP metadata cannot mint capability | proven | artifact_reports/real_agent_parity_evaluator_matrix.json | `python tools/run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report` | 47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c | Natural-language and metadata approval are rejected. |
-| production-level protection | not_claimed | CLAIMS_AND_NON_CLAIMS.md | `pytest tests/test_claims_and_non_claims.py -q` | d06928b8c1f26d2db78d88b2b4d30e6905162492 | Not claimed. |
+| production-level protection | not_claimed | docs/release/CLAIMS_AND_NON_CLAIMS.md | `pytest tests/test_claims_and_non_claims.py -q` | d06928b8c1f26d2db78d88b2b4d30e6905162492 | Not claimed. |
 | all built-in tool paths covered | not_claimed | docs/AGENT_PARITY_LIMITATIONS.md | `pytest tests/test_real_agent_parity_evaluator.py -q` | 47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c | Not claimed. |
 | external MCP protection | not_claimed | docs/AGENT_PARITY_LIMITATIONS.md | `pytest tests/test_real_agent_parity_evaluator.py -q` | 47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c | Not claimed. |
-| real email | not_claimed | CLAIMS_AND_NON_CLAIMS.md | `pytest tests/test_claims_and_non_claims.py -q` | d06928b8c1f26d2db78d88b2b4d30e6905162492 | Not claimed. |
-| raw shell support | not_claimed | CLAIMS_AND_NON_CLAIMS.md | `pytest tests/test_claims_and_non_claims.py -q` | d06928b8c1f26d2db78d88b2b4d30e6905162492 | Not claimed. |
-| arbitrary filesystem access | not_claimed | CLAIMS_AND_NON_CLAIMS.md | `pytest tests/test_claims_and_non_claims.py -q` | d06928b8c1f26d2db78d88b2b4d30e6905162492 | Not claimed. |
+| real email | not_claimed | docs/release/CLAIMS_AND_NON_CLAIMS.md | `pytest tests/test_claims_and_non_claims.py -q` | d06928b8c1f26d2db78d88b2b4d30e6905162492 | Not claimed. |
+| raw shell support | not_claimed | docs/release/CLAIMS_AND_NON_CLAIMS.md | `pytest tests/test_claims_and_non_claims.py -q` | d06928b8c1f26d2db78d88b2b4d30e6905162492 | Not claimed. |
+| arbitrary filesystem access | not_claimed | docs/release/CLAIMS_AND_NON_CLAIMS.md | `pytest tests/test_claims_and_non_claims.py -q` | d06928b8c1f26d2db78d88b2b4d30e6905162492 | Not claimed. |
 | OS-level network denial | not_claimed | docs/AGENT_PARITY_LIMITATIONS.md | `pytest tests/test_real_agent_parity_evaluator.py -q` | 47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c | Not claimed. |
 | DeepSeek as safety TCB | not_claimed | docs/AGENT_PARITY_LIMITATIONS.md | `pytest tests/test_real_agent_parity_evaluator.py -q` | 47e66f0877aec0bf06b45f930ca0cb36fcb1ef9c | Not claimed. |

@@ -36,7 +36,7 @@ from capproof import (  # noqa: E402
 GATE_DIR = ROOT / "adapter_bypass_gate"
 CASES_DIR = GATE_DIR / "cases"
 REPORTS_DIR = GATE_DIR / "reports"
-ROOT_REPORT = ROOT / "adapter_bypass_gate_report.md"
+ROOT_REPORT = ROOT / "artifact_reports" / "adapter_bypass_gate_report.md"
 
 
 @dataclass(frozen=True)

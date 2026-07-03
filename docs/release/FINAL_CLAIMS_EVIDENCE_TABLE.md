@@ -13,14 +13,14 @@
 | trusted ASK approve rerun | proven | artifact_reports/cleanroom_release_candidate_summary.json | Stage 43RC | 0ab6e29 | `python tools/run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report` | Trusted local CLI only. |
 | LLM/MCP metadata cannot mint capability in tested paths | proven | artifact_reports/final_claims_evidence_index.json | Stage 42EVAL | d80e92e | `python tools/run_real_agent_parity_evaluator.py --all --fresh-run --require-real --fail-if-gate-missing --report` | Tested metadata/natural-language rejection. |
 | clean-room fresh-run reproduction passed | proven | artifact_reports/cleanroom_release_candidate_summary.json | Stage 43RC | 0ab6e29 | `python tools/run_cleanroom_release_candidate.py --fresh-run --require-real --fail-if-gate-missing --clean-before-run --report` | Release candidate reproduced from clean worktree. |
-| production-level protection | not_claimed | FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
-| all built-in tool paths covered | not_claimed | FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
-| all MCP clients covered | not_claimed | FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
-| external MCP protection | not_claimed | FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
-| real email | not_claimed | FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
-| raw shell support | not_claimed | FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
-| arbitrary filesystem access | not_claimed | FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
-| OS-level network denial | not_claimed | FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
-| DeepSeek as safety TCB | not_claimed | FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
-| LLM output authorization | not_claimed | FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
-| MCP _meta authorization | not_claimed | FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
+| production-level protection | not_claimed | docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
+| all built-in tool paths covered | not_claimed | docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
+| all MCP clients covered | not_claimed | docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
+| external MCP protection | not_claimed | docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
+| real email | not_claimed | docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
+| raw shell support | not_claimed | docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
+| arbitrary filesystem access | not_claimed | docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
+| OS-level network denial | not_claimed | docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
+| DeepSeek as safety TCB | not_claimed | docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
+| LLM output authorization | not_claimed | docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |
+| MCP _meta authorization | not_claimed | docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md | Stage 44FINAL | final release commit | `pytest tests/test_final_non_claims.py -q` | Explicit non-claim. |

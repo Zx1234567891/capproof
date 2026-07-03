@@ -26,7 +26,7 @@ CASES_DIR = GATE_DIR / "cases"
 EXPECTED_DIR = GATE_DIR / "expected"
 GENERATED_DIR = GATE_DIR / "generated"
 REPORTS_DIR = GATE_DIR / "reports"
-ROOT_REPORT = ROOT / "authspec_faithfulness_report.md"
+ROOT_REPORT = ROOT / "artifact_reports" / "authspec_faithfulness_report.md"
 LATEST_MODE_PATH = REPORTS_DIR / "latest_mode.txt"
 
 BUILDER_NAME = "representative_rule_based"

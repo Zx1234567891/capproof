@@ -28,7 +28,7 @@ REPORTS_DIR = INSTRUMENTATION_DIR / "reports"
 TRACE_PATH = TRACES_DIR / "captured_events.jsonl"
 SUMMARY_PATH = REPORTS_DIR / "capture_summary.json"
 INTERNAL_REPORT_PATH = REPORTS_DIR / "capture_instrumentation_report.md"
-ROOT_REPORT_PATH = ROOT / "hermes_capture_instrumentation_report.md"
+ROOT_REPORT_PATH = ROOT / "artifact_reports" / "hermes_capture_instrumentation_report.md"
 PROTOTYPE_REPLAY_REPORT_PATH = REPORTS_DIR / "capture_replay_report.md"
 
 

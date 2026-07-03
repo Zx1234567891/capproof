@@ -575,7 +575,7 @@ def render_agent_report(gate: AgentRuntimeGate) -> str:
 
 def matrix_rows(summary: RuntimeGateSummary) -> list[dict[str, Any]]:
     return [
-        {"item": "real_environment_policy_active", "passed": summary.real_environment_policy_active, "evidence": "REAL_ENVIRONMENT_VALIDATION.md present and active"},
+        {"item": "real_environment_policy_active", "passed": summary.real_environment_policy_active, "evidence": "docs/release/REAL_ENVIRONMENT_VALIDATION.md present and active"},
         {"item": "dry_run_not_completion", "passed": not summary.dry_run_counts_as_completion, "evidence": "Stage 38REAL policy carried into Stage 39RT"},
         {"item": "opencode_real_command_detection", "passed": any(p.label == "which_opencode" and p.attempted for p in summary.opencode.probes), "evidence": "which opencode probe recorded"},
         {"item": "opencode_runtime_gate", "passed": summary.opencode.runtime_present or summary.opencode.blocked_runtime_missing, "evidence": summary.opencode.reason},
@@ -595,7 +595,7 @@ def render_matrix(summary: RuntimeGateSummary) -> str:
 
 
 def real_policy_active() -> bool:
-    path = ROOT / "REAL_ENVIRONMENT_VALIDATION.md"
+    path = ROOT / "docs/release/REAL_ENVIRONMENT_VALIDATION.md"
     if not path.exists():
         return False
     text = path.read_text(encoding="utf-8", errors="ignore").lower()

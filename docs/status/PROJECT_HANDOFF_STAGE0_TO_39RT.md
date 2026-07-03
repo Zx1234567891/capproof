@@ -48,7 +48,7 @@ The project has evolved from a minimal scaffold into a substantial prototype con
 The latest validated state is Stage 38REAL real-environment validation:
 
 - Stage 38REAL commit: `b881d996afe58dfc65ce7e00e7e321c51c108651` (`checkpoint: enforce real-environment validation for CapProof Hermes MCP`).
-- Added `REAL_ENVIRONMENT_VALIDATION.md`.
+- Added `docs/release/REAL_ENVIRONMENT_VALIDATION.md`.
 - Added `run_real_environment_validation.py`.
 - Added `tests/test_real_environment_validation.py`.
 - Added `artifact_reports/real_environment_validation_report.md`.
@@ -874,7 +874,7 @@ Work completed:
 
 - Added `src/capproof/hermes_capture.py`.
 - Added `HermesRuntimeEvent` and related capture-layer dataclasses/enums.
-- Added `hermes_runtime_capture_design.md`.
+- Added `docs/design/hermes_runtime_capture_design.md`.
 - Added `run_hermes_capture_validation.py`.
 - Added `hermes_capture_examples/`.
 - Added `tests/test_hermes_capture_validation.py`.
@@ -1823,7 +1823,7 @@ Unsupported Stage 33S effects:
 
 New and updated artifacts:
 
-- `SANDBOXED_REAL_EXECUTION.md`
+- `docs/design/SANDBOXED_REAL_EXECUTION.md`
 - `src/capproof/mcp/sandbox_policy.py`
 - `src/capproof/mcp/sandbox.py`
 - `src/capproof/mcp/sandbox_executors.py`
@@ -2222,12 +2222,12 @@ DeepSeek may be used only as a Hermes model backend under explicit run stages. I
 
 Start with this handoff, then read:
 
-- `IMPLEMENTATION_STATUS.md`
+- `docs/status/IMPLEMENTATION_STATUS.md`
 - `reproduction_notes.md`
 - `agent_profile_adapter_report.md`
 - `agent_coverage_audit/hermes_audit.md`
 - `agent_coverage_audit/audit_summary.md`
-- `hermes_runtime_capture_design.md`
+- `docs/design/hermes_runtime_capture_design.md`
 - `hermes_capture_validation_report.md`
 - `hermes_capture_instrumentation_report.md`
 - `hermes_capture_run/reports/manual_trace_import_report.md`
@@ -2242,7 +2242,7 @@ Start with this handoff, then read:
 - `real_agent_integrations/hermes_mcp_server/reports/hermes_mcp_coverage_matrix.json`
 - `real_agent_integrations/hermes_mcp_server/reports/real_hermes_standard_mcp_smoke_report.md`
 - `real_agent_integrations/hermes_mcp_server/reports/real_hermes_standard_mcp_smoke_summary.json`
-- `SANDBOXED_REAL_EXECUTION.md`
+- `docs/design/SANDBOXED_REAL_EXECUTION.md`
 - `real_agent_integrations/hermes_mcp_server/reports/capproof_sandbox_smoke_report.md`
 - `real_agent_integrations/hermes_mcp_server/reports/capproof_sandbox_smoke_summary.json`
 - `real_agent_integrations/hermes_mcp_server/reports/real_hermes_sandbox_mcp_smoke_report.md`
@@ -2288,7 +2288,7 @@ For Stage 32R specifically, inspect:
 
 For Stage 33S specifically, inspect:
 
-- `SANDBOXED_REAL_EXECUTION.md`
+- `docs/design/SANDBOXED_REAL_EXECUTION.md`
 - `src/capproof/mcp/sandbox_policy.py`
 - `src/capproof/mcp/sandbox.py`
 - `src/capproof/mcp/sandbox_executors.py`
@@ -2699,8 +2699,8 @@ non-claims.
 
 Added or updated:
 
-- `MCP_COMPATIBILITY.md`
-- `CLAIMS_AND_NON_CLAIMS.md`
+- `docs/release/MCP_COMPATIBILITY.md`
+- `docs/release/CLAIMS_AND_NON_CLAIMS.md`
 - `docs/INSTALL_LOCAL_HERMES_WRAPPER.md`
 - `docs/REPRODUCE_HERMES_CAPROOF_MCP.md`
 - `docs/ARTIFACT_OVERVIEW.md`
@@ -2773,7 +2773,7 @@ the stage claims real behavior.
 
 Added:
 
-- `REAL_ENVIRONMENT_VALIDATION.md`
+- `docs/release/REAL_ENVIRONMENT_VALIDATION.md`
 - `run_real_environment_validation.py`
 - `tests/test_real_environment_validation.py`
 - `artifact_reports/real_environment_validation_report.md`
@@ -2967,11 +2967,11 @@ If a new GPT/Codex session starts from here, it should assume:
 - Stage 36R proved Hermes/DeepSeek claimed approval, MCP `_meta.approved_by_user=true`, and scope amplification were rejected.
 - Stage 36R validation ended with full pytest 548 passed, 3 skipped, and compileall passed.
 - Stage 37PKG packaged the local Hermes + CapProof MCP artifact.
-- Stage 37PKG added `MCP_COMPATIBILITY.md`, `CLAIMS_AND_NON_CLAIMS.md`, install/reproduction/artifact docs, Makefile targets, compatibility matrix generation, and no-secret artifact reproduction checks.
+- Stage 37PKG added `docs/release/MCP_COMPATIBILITY.md`, `docs/release/CLAIMS_AND_NON_CLAIMS.md`, install/reproduction/artifact docs, Makefile targets, compatibility matrix generation, and no-secret artifact reproduction checks.
 - Stage 37PKG documented the supported local stdio MCP subset: initialize, `tools/list`, `tools/call`, structuredContent, stdout cleanliness, and the 7 CapProof tools.
 - Stage 37PKG documented non-claimed MCP features: resources, prompts, sampling, elicitation, Streamable HTTP, OAuth/remote MCP authorization, external MCP protection, all transports, and future/draft MCP versions.
 - Stage 37PKG validation ended with full pytest 558 passed, 3 skipped, and compileall passed.
-- Stage 38REAL added `REAL_ENVIRONMENT_VALIDATION.md`, `run_real_environment_validation.py`, `tests/test_real_environment_validation.py`, and real-environment validation reports/traces/matrix artifacts.
+- Stage 38REAL added `docs/release/REAL_ENVIRONMENT_VALIDATION.md`, `run_real_environment_validation.py`, `tests/test_real_environment_validation.py`, and real-environment validation reports/traces/matrix artifacts.
 - Stage 38REAL made dry-run/preflight safety readiness only; they cannot count as completion evidence.
 - Stage 38REAL requires missing real gates to be reported as `blocked_missing_real_env_gate`.
 - Stage 38REAL real validation passed with real Hermes foreground, real DeepSeek, standard CapProof MCP, observed `tools/list` and `tools/call`, real sandbox workspace read/write/command execution, and ASK -> trusted approve -> rerun ALLOW.

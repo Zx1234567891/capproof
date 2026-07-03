@@ -2,7 +2,7 @@
 
 | item | passed | evidence |
 | --- | --- | --- |
-| real_environment_policy_active | True | REAL_ENVIRONMENT_VALIDATION.md active |
+| real_environment_policy_active | True | docs/release/REAL_ENVIRONMENT_VALIDATION.md active |
 | preflight_not_completion | True | preflight cannot mark runtime_bootstrap_passed |
 | opencode_bootstrap | True | ok |
 | openclaw_bootstrap | True | ok |

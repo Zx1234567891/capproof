@@ -185,7 +185,7 @@
     {
       "claim": "production-level protection",
       "commit": "final release commit",
-      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_file": "docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
       "evidence_stage": "Stage 44FINAL",
       "notes": "Explicit non-claim.",
       "status": "not_claimed",
@@ -194,7 +194,7 @@
     {
       "claim": "all built-in tool paths covered",
       "commit": "final release commit",
-      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_file": "docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
       "evidence_stage": "Stage 44FINAL",
       "notes": "Explicit non-claim.",
       "status": "not_claimed",
@@ -203,7 +203,7 @@
     {
       "claim": "all MCP clients covered",
       "commit": "final release commit",
-      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_file": "docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
       "evidence_stage": "Stage 44FINAL",
       "notes": "Explicit non-claim.",
       "status": "not_claimed",
@@ -212,7 +212,7 @@
     {
       "claim": "external MCP protection",
       "commit": "final release commit",
-      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_file": "docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
       "evidence_stage": "Stage 44FINAL",
       "notes": "Explicit non-claim.",
       "status": "not_claimed",
@@ -221,7 +221,7 @@
     {
       "claim": "real email",
       "commit": "final release commit",
-      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_file": "docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
       "evidence_stage": "Stage 44FINAL",
       "notes": "Explicit non-claim.",
       "status": "not_claimed",
@@ -230,7 +230,7 @@
     {
       "claim": "raw shell support",
       "commit": "final release commit",
-      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_file": "docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
       "evidence_stage": "Stage 44FINAL",
       "notes": "Explicit non-claim.",
       "status": "not_claimed",
@@ -239,7 +239,7 @@
     {
       "claim": "arbitrary filesystem access",
       "commit": "final release commit",
-      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_file": "docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
       "evidence_stage": "Stage 44FINAL",
       "notes": "Explicit non-claim.",
       "status": "not_claimed",
@@ -248,7 +248,7 @@
     {
       "claim": "OS-level network denial",
       "commit": "final release commit",
-      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_file": "docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
       "evidence_stage": "Stage 44FINAL",
       "notes": "Explicit non-claim.",
       "status": "not_claimed",
@@ -257,7 +257,7 @@
     {
       "claim": "DeepSeek as safety TCB",
       "commit": "final release commit",
-      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_file": "docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
       "evidence_stage": "Stage 44FINAL",
       "notes": "Explicit non-claim.",
       "status": "not_claimed",
@@ -266,7 +266,7 @@
     {
       "claim": "LLM output authorization",
       "commit": "final release commit",
-      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_file": "docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
       "evidence_stage": "Stage 44FINAL",
       "notes": "Explicit non-claim.",
       "status": "not_claimed",
@@ -275,7 +275,7 @@
     {
       "claim": "MCP _meta authorization",
       "commit": "final release commit",
-      "evidence_file": "FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
+      "evidence_file": "docs/release/FINAL_NON_CLAIMS_AND_LIMITATIONS.md",
       "evidence_stage": "Stage 44FINAL",
       "notes": "Explicit non-claim.",
       "status": "not_claimed",

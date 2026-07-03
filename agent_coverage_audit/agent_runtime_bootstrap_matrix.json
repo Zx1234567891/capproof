@@ -1,6 +1,6 @@
 [
   {
-    "evidence": "REAL_ENVIRONMENT_VALIDATION.md active",
+    "evidence": "docs/release/REAL_ENVIRONMENT_VALIDATION.md active",
     "item": "real_environment_policy_active",
     "passed": true
   },

@@ -2,7 +2,7 @@ from pathlib import Path
 
 
 def test_claims_and_non_claims_are_evidence_scoped() -> None:
-    text = Path("CLAIMS_AND_NON_CLAIMS.md").read_text(encoding="utf-8")
+    text = Path("docs/release/CLAIMS_AND_NON_CLAIMS.md").read_text(encoding="utf-8")
     assert "Hermes foreground MCP path" in text
     assert "DeepSeek as Hermes model backend" in text
     assert "standard CapProof MCP `tools/list` and `tools/call`" in text
@@ -17,7 +17,7 @@ def test_claims_and_non_claims_are_evidence_scoped() -> None:
 
 
 def test_claims_docs_do_not_overclaim() -> None:
-    text = Path("CLAIMS_AND_NON_CLAIMS.md").read_text(encoding="utf-8").lower()
+    text = Path("docs/release/CLAIMS_AND_NON_CLAIMS.md").read_text(encoding="utf-8").lower()
     assert "does not claim production-level protection" in text
     assert "not claimed" in text
     assert "all hermes tool paths covered" in text
