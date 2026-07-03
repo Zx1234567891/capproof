@@ -79,6 +79,27 @@ and reproduction harnesses live under `tools/`. The repository root keeps
 `README.md` as the single top-level Markdown entry point. See
 `docs/status/PROJECT_LAYOUT.md` for the current directory convention.
 
+## Local agent wrappers
+
+Install the local foreground wrappers when you want new terminals to launch the
+real agents with DeepSeek and the standard CapProof MCP server already attached:
+
+```bash
+make install-local-agent-wrappers
+```
+
+Then use:
+
+```bash
+hermes
+opencode
+openclaw
+```
+
+Each wrapper reads `DEEPSEEK_API_KEY` from the environment only, starts the real
+agent runtime, and attaches the same standard CapProof MCP stdio server with
+`--sandboxed-real-execution`. See `docs/AGENT_CAPROOF_WRAPPERS.md`.
+
 | File | Contents |
 |---|---|
 | `00_executive_summary.md` | Cross-boundary thesis, proof-carrying demotion (PCAA), accept ladder |

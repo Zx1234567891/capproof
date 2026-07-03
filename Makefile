@@ -2,7 +2,7 @@ PYTHON ?= python
 PIP ?= pip
 INSTALL_BIN ?= $(HOME)/.local/bin
 
-.PHONY: install-local-hermes-wrapper uninstall-local-hermes-wrapper capproof-doctor capproof-trace capproof-trace-follow capproof-auth-queue capproof-smoke-local capproof-test-core capproof-test-full capproof-real-hermes-foreground capproof-real-hermes-ask-flow
+.PHONY: install-local-hermes-wrapper uninstall-local-hermes-wrapper install-local-agent-wrappers uninstall-local-agent-wrappers capproof-doctor capproof-trace capproof-trace-follow capproof-auth-queue capproof-smoke-local capproof-test-core capproof-test-full capproof-real-hermes-foreground capproof-real-hermes-ask-flow
 
 install-local-hermes-wrapper:
 	mkdir -p "$(INSTALL_BIN)"
@@ -12,6 +12,17 @@ install-local-hermes-wrapper:
 uninstall-local-hermes-wrapper:
 	rm -f "$(INSTALL_BIN)/hermes"
 	@echo "Removed $(INSTALL_BIN)/hermes"
+
+install-local-agent-wrappers:
+	mkdir -p "$(INSTALL_BIN)"
+	ln -sf "$(CURDIR)/bin/hermes" "$(INSTALL_BIN)/hermes"
+	ln -sf "$(CURDIR)/bin/opencode" "$(INSTALL_BIN)/opencode"
+	ln -sf "$(CURDIR)/bin/openclaw" "$(INSTALL_BIN)/openclaw"
+	@echo "Installed Hermes/OpenCode/OpenClaw CapProof wrappers into $(INSTALL_BIN)"
+
+uninstall-local-agent-wrappers:
+	rm -f "$(INSTALL_BIN)/hermes" "$(INSTALL_BIN)/opencode" "$(INSTALL_BIN)/openclaw"
+	@echo "Removed Hermes/OpenCode/OpenClaw CapProof wrappers from $(INSTALL_BIN)"
 
 capproof-doctor:
 	$(PYTHON) tools/run_capproof_mcp_doctor.py --all

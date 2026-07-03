@@ -10,7 +10,7 @@ live under `tools/`.
 - `src/`: CapProof implementation code.
 - `tests/`: pytest suites and regression checks.
 - `tools/`: repository-level commands and staged reproduction harnesses.
-- `bin/`: user-facing local command wrappers, including `hermes`.
+- `bin/`: user-facing local command wrappers, including `hermes`, `opencode`, and `openclaw`.
 - `docs/`: reviewer guides, release docs, status handoffs, quickstarts, and supporting documentation.
 - `docs/release/`: final release manifest, claims, compatibility, evaluator, and reproduction documentation.
 - `docs/status/`: implementation status, project layout, and handoff archives.
@@ -18,7 +18,7 @@ live under `tools/`.
 - `artifact_reports/`: generated release, evaluator, matrix, and reproduction reports.
 - `real_agent_integrations/`: Hermes, OpenCode, and OpenClaw local MCP integration artifacts.
 - `agent_coverage_audit/`, `adapter_bypass_gate/`, `authspec_faithfulness/`, `kill_tests/`: evaluation inputs and reports.
-- `external/`, `artifact_cleanroom/`, `.venv-hermes/`, `node_modules/`: ignored local runtime or third-party state; these are not committed.
+- `external/`, `artifact_cleanroom/`, `.venv-hermes/`, `node_modules/`, and `real_agent_integrations/*_mcp_server/runtime/`: ignored local runtime or third-party state; these are not committed.
 
 ## Command Convention
 

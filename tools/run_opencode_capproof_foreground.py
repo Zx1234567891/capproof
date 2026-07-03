@@ -1,0 +1,272 @@
+#!/usr/bin/env python3
+"""One-command foreground OpenCode + DeepSeek + CapProof MCP entrypoint."""
+
+from __future__ import annotations
+
+from _bootstrap import bootstrap as _capproof_tools_bootstrap
+_capproof_tools_bootstrap()
+
+import argparse
+from contextlib import contextmanager
+import json
+import os
+from pathlib import Path
+import subprocess
+import sys
+from typing import Mapping, Sequence
+
+from capproof.mcp.context import make_default_context
+from capproof.mcp.server import CapProofMCPServer
+
+import run_capproof_mcp_doctor
+import run_capproof_trace_viewer
+import run_real_opencode_deepseek_mcp_parity as parity
+
+
+REQUIRED_GATES = {
+    "ALLOW_AGENT_RUNTIME_REAL_SMOKE": "1",
+    "ALLOW_CAPROOF_REAL_OPENCODE_SMOKE": "1",
+    "ALLOW_CAPROOF_AGENT_PARITY": "1",
+    "ALLOW_CAPROOF_SANDBOX_REAL_EXECUTION": "1",
+    "ALLOW_CAPROOF_ASK_APPROVAL_DEMO": "1",
+    "ALLOW_CAPROOF_REAL_ENV_VALIDATION": "1",
+}
+RUNTIME_DIR = parity.INTEGRATION_DIR / "runtime"
+RUNTIME_HOME = RUNTIME_DIR / "home"
+AUTH_QUEUE_DIR = RUNTIME_DIR / "auth_queue"
+DEFAULT_BASE_URL = "https://api.deepseek.com"
+DEFAULT_MODEL = "deepseek-v4-pro"
+
+
+def main(argv: Sequence[str] | None = None, *, env: Mapping[str, str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description="Run OpenCode with DeepSeek and the standard CapProof MCP server.")
+    parser.add_argument("--preflight", action="store_true", help="check wrapper readiness without running OpenCode")
+    parser.add_argument("--doctor", action="store_true", help="run local readiness checks without calling DeepSeek")
+    parser.add_argument("--where-trace", action="store_true", help="print trace, live log, workspace, config, and auth queue paths")
+    parser.add_argument("--trace-follow", action="store_true", help="follow the OpenCode CapProof trace")
+    parser.add_argument("--capproof-status", action="store_true", help="print concise CapProof MCP status and latest verdict")
+    parser.add_argument("--list-scenarios", action="store_true", help="list parity validation scenarios")
+    parser.add_argument("--parity-demo", action="store_true", help="run the full real OpenCode parity harness")
+    parser.add_argument("--json", action="store_true", help="print JSON for status-style commands")
+    args, passthrough = parser.parse_known_args(list(argv) if argv is not None else None)
+
+    run_env = build_env(os.environ if env is None else env)
+    if args.where_trace:
+        print_where_trace(json_output=args.json)
+        return 0
+    if args.trace_follow:
+        return run_capproof_trace_viewer.main(["--file", str(parity.TRACE_PATH), "--follow"])
+    if args.capproof_status:
+        print_capproof_status(json_output=args.json)
+        return 0
+    if args.doctor:
+        print_doctor(run_env, json_output=args.json)
+        return 0
+    if args.list_scenarios:
+        return parity.main(["--list-scenarios"])
+    if args.parity_demo:
+        return run_parity_demo(run_env, json_output=args.json)
+    if args.preflight:
+        print_preflight(run_env, json_output=args.json)
+        return 0
+    if not run_env.get("DEEPSEEK_API_KEY"):
+        print("DEEPSEEK_API_KEY is missing. Set it in the shell; do not write it to a file.")
+        return 2
+    return run_foreground(run_env, passthrough=passthrough)
+
+
+def build_env(base_env: Mapping[str, str]) -> dict[str, str]:
+    run_env = dict(base_env)
+    run_env.update(REQUIRED_GATES)
+    run_env.setdefault("DEEPSEEK_BASE_URL", DEFAULT_BASE_URL)
+    run_env.setdefault("DEEPSEEK_MODEL", DEFAULT_MODEL)
+    return run_env
+
+
+def run_foreground(env: Mapping[str, str], *, passthrough: Sequence[str]) -> int:
+    with patched_environ(env):
+        prepare_runtime_config()
+        runtime_env = parity.smoke.make_opencode_env(str(RUNTIME_HOME))
+        runtime_env["CAPPROOF_AUTH_QUEUE_DIR"] = str(AUTH_QUEUE_DIR)
+        runtime_env["CAPPROOF_ASK_TRACE_PATH"] = str(parity.TRACE_PATH)
+        command = build_opencode_command(passthrough)
+        print_startup_banner(file=sys.stderr)
+        try:
+            completed = subprocess.run(command, cwd=str(parity.WORKSPACE_DIR), env=runtime_env, shell=False, check=False)
+        except KeyboardInterrupt:
+            print("\nOpenCode foreground session interrupted.")
+            return 130
+        return int(completed.returncode)
+
+
+def run_parity_demo(env: Mapping[str, str], *, json_output: bool) -> int:
+    argv = ["--all", "--require-real", "--report"]
+    if json_output:
+        argv.append("--json")
+    with patched_environ(env):
+        return parity.main(argv)
+
+
+def prepare_runtime_config() -> None:
+    parity.configure_smoke_paths()
+    parity.ensure_dirs()
+    parity.prepare_examples()
+    parity.smoke.prepare_workspace()
+    for directory in (RUNTIME_DIR, RUNTIME_HOME, AUTH_QUEUE_DIR):
+        directory.mkdir(parents=True, exist_ok=True)
+    parity.smoke.write_opencode_config()
+    parity.augment_opencode_config_with_auth_env(AUTH_QUEUE_DIR)
+
+
+def build_opencode_command(passthrough: Sequence[str]) -> list[str]:
+    if passthrough:
+        return [str(parity.smoke.OPENCODE_BINARY), *passthrough]
+    return [str(parity.smoke.OPENCODE_BINARY)]
+
+
+def print_startup_banner(*, file) -> None:
+    payload = wrapper_status_payload()
+    lines = [
+        "OpenCode CapProof foreground",
+        "CapProof MCP attached: yes",
+        "agent: OpenCode",
+        f"agent binary: {payload['agent_binary']}",
+        f"model provider: {payload['model_provider']}",
+        f"model: {payload['model_name']}",
+        "MCP mode: stdio",
+        "sandboxed-real-execution: enabled",
+        f"exposed tools: {payload['tools_count']}",
+        f"trace file: {payload['trace_path']}",
+        f"live log: {payload['live_log_path']}",
+        f"auth queue: {payload['auth_queue_dir']}",
+        "safety boundary: DeepSeek not safety TCB; CapProof guard gates tools",
+    ]
+    print("\n".join(lines), file=file)
+
+
+def print_where_trace(*, json_output: bool) -> None:
+    payload = {
+        "trace_jsonl_path": str(parity.TRACE_PATH),
+        "live_log_path": str(parity.LIVE_LOG_PATH),
+        "sandbox_workspace_path": str(parity.WORKSPACE_DIR),
+        "config_path": str(parity.CONFIG_PATH),
+        "summary_path": str(parity.SUMMARY_PATH),
+        "report_path": str(parity.REPORT_PATH),
+        "auth_queue_dir": str(AUTH_QUEUE_DIR),
+    }
+    print_payload(payload, json_output=json_output)
+
+
+def print_capproof_status(*, json_output: bool) -> None:
+    entries, skipped = run_capproof_trace_viewer.read_trace(parity.TRACE_PATH)
+    latest = entries[-1] if entries else {}
+    payload = wrapper_status_payload()
+    payload.update(
+        {
+            "latest_verdict": run_capproof_trace_viewer.entry_verdict(latest) if latest else "",
+            "latest_tool_name": latest.get("tool_name", "") if latest else "",
+            "latest_reason": latest.get("reason", "") if latest else "",
+            "latest_executor_called": bool(latest.get("executor_called")) if latest else False,
+            "skipped_malformed_count": skipped,
+        }
+    )
+    print_payload(payload, json_output=json_output)
+
+
+def print_doctor(env: Mapping[str, str], *, json_output: bool) -> None:
+    payload = wrapper_status_payload()
+    payload.update(
+        {
+            "deepseek_api_key_present": bool(env.get("DEEPSEEK_API_KEY")),
+            "deepseek_key_value": "redacted" if env.get("DEEPSEEK_API_KEY") else "",
+            "runtime_present": parity.smoke.OPENCODE_BINARY.exists(),
+            "version": probe_version(),
+            "config_exists": parity.CONFIG_PATH.exists(),
+            "trace_dir_writable": ensure_writable(parity.TRACE_DIR),
+            "live_log_dir_writable": ensure_writable(parity.REPORT_DIR),
+            "sandbox_workspace_exists": parity.WORKSPACE_DIR.exists(),
+            "key_written": False,
+        }
+    )
+    print_payload(payload, json_output=json_output)
+
+
+def print_preflight(env: Mapping[str, str], *, json_output: bool) -> None:
+    payload = {
+        "agent": "opencode",
+        "deepseek_api_key_present": bool(env.get("DEEPSEEK_API_KEY")),
+        "deepseek_key_source": "DEEPSEEK_API_KEY",
+        "key_written": False,
+        "runtime_present": parity.smoke.OPENCODE_BINARY.exists(),
+        "version": probe_version(),
+        "standard_capproof_mcp_server": "tools/run_capproof_mcp_server.py --stdio --sandboxed-real-execution",
+        "dry_run_preflight_counts_as_completion": False,
+    }
+    print_payload(payload, json_output=json_output)
+
+
+def wrapper_status_payload() -> dict[str, object]:
+    return {
+        "capproof_mcp_attached": True,
+        "agent": "opencode",
+        "agent_binary": str(parity.smoke.OPENCODE_BINARY),
+        "model_provider": "deepseek",
+        "model_name": os.environ.get("DEEPSEEK_MODEL", DEFAULT_MODEL),
+        "mcp_mode": "stdio",
+        "sandboxed_real_execution": True,
+        "tools_count": len(tool_names()),
+        "trace_path": str(parity.TRACE_PATH),
+        "live_log_path": str(parity.LIVE_LOG_PATH),
+        "workspace": str(parity.WORKSPACE_DIR),
+        "auth_queue_dir": str(AUTH_QUEUE_DIR),
+        "deepseek_not_safety_tcb": True,
+        "capproof_guard_gates_tools": True,
+    }
+
+
+def tool_names() -> list[str]:
+    context = make_default_context(workspace=parity.WORKSPACE_DIR, trace_path=parity.TRACE_PATH, executor_mode="sandbox")
+    server = CapProofMCPServer(context=context)
+    return [str(tool.get("name", "")) for tool in server.list_tools()["tools"]]
+
+
+def probe_version() -> str:
+    if not parity.smoke.OPENCODE_BINARY.exists():
+        return ""
+    completed = subprocess.run([str(parity.smoke.OPENCODE_BINARY), "--version"], text=True, capture_output=True, timeout=20, check=False)
+    return (completed.stdout or completed.stderr).strip().splitlines()[0] if (completed.stdout or completed.stderr).strip() else ""
+
+
+def ensure_writable(path: Path) -> bool:
+    path.mkdir(parents=True, exist_ok=True)
+    probe = path / ".capproof_write_probe"
+    try:
+        probe.write_text("ok", encoding="utf-8")
+        probe.unlink()
+        return True
+    except OSError:
+        return False
+
+
+def print_payload(payload: Mapping[str, object], *, json_output: bool) -> None:
+    if json_output:
+        print(json.dumps(payload, indent=2, sort_keys=True))
+        return
+    for key, value in payload.items():
+        print(f"{key}={value}")
+
+
+@contextmanager
+def patched_environ(env: Mapping[str, str]):
+    old = os.environ.copy()
+    os.environ.clear()
+    os.environ.update(env)
+    try:
+        yield
+    finally:
+        os.environ.clear()
+        os.environ.update(old)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
