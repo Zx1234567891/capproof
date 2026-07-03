@@ -13,6 +13,7 @@ import os
 from pathlib import Path
 import subprocess
 import sys
+import threading
 from typing import Mapping, Sequence
 
 from capproof.mcp.context import make_default_context
@@ -104,7 +105,13 @@ def run_parity_demo(env: Mapping[str, str], *, json_output: bool) -> int:
     if json_output:
         argv.append("--json")
     with patched_environ(env):
-        return parity.main(argv)
+        if json_output:
+            return parity.main(argv)
+        print("Starting real OpenCode parity demo. This runs multiple real agent turns; Ctrl-C stops it.", file=sys.stderr)
+        print(f"Trace: {parity.TRACE_PATH}", file=sys.stderr)
+        print(f"Live log: {parity.LIVE_LOG_PATH}", file=sys.stderr)
+        with foreground_trace_monitor(parity.TRACE_PATH, label="opencode"):
+            return parity.main(argv)
 
 
 def prepare_runtime_config() -> None:
@@ -254,6 +261,50 @@ def print_payload(payload: Mapping[str, object], *, json_output: bool) -> None:
         return
     for key, value in payload.items():
         print(f"{key}={value}")
+
+
+@contextmanager
+def foreground_trace_monitor(trace_path: Path, *, label: str):
+    stop = threading.Event()
+    thread = threading.Thread(target=_tail_trace, args=(trace_path, stop, label), daemon=True)
+    thread.start()
+    try:
+        yield
+    finally:
+        stop.set()
+        thread.join(timeout=1.0)
+
+
+def _tail_trace(trace_path: Path, stop: threading.Event, label: str) -> None:
+    offset = trace_path.stat().st_size if trace_path.exists() else 0
+    while not stop.is_set():
+        if trace_path.exists():
+            with trace_path.open("r", encoding="utf-8") as handle:
+                handle.seek(offset)
+                while True:
+                    line = handle.readline()
+                    if not line:
+                        break
+                    offset = handle.tell()
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        entry = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    tool = entry.get("tool_name") or entry.get("tool") or ""
+                    verdict = run_capproof_trace_viewer.entry_verdict(entry)
+                    reason = entry.get("reason") or entry.get("deny_reason") or ""
+                    executor_called = bool(entry.get("executor_called"))
+                    proof_id = entry.get("proof_id") or entry.get("proof_attempt_id") or ""
+                    print(
+                        f"[{label} trace] tool={tool} verdict={verdict} reason={reason} "
+                        f"executor_called={executor_called} proof_id={proof_id}",
+                        file=sys.stderr,
+                        flush=True,
+                    )
+        stop.wait(0.5)
 
 
 @contextmanager
