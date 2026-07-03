@@ -37,6 +37,9 @@ AUTH_QUEUE_DIR = RUNTIME_DIR / "auth_queue"
 RUNTIME_CONFIG = RUNTIME_HOME / ".openclaw-capproof" / "openclaw.json"
 DEFAULT_BASE_URL = "https://api.deepseek.com"
 DEFAULT_MODEL = "deepseek-v4-pro"
+WEB_HOST = "127.0.0.1"
+WEB_PORT = "18789"
+WEB_TOKEN = "capproof-test"
 
 
 def main(argv: Sequence[str] | None = None, *, env: Mapping[str, str] | None = None) -> int:
@@ -48,10 +51,15 @@ def main(argv: Sequence[str] | None = None, *, env: Mapping[str, str] | None = N
     parser.add_argument("--capproof-status", action="store_true", help="print concise CapProof MCP status and latest verdict")
     parser.add_argument("--list-scenarios", action="store_true", help="list parity validation scenarios")
     parser.add_argument("--parity-demo", action="store_true", help="run the full real OpenClaw parity harness")
+    parser.add_argument("--web", action="store_true", help="run the local OpenClaw browser UI gateway in the foreground")
+    parser.add_argument("--web-url", action="store_true", help="print the local OpenClaw browser UI URL")
     parser.add_argument("--json", action="store_true", help="print JSON for status-style commands")
     args, passthrough = parser.parse_known_args(list(argv) if argv is not None else None)
 
     run_env = build_env(os.environ if env is None else env)
+    if args.web_url:
+        print_web_url(json_output=args.json)
+        return 0
     if args.where_trace:
         print_where_trace(json_output=args.json)
         return 0
@@ -70,6 +78,11 @@ def main(argv: Sequence[str] | None = None, *, env: Mapping[str, str] | None = N
     if args.preflight:
         print_preflight(run_env, json_output=args.json)
         return 0
+    if args.web or is_dashboard_passthrough(passthrough):
+        if not run_env.get("DEEPSEEK_API_KEY"):
+            print("DEEPSEEK_API_KEY is missing. Set it in the shell; do not write it to a file.")
+            return 2
+        return run_web_gateway(run_env)
     if not run_env.get("DEEPSEEK_API_KEY"):
         print("DEEPSEEK_API_KEY is missing. Set it in the shell; do not write it to a file.")
         return 2
@@ -86,30 +99,41 @@ def build_env(base_env: Mapping[str, str]) -> dict[str, str]:
 
 def run_foreground(env: Mapping[str, str], *, passthrough: Sequence[str]) -> int:
     with patched_environ(env):
-        prepare_runtime_config()
-        runtime_env = parity.smoke.make_openclaw_env(str(RUNTIME_HOME))
-        runtime_env["CAPPROOF_AUTH_QUEUE_DIR"] = str(AUTH_QUEUE_DIR)
-        runtime_env["CAPPROOF_ASK_TRACE_PATH"] = str(parity.TRACE_PATH)
-        add_result = subprocess.run(
-            parity.smoke.mcp_add_command(parity.WORKSPACE_DIR, parity.TRACE_PATH),
-            cwd=str(parity.ROOT),
-            env=runtime_env,
-            text=True,
-            capture_output=True,
-            shell=False,
-            check=False,
-            timeout=60,
-        )
-        if add_result.returncode != 0 and not mcp_already_registered(add_result):
-            print("OpenClaw CapProof MCP registration failed.", file=sys.stderr)
-            print((add_result.stderr or add_result.stdout).strip(), file=sys.stderr)
-            return int(add_result.returncode or 1)
+        runtime_env = prepare_runtime()
         command = build_openclaw_command(passthrough)
         print_startup_banner(file=sys.stderr)
         try:
             completed = subprocess.run(command, cwd=str(parity.WORKSPACE_DIR), env=runtime_env, shell=False, check=False)
         except KeyboardInterrupt:
             print("\nOpenClaw foreground session interrupted.")
+            return 130
+        return int(completed.returncode)
+
+
+def run_web_gateway(env: Mapping[str, str]) -> int:
+    with patched_environ(env):
+        runtime_env = prepare_runtime()
+        command = [
+            str(parity.smoke.OPENCLAW_BINARY),
+            "--profile",
+            "capproof",
+            "gateway",
+            "run",
+            "--force",
+            "--bind",
+            "loopback",
+            "--port",
+            WEB_PORT,
+            "--auth",
+            "token",
+            "--token",
+            WEB_TOKEN,
+        ]
+        print_web_banner(file=sys.stderr)
+        try:
+            completed = subprocess.run(command, cwd=str(parity.WORKSPACE_DIR), env=runtime_env, shell=False, check=False)
+        except KeyboardInterrupt:
+            print("\nOpenClaw browser UI gateway stopped.", file=sys.stderr)
             return 130
         return int(completed.returncode)
 
@@ -126,6 +150,28 @@ def run_parity_demo(env: Mapping[str, str], *, json_output: bool) -> int:
         print(f"Live log: {parity.LIVE_LOG_PATH}", file=sys.stderr)
         with foreground_trace_monitor(parity.TRACE_PATH, label="openclaw"):
             return parity.main(argv)
+
+
+def prepare_runtime() -> dict[str, str]:
+    prepare_runtime_config()
+    runtime_env = parity.smoke.make_openclaw_env(str(RUNTIME_HOME))
+    runtime_env["CAPPROOF_AUTH_QUEUE_DIR"] = str(AUTH_QUEUE_DIR)
+    runtime_env["CAPPROOF_ASK_TRACE_PATH"] = str(parity.TRACE_PATH)
+    add_result = subprocess.run(
+        parity.smoke.mcp_add_command(parity.WORKSPACE_DIR, parity.TRACE_PATH),
+        cwd=str(parity.ROOT),
+        env=runtime_env,
+        text=True,
+        capture_output=True,
+        shell=False,
+        check=False,
+        timeout=60,
+    )
+    if add_result.returncode != 0 and not mcp_already_registered(add_result):
+        print("OpenClaw CapProof MCP registration failed.", file=sys.stderr)
+        print((add_result.stderr or add_result.stdout).strip(), file=sys.stderr)
+        raise SystemExit(int(add_result.returncode or 1))
+    return runtime_env
 
 
 def prepare_runtime_config() -> None:
@@ -145,6 +191,10 @@ def build_openclaw_command(passthrough: Sequence[str]) -> list[str]:
             return [str(parity.smoke.OPENCLAW_BINARY), *passthrough]
         return [str(parity.smoke.OPENCLAW_BINARY), "--profile", "capproof", *passthrough]
     return [str(parity.smoke.OPENCLAW_BINARY), "--profile", "capproof", "tui", "--local", "--session", "main"]
+
+
+def is_dashboard_passthrough(passthrough: Sequence[str]) -> bool:
+    return bool(passthrough) and passthrough[0] == "dashboard"
 
 
 def mcp_already_registered(result: subprocess.CompletedProcess[str]) -> bool:
@@ -170,6 +220,33 @@ def print_startup_banner(*, file) -> None:
         "safety boundary: DeepSeek not safety TCB; CapProof guard gates tools",
     ]
     print("\n".join(lines), file=file)
+
+
+def print_web_banner(*, file) -> None:
+    payload = wrapper_status_payload()
+    lines = [
+        "OpenClaw CapProof browser UI",
+        "CapProof MCP attached: yes",
+        f"URL: http://{WEB_HOST}:{WEB_PORT}/",
+        f"auth token: {WEB_TOKEN}",
+        f"model: {payload['model_name']}",
+        "MCP mode: stdio",
+        "sandboxed-real-execution: enabled",
+        f"exposed tools: {payload['tools_count']}",
+        "mode: foreground loopback gateway; no systemd install",
+        "Stop with Ctrl-C.",
+    ]
+    print("\n".join(lines), file=file)
+
+
+def print_web_url(*, json_output: bool) -> None:
+    payload = {
+        "url": f"http://{WEB_HOST}:{WEB_PORT}/",
+        "auth_token": WEB_TOKEN,
+        "start_command": "openclaw --web",
+        "system_service_install": False,
+    }
+    print_payload(payload, json_output=json_output)
 
 
 def print_where_trace(*, json_output: bool) -> None:

@@ -1,8 +1,9 @@
 # Agent CapProof Foreground Wrappers
 
-This repository provides local foreground wrappers for Hermes, OpenCode, and
-OpenClaw. Each wrapper launches the real agent runtime and attaches the same
-standard CapProof MCP stdio server with `--sandboxed-real-execution`.
+This repository provides local foreground wrappers for Hermes, OpenCode,
+OpenClaw, and CodeWhale. Each wrapper launches the real agent runtime and
+attaches the same standard CapProof MCP stdio server with
+`--sandboxed-real-execution`.
 
 ## Install
 
@@ -32,6 +33,7 @@ Do not write the key into config files, reports, traces, logs, or commits.
 hermes
 opencode
 openclaw
+codewhale
 ```
 
 The wrappers print a short startup banner to stderr showing:
@@ -45,6 +47,31 @@ The wrappers print a short startup banner to stderr showing:
 - live log path
 - auth queue path
 
+## OpenClaw Browser UI
+
+The OpenClaw wrapper avoids the official dashboard path that may try to install
+a system service. Use the local foreground Gateway instead:
+
+```bash
+openclaw --web
+```
+
+This starts the OpenClaw Control UI on loopback only:
+
+```text
+http://127.0.0.1:18789/
+```
+
+The local auth token is printed by the wrapper. `openclaw dashboard` is also
+mapped to this foreground loopback Gateway path, so it does not call systemd,
+install a daemon, or write a global service.
+
+To print the URL without starting the Gateway:
+
+```bash
+openclaw --web-url
+```
+
 ## Status Commands
 
 ```bash
@@ -57,6 +84,12 @@ openclaw --doctor
 openclaw --where-trace
 openclaw --capproof-status
 openclaw --trace-follow
+
+codewhale --doctor
+codewhale --where-trace
+codewhale --capproof-status
+codewhale --trace-follow
+codewhale --mcp-tools
 ```
 
 `--doctor`, `--where-trace`, and `--capproof-status` do not call DeepSeek.
@@ -74,6 +107,19 @@ openclaw --parity-demo
 They require `DEEPSEEK_API_KEY` and run real OpenCode/OpenClaw processes,
 DeepSeek calls, CapProof MCP `tools/list`, CapProof MCP `tools/call`, sandbox
 ALLOW paths, DENY gates, and ASK approval reruns.
+
+## CodeWhale MCP
+
+CodeWhale's in-TUI MCP manager is available inside the CodeWhale session:
+
+```text
+/mcp validate
+/mcp
+```
+
+The wrapper configures the MCP server under the `capproof` server name. CodeWhale
+will expose discovered MCP tools with its own `mcp_<server>_<tool>` naming
+convention.
 
 ## Boundaries
 

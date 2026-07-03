@@ -18,11 +18,12 @@ install-local-agent-wrappers:
 	ln -sf "$(CURDIR)/bin/hermes" "$(INSTALL_BIN)/hermes"
 	ln -sf "$(CURDIR)/bin/opencode" "$(INSTALL_BIN)/opencode"
 	ln -sf "$(CURDIR)/bin/openclaw" "$(INSTALL_BIN)/openclaw"
-	@echo "Installed Hermes/OpenCode/OpenClaw CapProof wrappers into $(INSTALL_BIN)"
+	ln -sf "$(CURDIR)/bin/codewhale" "$(INSTALL_BIN)/codewhale"
+	@echo "Installed Hermes/OpenCode/OpenClaw/CodeWhale CapProof wrappers into $(INSTALL_BIN)"
 
 uninstall-local-agent-wrappers:
-	rm -f "$(INSTALL_BIN)/hermes" "$(INSTALL_BIN)/opencode" "$(INSTALL_BIN)/openclaw"
-	@echo "Removed Hermes/OpenCode/OpenClaw CapProof wrappers from $(INSTALL_BIN)"
+	rm -f "$(INSTALL_BIN)/hermes" "$(INSTALL_BIN)/opencode" "$(INSTALL_BIN)/openclaw" "$(INSTALL_BIN)/codewhale"
+	@echo "Removed Hermes/OpenCode/OpenClaw/CodeWhale CapProof wrappers from $(INSTALL_BIN)"
 
 capproof-doctor:
 	$(PYTHON) tools/run_capproof_mcp_doctor.py --all
