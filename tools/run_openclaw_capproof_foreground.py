@@ -137,7 +137,7 @@ def build_openclaw_command(passthrough: Sequence[str]) -> list[str]:
         if "--profile" in passthrough:
             return [str(parity.smoke.OPENCLAW_BINARY), *passthrough]
         return [str(parity.smoke.OPENCLAW_BINARY), "--profile", "capproof", *passthrough]
-    return [str(parity.smoke.OPENCLAW_BINARY), "--profile", "capproof"]
+    return [str(parity.smoke.OPENCLAW_BINARY), "--profile", "capproof", "tui", "--local", "--session", "main"]
 
 
 def mcp_already_registered(result: subprocess.CompletedProcess[str]) -> bool:

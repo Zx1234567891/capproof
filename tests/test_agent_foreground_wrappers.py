@@ -69,7 +69,7 @@ def test_openclaw_wrapper_registers_mcp_then_launches_profile(monkeypatch, tmp_p
     assert calls[0][0][0] == str(binary)
     assert calls[0][0][1:5] == ["--profile", "capproof", "mcp", "add"]
     assert "tools/run_capproof_mcp_server.py" in calls[0][0]
-    assert calls[-1][0] == [str(binary), "--profile", "capproof"]
+    assert calls[-1][0] == [str(binary), "--profile", "capproof", "tui", "--local", "--session", "main"]
     assert calls[-1][1]["shell"] is False
     assert calls[-1][1]["env"]["DEEPSEEK_API_KEY"] == SECRET
     assert "CapProof MCP attached: yes" in streams.err
