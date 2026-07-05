@@ -1,0 +1,59 @@
+{
+  "name": "capproof-mcp",
+  "version": "0.1.0",
+  "description": "CapProof standard MCP server and local agent foreground wrappers.",
+  "license": "MIT",
+  "type": "commonjs",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/Zx1234567891/capproof.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Zx1234567891/capproof/issues"
+  },
+  "homepage": "https://github.com/Zx1234567891/capproof#readme",
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org/"
+  },
+  "bin": {
+    "capproof-mcp": "npm/bin/capproof-mcp.js",
+    "hermes": "npm/bin/capproof-agent.js",
+    "opencode": "npm/bin/capproof-agent.js",
+    "openclaw": "npm/bin/capproof-agent.js",
+    "codewhale": "npm/bin/capproof-agent.js"
+  },
+  "files": [
+    "bin/codewhale",
+    "bin/hermes",
+    "bin/openclaw",
+    "bin/opencode",
+    "docs/AGENT_CAPROOF_WRAPPERS.md",
+    "docs/NPM_PACKAGE.md",
+    "docs/release/CLAIMS_AND_NON_CLAIMS.md",
+    "docs/release/MCP_COMPATIBILITY.md",
+    "docs/release/REAL_ENVIRONMENT_VALIDATION.md",
+    "npm/",
+    "pyproject.toml",
+    "src/**/*.py",
+    "src/**/*.pyi",
+    "src/**/py.typed",
+    "tools/*.py",
+    "tools/*.md",
+    "tools/*.sh"
+  ],
+  "scripts": {
+    "pack:local": "npm pack",
+    "test:npm": "pytest tests/test_npm_package.py -q"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mcp",
+    "agent",
+    "capability",
+    "capproof",
+    "deepseek"
+  ]
+}

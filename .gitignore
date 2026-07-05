@@ -26,3 +26,4 @@ real_agent_integrations/codewhale_mcp_server/reports/
 real_agent_integrations/codewhale_mcp_server/sandbox_workspace/
 real_agent_integrations/codewhale_mcp_server/traces/
 artifact_cleanroom/
+artifact_reports/chapter4/runtime/

@@ -32,11 +32,21 @@ REQUIRED_GATES = {
     "ALLOW_CAPROOF_ASK_APPROVAL_DEMO": "1",
     "ALLOW_CAPROOF_REAL_ENV_VALIDATION": "1",
 }
-RUNTIME_DIR = parity.INTEGRATION_DIR / "runtime"
-RUNTIME_HOME = RUNTIME_DIR / "home"
-AUTH_QUEUE_DIR = RUNTIME_DIR / "auth_queue"
 DEFAULT_BASE_URL = "https://api.deepseek.com"
 DEFAULT_MODEL = "deepseek-v4-pro"
+
+
+def runtime_dir_for_env() -> Path:
+    run_id = os.environ.get("CAPPROOF_RECORDING_RUN_ID", "").strip()
+    if not run_id:
+        return parity.INTEGRATION_DIR / "runtime"
+    safe = "".join(ch if ch.isalnum() or ch in "._-" else "_" for ch in run_id)[:80]
+    return parity.INTEGRATION_DIR / "runtime" / safe
+
+
+RUNTIME_DIR = runtime_dir_for_env()
+RUNTIME_HOME = RUNTIME_DIR / "home"
+AUTH_QUEUE_DIR = RUNTIME_DIR / "auth_queue"
 
 
 def main(argv: Sequence[str] | None = None, *, env: Mapping[str, str] | None = None) -> int:

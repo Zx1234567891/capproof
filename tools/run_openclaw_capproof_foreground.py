@@ -31,15 +31,32 @@ REQUIRED_GATES = {
     "ALLOW_CAPROOF_ASK_APPROVAL_DEMO": "1",
     "ALLOW_CAPROOF_REAL_ENV_VALIDATION": "1",
 }
-RUNTIME_DIR = parity.INTEGRATION_DIR / "runtime"
-RUNTIME_HOME = RUNTIME_DIR / "home"
-AUTH_QUEUE_DIR = RUNTIME_DIR / "auth_queue"
-RUNTIME_CONFIG = RUNTIME_HOME / ".openclaw-capproof" / "openclaw.json"
 DEFAULT_BASE_URL = "https://api.deepseek.com"
 DEFAULT_MODEL = "deepseek-v4-pro"
 WEB_HOST = "127.0.0.1"
 WEB_PORT = "18789"
 WEB_TOKEN = "capproof-test"
+
+
+def runtime_dir_for_env() -> Path:
+    run_id = os.environ.get("CAPPROOF_RECORDING_RUN_ID", "").strip()
+    if not run_id:
+        return parity.INTEGRATION_DIR / "runtime"
+    safe = "".join(ch if ch.isalnum() or ch in "._-" else "_" for ch in run_id)[:80]
+    return parity.INTEGRATION_DIR / "runtime" / safe
+
+
+def session_id_for_env() -> str:
+    run_id = os.environ.get("CAPPROOF_AGENT_SESSION_ID", "").strip()
+    if not run_id:
+        return "main"
+    return "".join(ch if ch.isalnum() or ch in "._-" else "_" for ch in run_id)[:80]
+
+
+RUNTIME_DIR = runtime_dir_for_env()
+RUNTIME_HOME = RUNTIME_DIR / "home"
+AUTH_QUEUE_DIR = RUNTIME_DIR / "auth_queue"
+RUNTIME_CONFIG = RUNTIME_HOME / ".openclaw-capproof" / "openclaw.json"
 
 
 def main(argv: Sequence[str] | None = None, *, env: Mapping[str, str] | None = None) -> int:
@@ -190,7 +207,7 @@ def build_openclaw_command(passthrough: Sequence[str]) -> list[str]:
         if "--profile" in passthrough:
             return [str(parity.smoke.OPENCLAW_BINARY), *passthrough]
         return [str(parity.smoke.OPENCLAW_BINARY), "--profile", "capproof", *passthrough]
-    return [str(parity.smoke.OPENCLAW_BINARY), "--profile", "capproof", "tui", "--local", "--session", "main"]
+    return [str(parity.smoke.OPENCLAW_BINARY), "--profile", "capproof", "tui", "--local", "--session", session_id_for_env()]
 
 
 def is_dashboard_passthrough(passthrough: Sequence[str]) -> bool:
